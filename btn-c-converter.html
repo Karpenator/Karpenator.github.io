@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Конвертер маппинга из .с в .map</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1C1C1C;
+		color: white;
+        padding: 20px;
+    }
+    button {
+        font-size: 16px;
+        padding: 10px;
+        margin: 5px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+    <h1>Конвертер маппинга из .с в .map</h1>
+    <label for="ultima-path">Путь к маппинг файлу в формате .c:</label>
+    <input type="file" id="ultima-path" accept=".c">
+    <br>
+    <label for="save-folder">Куда сохранить:</label>
+    <input type="text" id="save-folder">
+    <button id="select-save-folder">Выбрать</button>
+    <br>
+    <button id="convert">Конвертировать</button>
+    <br>
+    <progress id="progress-bar" value="0" max="100"></progress>
+    <span id="progress-label"></span>
+    <p id="info"></p>
+
+    <script>
+        document.getElementById("convert").addEventListener("click", function() {
+            let ultimaPath = document.getElementById("ultima-path").files[0];
+            let saveFolder = document.getElementById("save-folder").value;
+
+            if (!ultimaPath || !saveFolder) {
+                alert("Пожалуйста, выберите пути для файла маппинга и сохранения.");
+                return;
+            }
+
+            let reader = new FileReader();
+            reader.onload = function(event) {
+                let data = event.target.result;
+                let lines = data.split('\n');
+                let filesCount = lines.length - 26;  // Count of files to be processed
+                let progressStep = 100 / filesCount;
+                let currentProgress = 0;
+
+                let convertedLines = [];
+
+                lines.slice(26).forEach(function(line, index) {
+                    let match = line.match(/SpawnObject\("(.*?)"\s*,\s*"(.*?)"\s*,\s*"(.*?)"\s*,\s*(.*?)\);/);
+
+                    if (match) {
+                        let [, objectName, position, rotation, _] = match;
+                        let formattedLine = `SpawnerObject | ${objectName} | ${position} | ${rotation} |`;
+                        convertedLines.push(formattedLine);
+                    }
+
+                    currentProgress += progressStep;
+                    document.getElementById("progress-bar").value = currentProgress;
+                    document.getElementById("progress-label").textContent = `${index + 1} из ${filesCount}`;
+                });
+
+                let newFileName = `Converted_${ultimaPath.name}`;
+                let filePath = `${saveFolder}/${newFileName}`;
+
+                let blob = new Blob([convertedLines.join('\n')], { type: 'text/plain' });
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = newFileName;
+                link.click();
+
+                document.getElementById("info").textContent = 'Конвертация завершена';
+                console.log(`Конвертация завершена. Файл сохранен по пути: ${filePath}`);
+                console.log(`Преобразованные строки: ${convertedLines}`);
+            };
+
+            reader.readAsText(ultimaPath);
+        });
+
+        document.getElementById("select-save-folder").addEventListener("click", function() {
+            let saveFolder = prompt("Введите путь для сохранения:");
+
+            if (saveFolder) {
+                document.getElementById("save-folder").value = saveFolder;
+            }
+        });
+    </script>
+</body>
+</html>

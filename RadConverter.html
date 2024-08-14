@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Converter</title>
+</head>
+<body>
+    <h1>JSON Converter</h1>
+    <textarea id="inputData" rows="20" cols="100">
+{
+    "AllRadiatonsTestNeed": [
+        {
+            "LocationsRad": "PNW",
+            "RadPosArrays": [
+                {
+                    "Positions": [7020.39794921875,15.73270320892334,1714.5867919921876],
+                    "Radius": 819,
+                    "Power": 30
+                },
+                {
+                    "Positions": [9150.0322265625,37.86056900024414,4851.478515625],
+                    "Radius": 291,
+                    "Power": 50
+                },
+                {
+                    "Positions": [7571.9638671875,111.20198822021485,5274.3515625],
+                    "Radius": 291,
+                    "Power": 300
+                },
+                {
+                    "Positions": [8571.9638671875,211.20198822021485,6274.3515625],
+                    "Radius": 291,
+                    "Power": 100
+                }
+            ]
+        }
+    ]
+}
+    </textarea>
+    <br>
+    <button onclick="convertData()">Convert</button>
+    <h2>Converted Data</h2>
+    <textarea id="outputData" rows="20" cols="100"></textarea>
+
+    <script>
+        function convertData() {
+            const inputData = JSON.parse(document.getElementById('inputData').value);
+
+            const result = {
+                "m_defaultZone": {
+                    "m_id": 0,
+                    "m_displayName": "Default Zone",
+                    "m_position": [0.0, 0.0, 0.0],
+                    "m_radius": 0.0,
+                    "m_height": 0.0,
+                    "m_enterMessage": "",
+                    "m_leaveMessage": "",
+                    "m_leaveTime": 0.0,
+                    "m_godMode": 0,
+                    "m_inverseDammage": 0,
+                    "m_blockBuildingMode": 0,
+                    "m_blockInteractionWithPlayers": 0,
+                    "m_radiation": 0.0,
+                    "m_psi": 0.0,
+                    "m_gas": 0.0,
+                    "m_spawnChance": 1.0
+                },
+                "m_customZones": []
+            };
+
+            inputData["AllRadiatonsTestNeed"][0]["RadPosArrays"].forEach((radPos, index) => {
+                let radiation = 0.0;
+                switch (radPos.Power) {
+                    case 30:
+                        radiation = 0.03;
+                        break;
+                    case 50:
+                        radiation = 0.05;
+                        break;
+                    case 100:
+                        radiation = 0.1;
+                        break;
+                    case 300:
+                        radiation = 0.3;
+                        break;
+                }
+
+                const zone = {
+                    "m_id": index + 1,
+                    "m_displayName": `Zone ${index + 1}`,
+                    "m_position": radPos.Positions.map(pos => parseFloat(pos.toFixed(6))),
+                    "m_radius": parseFloat(radPos.Radius.toFixed(1)),
+                    "m_height": -1.0,
+                    "m_enterMessage": index === 1 ? "Какой-то непонятный привкус металла на губах" : "",
+                    "m_leaveMessage": "",
+                    "m_leaveTime": 0.0,
+                    "m_godMode": 0,
+                    "m_inverseDammage": 0,
+                    "m_blockBuildingMode": 0,
+                    "m_blockInteractionWithPlayers": 0,
+                    "m_radiation": radiation,
+                    "m_psi": 0.0,
+                    "m_gas": 0.0,
+                    "m_spawnChance": 1.0
+                };
+                result.m_customZones.push(zone);
+            });
+
+            document.getElementById('outputData').value = JSON.stringify(result, null, 4);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DayZ Trader Config Generator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1C1C1C;
+        color: white;
+        padding: 20px;
+    }
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #333;
+        color: white;
+        border: none;
+		resize: none;
+    }
+    button {
+        background-color: #222;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .tab {
+        display: none;
+    }
+</style>
+</head>
+<body>
+    <h1>DayZ Trader Config Generator</h1>    
+    <div id="tabs">
+        <button onclick="displayTab(0)">Expansion Trader</button>
+        <button onclick="displayTab(1)">Dr. Jones</button>
+        <button onclick="displayTab(2)">Trader Plus</button>
+        <button onclick="displayTab(3)">Ultima</button>
+    </div>	
+    <div id="leftFrame">
+        <textarea id="classnamesText" rows="25" placeholder="Paste classnames here"></textarea>
+        <button onclick="openFile()">Open Classnames File</button>
+    </div>
+    <div class="tab" id="tab1">
+        <input type="text" id="maxPrice" placeholder="Max Price Threshold">
+        <input type="text" id="sellPrice" placeholder="Min Price Threshold">
+        <input type="text" id="maxStock" placeholder="Max Stock Threshold">
+        <input type="text" id="minStock" placeholder="Min Stock Threshold">
+        <button onclick="generateConfig()">Generate Config</button>
+    </div>
+    <div class="tab" id="tab2">
+        <input type="text" id="maxPriceTab2" placeholder="By price">
+        <input type="text" id="sellPriceTab2" placeholder="Sell price">
+        <button onclick="generateTxtConfig()">Generate TXT Config</button>
+    </div>
+    <div class="tab" id="tab3">
+        <input type="text" id="maxPriceTab3" placeholder="By price">
+        <input type="text" id="sellPriceTab3" placeholder="Sell price">
+        <button onclick="generateJsonConfig()">Generate JSON Config</button>
+    </div>
+    <div class="tab" id="tab4">
+        <input type="text" id="sectionTab4" placeholder="Section">
+        <input type="text" id="tradersIdsTab4" placeholder="Traders ID">
+        <input type="text" id="maxStockTab4" placeholder="Amount">
+        <input type="text" id="maxPriceTab4" placeholder="Price Buy">
+        <input type="text" id="sellPriceTab4" placeholder="Price Sell">
+        <button onclick="generateUltimaConfig()">Generate Config</button>
+    </div>
+
+    <script>
+        function openFile() {
+			// Создаем input элемент для выбора файла
+			const input = document.createElement('input');
+			input.type = 'file';
+
+			// Устанавливаем обработчик изменения значения input
+			input.addEventListener('change', function(event) {
+				// Получаем файл из input
+				const file = event.target.files[0];
+
+				// Создаем объект FileReader
+				const reader = new FileReader();
+
+				// Устанавливаем обработчик загрузки файла
+				reader.onload = function(event) {
+					// Содержимое файла доступно через event.target.result
+					const fileContent = event.target.result;
+					// Делаем с содержимым файла то, что необходимо
+					console.log('Содержимое файла:', fileContent);
+				};
+
+				// Читаем содержимое файла как текст
+				reader.readAsText(file);
+			});
+
+			// Нажимаем на input, чтобы открыть диалоговое окно выбора файла
+			input.click();
+		}
+
+		function generateConfig() {
+			try {
+				// Читаем значения из полей ввода
+				var max_price = parseInt(document.getElementById("maxPrice").value);
+				var sell_price = parseInt(document.getElementById("sellPrice").value);
+				var max_stock = parseInt(document.getElementById("maxStock").value);
+				var min_stock = parseInt(document.getElementById("minStock").value);
+				var classnames = document.getElementById("classnamesText").value.split('\n');
+
+				// Создаем список для сохранения данных
+				var items = [];
+
+				// Создаем элемент для каждого класснейма
+				for (var i = 0; i < classnames.length; i++) {
+					var item = {
+						"ClassName": classnames[i].trim(),
+						"MaxPriceThreshold": max_price,
+						"MinPriceThreshold": sell_price,
+						"SellPricePercent": -1,
+						"MaxStockThreshold": max_stock,
+						"MinStockThreshold": min_stock,
+						"SpawnAttachments": [],
+						"Variants": []
+					};
+					items.push(item);
+				}
+
+				// Создаем объект для сохранения данных
+				var data = {
+					"m_Version": 12,
+					"DisplayName": "Отображаемое имя категории",
+					"Icon": "Deliver",
+					"Color": "FBFCFEFF",
+					"IsExchange": 0,
+					"InitStockPercent": 75.0,
+					"Items": items
+				};
+
+				// Преобразуем объект данных в JSON строку
+				var formatted_data = JSON.stringify(data, null, 4);
+
+				// Создаем Blob с содержимым файла
+				var blob = new Blob([formatted_data], { type: "application/json" });
+
+				// Создаем ссылку для скачивания файла
+				var download_link = document.createElement("a");
+				download_link.href = URL.createObjectURL(blob);
+
+				// Предлагаем пользователю выбрать место сохранения файла
+				download_link.setAttribute("download", "config.json");
+
+				// Прикрепляем ссылку к документу
+				document.body.appendChild(download_link);
+
+				// Симулируем клик по ссылке для скачивания файла
+				download_link.click();
+
+				// Удаляем ссылку из документа
+				document.body.removeChild(download_link);
+
+				console.log("Конфигурация для Expansion Trader успешно сгенерирована и сохранена.");
+			} catch (error) {
+				console.error("Ошибка при генерации конфигурации:", error);
+			}
+		}
+
+        function generateTxtConfig() {
+			try {
+				// Читаем значения из полей ввода
+				var max_price = parseInt(document.getElementById("maxPriceTab2").value);
+				var sell_price = parseInt(document.getElementById("sellPriceTab2").value);
+				var classnames = document.getElementById("classnamesText").value.split('\n');
+
+				// Генерируем содержимое файла
+				var file_content = "<Category> Dr. Jones\n";
+				for (var i = 0; i < classnames.length; i++) {
+					var classname = classnames[i].trim();
+					file_content += "  " + classname + ", *, " + max_price + ", " + sell_price + "\n";
+				}
+
+				// Создаем Blob с содержимым файла
+				var blob = new Blob([file_content], { type: "text/plain" });
+
+				// Создаем ссылку для скачивания файла
+				var download_link = document.createElement("a");
+				download_link.href = URL.createObjectURL(blob);
+				download_link.download = "Dr_Jones_Config.txt";
+
+				// Прикрепляем ссылку к документу
+				document.body.appendChild(download_link);
+
+				// Симулируем клик по ссылке для скачивания файла
+				download_link.click();
+
+				// Удаляем ссылку из документа
+				document.body.removeChild(download_link);
+
+				console.log("TXT конфигурация успешно сгенерирована и предложена для сохранения.");
+			} catch (error) {
+				console.error("Ошибка при генерации TXT конфигурации:", error);
+			}
+		}
+
+        function generateJsonConfig() {
+			try {
+				// Читаем значения из полей ввода
+				var max_price = parseInt(document.getElementById("maxPriceTab3").value);
+				var sell_price = parseInt(document.getElementById("sellPriceTab3").value);
+				var classnames = document.getElementById("classnamesText").value.split('\n');
+
+				// Создаем список для хранения данных
+				var items = [];
+
+				// Создаем элемент для каждого класснейма
+				for (var i = 0; i < classnames.length; i++) {
+					var classname = classnames[i].trim();
+					var item = {
+						"ClassName": classname,
+						"MaxPriceThreshold": max_price,
+						"MinPriceThreshold": sell_price,
+						"SellPricePercent": -1,
+						"MaxStockThreshold": 99,
+						"MinStockThreshold": 1,
+						"SpawnAttachments": [],
+						"Variants": []
+					};
+					items.push(item);
+				}
+
+				// Создаем объект конфигурации
+				var config = {
+					"m_Version": 12,
+					"DisplayName": "Trader Plus",
+					"Icon": "Deliver",
+					"Color": "FBFCFEFF",
+					"IsExchange": 0,
+					"InitStockPercent": 75.0,
+					"Items": items
+				};
+
+				// Преобразуем объект конфигурации в JSON
+				var json_config = JSON.stringify(config, null, 4);
+
+				// Создаем Blob с содержимым файла
+				var blob = new Blob([json_config], { type: "application/json" });
+
+				// Создаем ссылку для скачивания файла
+				var download_link = document.createElement("a");
+				download_link.href = URL.createObjectURL(blob);
+				download_link.download = "Trader_Plus_Config.json";
+
+				// Прикрепляем ссылку к документу
+				document.body.appendChild(download_link);
+
+				// Симулируем клик по ссылке для скачивания файла
+				download_link.click();
+
+				// Удаляем ссылку из документа
+				document.body.removeChild(download_link);
+
+				console.log("JSON конфигурация успешно сгенерирована и сохранена.");
+			} catch (error) {
+				console.error("Ошибка при генерации JSON конфигурации:", error);
+			}
+		}
+
+        function generateUltimaConfig() {
+			try {
+				// Читаем значения из полей ввода
+				var max_price = parseInt(document.getElementById("maxPriceTab4").value);
+				var sell_price = parseInt(document.getElementById("sellPriceTab4").value);
+				var max_stock = parseInt(document.getElementById("maxStockTab4").value);
+				var traders_ids = parseInt(document.getElementById("tradersIdsTab4").value);
+				var section = document.getElementById("sectionTab4").value;
+				var classnames = document.getElementById("classnamesText").value.split('\n');
+
+				// Создаем список для хранения данных
+				var items = [];
+
+				// Создаем элемент для каждого класснейма
+				for (var i = 0; i < classnames.length; i++) {
+					var classname = classnames[i].trim();
+					var item = {
+						"m_ArrayIndex": -1,
+						"m_Section": section,
+						"m_Classname": classname,
+						"m_TradersIds": [traders_ids],
+						"m_IsBuy": 1,
+						"m_IsSell": 1,
+						"m_PriceBuy": max_price,
+						"m_PriceSell": sell_price,
+						"m_ReputationNeed": 0,
+						"m_ReputationCostBuy": 0,
+						"m_ReputationCostSell": 0,
+						"m_ReputationAddBuy": 0,
+						"m_ReputationAddSell": 0,
+						"m_Fraction": "-",
+						"m_Amount": max_stock,
+						"m_IsScript": 0,
+						"m_DisplayClassname": "",
+						"m_DisplaySectionName": "",
+						"m_MinAmountTo": 0,
+						"m_AmountTo": 0
+					};
+					items.push(item);
+				}
+
+				// Создаем объект конфигурации
+				var config = items;
+
+				// Преобразуем объект конфигурации в формат JSON
+				var json_config = JSON.stringify(config, null, 4);
+
+				// Создаем Blob с содержимым файла
+				var blob = new Blob([json_config], { type: "application/json" });
+
+				// Создаем ссылку для скачивания файла
+				var download_link = document.createElement("a");
+				download_link.href = URL.createObjectURL(blob);
+				download_link.download = "Ultima_Config.json";
+
+				// Прикрепляем ссылку к документу
+				document.body.appendChild(download_link);
+
+				// Симулируем клик по ссылке для скачивания файла
+				download_link.click();
+
+				// Удаляем ссылку из документа
+				document.body.removeChild(download_link);
+
+				console.log("Конфигурация Ultima успешно сгенерирована и сохранена.");
+			} catch (error) {
+				console.error("Ошибка при генерации конфигурации Ultima:", error);
+			}
+		}
+
+        function displayTab(index) {
+            const tabs = document.querySelectorAll(".tab");
+            tabs.forEach(tab => {
+                tab.style.display = "none";
+            });
+            tabs[index].style.display = "block";
+        }
+    </script>
+</body>
+</html>

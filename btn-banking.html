@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultima BANK Parameter Converter</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1C1C1C;
+		color: white;
+        padding: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    input[type="text"] {
+        width: 300px;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+    button {
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+    #progress-bar {
+        width: 300px;
+        height: 20px;
+        background-color: #ddd;
+        margin-bottom: 10px;
+    }
+    #progress {
+        width: 0;
+        height: 100%;
+        background-color: green;
+    }
+</style>
+</head>
+<body>
+    <h1>Ultima BANK Parameter Converter</h1>
+    <label for="ultima-path">Path to Ultima BANK:</label>
+    <input type="file" id="ultima-path">
+    <br>
+    <label for="save-folder">Save folder:</label>
+    <input type="text" id="save-folder">
+    <button id="select-save-folder">Select</button>
+    <br>
+    <button id="convert">Convert</button>
+    <div id="progress-bar">
+        <div id="progress"></div>
+    </div>
+    <p id="info"></p>
+
+    <script>
+        document.getElementById("convert").addEventListener("click", function() {
+            let ultimaPath = document.getElementById("ultima-path").files[0];
+            let saveFolder = document.getElementById("save-folder").value;
+
+            if (!ultimaPath || !saveFolder) {
+                alert("Please select paths for both Ultima BANK and save folder.");
+                return;
+            }
+
+            let reader = new FileReader();
+            reader.onload = function(event) {
+                let data = event.target.result;
+                let lines = data.split('\n');
+                let filesCount = lines.length;
+                let progressStep = 100 / filesCount;
+                let currentProgress = 0;
+
+                lines.forEach(function(line, index) {
+                    let paramValue = line.split(':').pop().trim();
+                    let paramName = ultimaPath.name.replace('BANKING_', '').replace('.txt', '');
+                    let fileName = `${paramName}_${index}.json`;
+                    let newFilePath = `${saveFolder}/${fileName}`;
+
+                    let new_data = {
+                        'm_Steam64ID': paramName,
+                        'm_PlayerName': 'Survivor',
+                        'm_OwnedCurrency': parseInt(paramValue),
+                        'm_PayCheckBonus': 0,
+                        'm_BonusCurrency': 0,
+                        'm_ClanID': 'NONE'
+                    };
+
+                    let blob = new Blob([JSON.stringify(new_data, null, 4)], { type: 'application/json' });
+                    let link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = fileName;
+                    link.click();
+
+                    currentProgress += progressStep;
+                    document.getElementById("progress").style.width = `${currentProgress}%`;
+                });
+
+                document.getElementById("info").textContent = 'Conversion completed';
+            };
+
+            reader.readAsText(ultimaPath);
+        });
+    </script>
+</body>
+</html>

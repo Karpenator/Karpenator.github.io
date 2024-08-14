@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KR_BANKING to TraderPlus Converter</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1C1C1C;
+		color: white;
+        padding: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    input[type="text"] {
+        width: 300px;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+    button {
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+    #progress-bar {
+        width: 300px;
+        height: 20px;
+        background-color: #ddd;
+        margin-bottom: 10px;
+    }
+    #progress {
+        width: 0;
+        height: 100%;
+        background-color: green;
+    }
+</style>
+</head>
+<body>
+    <h1>KR_BANKING to TraderPlus Converter</h1>
+    <label for="ultima-path">Path to KR_BANKING:</label>
+    <input type="text" id="ultima-path">
+    <button id="select-ultima-path">Select</button>
+    <br>
+    <label for="save-folder">Save folder:</label>
+    <input type="text" id="save-folder">
+    <button id="select-save-folder">Select</button>
+    <br>
+    <button id="convert">Convert</button>
+    <div id="progress-bar">
+        <div id="progress"></div>
+    </div>
+    <p id="info"></p>
+
+    <script>
+        document.getElementById("select-ultima-path").addEventListener("click", function() {
+            window.chooseFileSystemEntries({type: "open-directory"}).then(entry => {
+                document.getElementById("ultima-path").value = entry.name;
+            });
+        });
+
+        document.getElementById("select-save-folder").addEventListener("click", function() {
+            window.chooseFileSystemEntries({type: "open-directory"}).then(entry => {
+                document.getElementById("save-folder").value = entry.name;
+            });
+        });
+
+        document.getElementById("convert").addEventListener("click", function() {
+            let ultimaPath = document.getElementById("ultima-path").value;
+            let saveFolder = document.getElementById("save-folder").value;
+
+            if (!ultimaPath || !saveFolder) {
+                alert("Please select paths for both KR_BANKING and save folder.");
+                return;
+            }
+
+            const filesList = fs.readdirSync(ultimaPath).filter(file => file.endsWith('.json'));
+            const filesCount = filesList.length;
+
+            for (let i = 0; i < filesCount; i++) {
+                const fileName = filesList[i];
+                const filePath = path.join(ultimaPath, fileName);
+                const newFilePath = path.join(saveFolder, `Account_${fileName.slice(9)}`);
+
+                try {
+                    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                    const { m_Steam64ID, m_PlayerName, m_OwnedCurrency } = data;
+
+                    const new_data = {
+                        Version: '2.5',
+                        SteamID64: m_Steam64ID,
+                        Name: m_PlayerName,
+                        MoneyAmount: m_OwnedCurrency,
+                        MaxAmount: 100000000,
+                        Licences: [],
+                        Insurances: {}
+                    };
+
+                    fs.writeFileSync(newFilePath, JSON.stringify(new_data, null, 4));
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    document.getElementById("info").textContent = 'Error occurred during conversion';
+                    return;
+                }
+
+                // Отображаем информацию о прогрессе
+                const progress = Math.round((i + 1) / filesCount * 100);
+                document.getElementById("progress").style.width = `${progress}%`;
+            }
+
+            document.getElementById("info").textContent = 'Conversion completed';
+        });
+    </script>
+</body>
+</html>

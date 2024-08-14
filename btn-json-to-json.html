@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Json DayZ Editor to CacheSpawner converter</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1C1C1C;
+        color: white;
+        padding: 20px;
+    }
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #333;
+        color: white;
+        border: none;
+        resize: none;
+    }
+    button {
+        background-color: #222;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .tab {
+        display: none;
+    }
+</style>
+</head>
+<body>
+<h2>Json DayZ Editor to CacheSpawner converter</h2>
+<textarea id="inputData" rows="20" placeholder="Paste input data here"></textarea>
+<button onclick="convertData()">Convert</button>
+<textarea id="outputData" rows="20" placeholder="Converted data will appear here"></textarea>
+
+<script>
+function convertData() {
+    try {
+        var inputText = document.getElementById('inputData').value.trim();
+        var inputData = JSON.parse(inputText);
+        var outputData = {
+            "DebugLogs_enabled": 0,
+            "Enable_ChatMessageWhenSpawned": 0,
+            "ChatMessageWhenSpawned": "",
+            "CacheList": []
+        };
+
+        var cacheMap = {}; // для отслеживания одинаковых класснеймов
+
+        inputData.m_SceneObjects.forEach(function(item) {
+            var className = item.param1;
+            if (!cacheMap[className]) { // Если такой класснейм еще не встречался
+                var cacheItem = {
+                    "Classname": className,
+                    "Min_Caches_In_Map": 0,
+                    "Max_Caches_In_Map": 0,
+                    "Coords": [],
+                    "Time_Wait_Spawn": 0,
+                    "Time_Respawn": 0,
+                    "ItemsInside": [{
+                      "ItemCharacteristic": {
+                        "Classname": "BandageDressing",
+                        "Chance_Spawn": 80,
+                        "Damaged": 0.0,
+                        "Weet": 0,
+                        "Themperature": 0,
+                        "IsStacked": 0,
+                        "Count_Stack": 0,
+                        "IsMeat": 0,
+                        "MeatFoodStage": ""
+                      },
+                      "ItemsAttached": []
+                    }]
+                };
+                outputData.CacheList.push(cacheItem);
+                cacheMap[className] = cacheItem; // Добавляем в отслеживание
+            }
+            cacheMap[className].Coords.push({
+                "Position": item.param2,
+                "Orientation": item.param3
+            });
+        });
+
+        // Задаем количество для каждого класса
+        outputData.CacheList.forEach(function(cacheItem) {
+            cacheItem.Min_Caches_In_Map = 0;
+            cacheItem.Max_Caches_In_Map = cacheItem.Coords.length;
+        });
+
+        document.getElementById('outputData').value = JSON.stringify(outputData, null, 2);
+    } catch (error) {
+        document.getElementById('outputData').value = "Error: " + error.message;
+    }
+}
+</script>
+</body>
+</html>

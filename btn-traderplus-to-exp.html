@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TraderPlus to Expansion Converter</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1C1C1C;
+        color: white;
+        padding: 20px;
+    }
+     textarea {
+        width: 100%;
+        height: 35vh;
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #333;
+        color: white;
+        border: none;
+        resize: none;
+    }
+    button {
+        background-color: #222;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+    <h1>TraderPlus to Expansion Converter</h1>
+    <textarea id="inputText" placeholder="Введите TraderPlus конфиг сюда..."></textarea>
+	<textarea id="outputText" placeholder="Converted data will appear here..." readonly></textarea>
+    <button onclick="reverseConvert()">Convert</button>
+    <script>
+    function reverseConvert() {
+		var inputText = document.getElementById("inputText").value;
+
+		if (!inputText.trim()) {
+			alert("Input field is empty");
+			return;
+		}
+
+		try {
+			var data = JSON.parse(inputText);
+		} catch (error) {
+			alert("Invalid JSON format");
+			return;
+		}
+
+		var category_name = data.CategoryName || "";
+		var products = data.Products || [];
+
+		var items = [];
+
+		for (var i = 0; i < products.length; i++) {
+			var productInfo = products[i].split(',');
+			var class_name = productInfo[0];
+			var max_price = parseInt(productInfo[4]);
+			var min_price = max_price; // Set MinPriceThreshold equal to MaxPriceThreshold
+			var sell_price_percent;
+
+			// Используем parseInt для преобразования строки в число
+			var buy_price = parseInt(productInfo[4]);
+			var sell_price = parseInt(productInfo[5]);
+
+			// Если продажа возможна, вычисляем sell_price_percent
+			if (sell_price >= 0) {
+				sell_price_percent = Math.round((sell_price / buy_price) * 100);
+			} else {
+				sell_price_percent = -1;
+			}
+
+			var max_stock_threshold = 10000;
+			var min_stock_threshold = 10000;
+			var spawn_attachments = [];
+			var variants = [];
+
+			var item = {
+				"ClassName": class_name,
+				"MaxPriceThreshold": max_price,
+				"MinPriceThreshold": min_price,
+				"SellPricePercent": sell_price_percent,
+				"MaxStockThreshold": max_stock_threshold,
+				"MinStockThreshold": min_stock_threshold,
+				"SpawnAttachments": spawn_attachments,
+				"Variants": variants
+			};
+
+			items.push(item);
+		}
+
+		var output_data = {
+			"m_Version": 12,
+			"DisplayName": category_name,
+			"Icon": "Deliver",
+			"Color": "FBFCFEFF",
+			"IsExchange": 0,
+			"InitStockPercent": 75.0,
+			"Items": items
+		};
+
+		var outputText = JSON.stringify(output_data, null, 4);
+
+		document.getElementById("outputText").value = outputText;
+	}
+
+    </script>
+</body>
+</html>

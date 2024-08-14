@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DayZ Trader Config Converter</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1C1C1C;
+        color: white;
+        padding: 20px;
+    }
+    button {
+        background-color: #222;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+    textarea {
+        width: 100%;
+        height: 50vh;
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #333;
+        color: white;
+        border: none;
+        resize: none;
+    }
+</style>
+</head>
+<body>
+    <h1>Jones to EXP Config Converter</h1>
+    <textarea id="inputText" placeholder="Enter Dr.Jones config here..."></textarea>
+    <button id="convertButton">Convert</button>
+    <textarea id="outputText" placeholder="Converted config will appear here..."></textarea>
+
+    <script>
+        const convertButton = document.getElementById("convertButton");
+        const inputText = document.getElementById("inputText");
+        const outputText = document.getElementById("outputText");
+
+        convertButton.addEventListener("click", convertConfig);
+
+        function convertConfig() {
+            const lines = inputText.value.split("\n");
+            const config = {
+                "m_Version": 12,
+                "DisplayName": "Syndicate Guild",
+                "Icon": "Deliver",
+                "Color": "FBFCFEFF",
+                "IsExchange": 0,
+                "InitStockPercent": 75.0,
+                "Items": []
+            };
+
+            lines.slice(1).forEach(line => {
+                const parts = line.trim().split(",");
+                const className = parts[0].trim();
+                const maxPriceThreshold = parseInt(parts[2].trim());
+                const minPriceThreshold = parseInt(parts[3].trim());
+                
+                const sellPrice = parseInt(parts[parts.length - 1].trim());
+                const buyPrice = parseInt(parts[parts.length - 2].trim());
+                const sellPricePercent = Math.round((sellPrice / buyPrice) * 100); 
+
+                const item = {
+                    "ClassName": className,
+                    "MaxPriceThreshold": maxPriceThreshold,
+                    "MinPriceThreshold": maxPriceThreshold,
+                    "SellPricePercent": sellPricePercent,
+                    "MaxStockThreshold": 99,
+                    "MinStockThreshold": 1,
+                    "SpawnAttachments": [],
+                    "Variants": []
+                };
+
+                config["Items"].push(item);
+            });
+
+            const formattedText = JSON.stringify(config, null, 4);
+            outputText.value = formattedText;
+            localStorage.setItem("convertedConfig", formattedText);
+        }
+    </script>
+</body>
+</html>

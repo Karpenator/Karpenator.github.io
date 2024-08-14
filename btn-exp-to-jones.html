@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DayZ EXP to Jones Trader Config Converter</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1C1C1C;
+        color: white;
+        padding: 20px;
+    }
+    button {
+        font-size: 14px;
+        padding: 10px 20px;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+    textarea {
+        width: 100%;
+        height: 70vh;
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #333;
+        color: white;
+        border: none;
+        resize: none;
+    }
+</style>
+</head>
+<body>
+    <h1>DayZ EXP to Jones Trader Config Converter</h1>
+    <button id="load-button">Load Config</button>
+    <button id="convert-button">Convert</button>
+    <br>
+    <textarea id="left-text" placeholder="Введите EXP конфиг сюда..."></textarea>
+    <script>
+        document.getElementById("load-button").addEventListener("click", function() {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(event) {
+                let file = event.target.files[0];
+                let reader = new FileReader();
+                reader.onload = function() {
+                    let config = JSON.parse(reader.result);
+                    document.getElementById("left-text").value = JSON.stringify(config, null, 4);
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        });
+
+        document.getElementById("convert-button").addEventListener("click", function() {
+            let config = JSON.parse(document.getElementById("left-text").value);
+            let convertedValues = config.Items.map(item => item.ClassName);
+            let convertedText = "<Category> Escape From Tarkov\n" + convertedValues.map((value, index) =>
+                `${value}, *, ${config.Items[index].MaxPriceThreshold}, ${config.Items[index].MinPriceThreshold}`
+            ).join("\n");
+            let blob = new Blob([convertedText], { type: 'text/plain' });
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'converted_config.txt';
+            link.click();
+        });
+    </script>
+</body>
+</html>

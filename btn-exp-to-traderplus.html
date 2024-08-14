@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DayZ Exp to TraderPlus Config Converter</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1C1C1C;
+        color: white;
+        padding: 20px;
+    }
+    textarea {
+        width: 100%;
+        height: 70vh;
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #333;
+        color: white;
+        border: none;
+        resize: none;
+    }
+    button {
+        background-color: #222;
+        color: #fff;
+        border: 2px groove;
+        font-size: 14px;
+        padding: 10px 20px;
+        margin-top: 20px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+	<h1>DayZ Exp to TraderPlus Config Converter</h1>
+    <button id="convert-button">Convert</button>
+    <textarea id="text-widget" placeholder="Введите EXP конфиг сюда..."></textarea>
+
+    <script>
+        document.getElementById("convert-button").addEventListener("click", function() {
+            let inputStr = document.getElementById("text-widget").value.trim();
+            if (inputStr === "") {
+                alert("Поле ввода пусто");
+                return;
+            }
+            let inputData;
+            try {
+                inputData = JSON.parse(inputStr);
+            } catch (error) {
+                alert("Некорректный JSON");
+                return;
+            }
+            let displayName = inputData.DisplayName || "";
+            let items = inputData.Items || [];
+            let products = items.map(item => {
+                let className = item.ClassName;
+                let maxPrice = item.MaxPriceThreshold;
+                let sellPricePercent = item.SellPricePercent * 0.01;
+                let minPrice = Math.floor(maxPrice * sellPricePercent);
+                return `${className},1,-1,1,${maxPrice},${minPrice}`;
+            });
+            let outputData = {
+                CategoryName: displayName,
+                Products: products
+            };
+            let outputStr = JSON.stringify(outputData, null, 4);
+            document.getElementById("text-widget").value = outputStr;
+        });
+    </script>
+</body>
+</html>
