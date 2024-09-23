@@ -84,6 +84,8 @@
         <button id="btn-traderplus-to-exp">TraderPlus to Exp</button>
         <button id="btn-traderplus-to-jones">TraderPlus to Jones</button>
         <button id="btn-json-to-json">Json DayZ Editor to CacheSpawner converter</button>
+        <button id="btn-extract-classnames-from-exp">Extract classnames from Exp Trader</button>
+        <button id="btn-generate-sls-from-classnames">Convert Classnames to SLS</button>
     </div>
     <div id="bottom-buttons" style="display: flex; justify-content: center; margin-top: 30px; position: fixed; bottom: 0; width: 100%;">
 		<button id="btn-discord">Дискорд</button>
@@ -136,6 +138,14 @@
         document.getElementById("btn-json-to-json").addEventListener("click", function() {
             runProgram("btn-json-to-json.html");
         });
+		
+        document.getElementById("btn-extract-classnames-from-exp").addEventListener("click", function() {
+            runProgram("btn-extract-classnames-from-exp.html");
+        });
+        document.getElementById("btn-generate-sls-from-classnames").addEventListener("click", function() {
+            runProgram("btn-generate-sls-from-classnames.html");
+        });
+		
         document.getElementById("btn-discord").addEventListener("click", function() {
             window.open("https://discord.gg/Mj7tFHe8Nz", "_blank");
         });

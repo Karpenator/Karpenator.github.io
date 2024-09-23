@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фильтрация товаров по цене</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        textarea, input {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        pre {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Фильтрация товаров по цене</h1>
+    
+    <label for="jsonInput">Введите JSON:</label>
+    <textarea id="jsonInput" rows="10">
+[ 
+    {
+        "ClassName": "EFT_Accum",
+        "MaxPriceThreshold": 100,
+        "MinPriceThreshold": 50,
+        "SellPricePercent": -1,
+        "MaxStockThreshold": 10000,
+        "MinStockThreshold": 1,
+        "SpawnAttachments": [],
+        "Variants": []
+    },
+    {
+        "ClassName": "SG_BTC_Full",
+        "MaxPriceThreshold": 10000,
+        "MinPriceThreshold": 5000,
+        "SellPricePercent": -1,
+        "MaxStockThreshold": 10000,
+        "MinStockThreshold": 1,
+        "SpawnAttachments": [],
+        "Variants": []
+    },
+    {
+        "ClassName": "EFT_Antiinsect",
+        "MaxPriceThreshold": 100,
+        "MinPriceThreshold": 50,
+        "SellPricePercent": -1,
+        "MaxStockThreshold": 10000,
+        "MinStockThreshold": 1,
+        "SpawnAttachments": [],
+        "Variants": []
+    }
+]
+    </textarea>
+    
+    <label for="maxPrice">Введите максимальную цену для фильтрации:</label>
+    <input type="number" id="maxPrice" placeholder="100" value="100">
+
+    <button onclick="filterItems()">Фильтровать</button>
+
+    <h2>Результат:</h2>
+    <pre id="result"></pre>
+
+    <script>
+        function filterItems() {
+            // Получаем JSON и максимальную цену
+            const jsonInput = document.getElementById('jsonInput').value;
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value);
+
+            try {
+                // Парсим JSON
+                const items = JSON.parse(jsonInput);
+
+                // Фильтруем по MaxPriceThreshold
+                const filteredItems = items.filter(item => item.MaxPriceThreshold <= maxPrice);
+
+                // Оставляем только ClassName и форматируем результат
+                const result = filteredItems.map(item => item.ClassName).join('\n');
+
+                // Выводим результат
+                document.getElementById('result').textContent = result;
+            } catch (error) {
+                document.getElementById('result').textContent = 'Ошибка при парсинге JSON!';
+            }
+        }
+    </script>
+
+</body>
+</html>

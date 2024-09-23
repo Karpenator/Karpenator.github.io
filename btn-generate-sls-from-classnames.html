@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор JSON</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        textarea, input {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        pre {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            white-space: pre-wrap; /* Allows for wrapping of long lines */
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Генератор JSON</h1>
+    
+    <label for="itemNames">Введите названия предметов:</label>
+    <textarea id="itemNames" rows="10">
+SurgicalKit
+Stethoscope
+MedContainerSmall
+MedContainerMedium
+MedContainerLarge
+    </textarea>
+    
+    <label for="chance">Введите значение chance:</label>
+    <input type="number" step="0.01" id="chance" placeholder="0.53" value="0.53">
+
+    <button onclick="generateJSON()">Генерировать</button>
+
+    <h2>Результат:</h2>
+    <pre id="result"></pre>
+
+    <div id="error" class="error"></div>
+
+    <script>
+        function generateJSON() {
+            // Получаем список названий предметов и значение chance
+            const itemNamesText = document.getElementById('itemNames').value.trim();
+            const chance = parseFloat(document.getElementById('chance').value);
+
+            // Очистка предыдущих ошибок
+            document.getElementById('error').textContent = '';
+
+            try {
+                // Преобразуем текст в массив строк
+                const itemNames = itemNamesText.split('\n').map(name => name.trim());
+
+                // Проверка на пустое значение
+                if (itemNames.some(name => name === '')) {
+                    throw new Error('Некоторые названия предметов пусты.');
+                }
+
+                // Генерируем JSON
+                const jsonResult = itemNames.map(name => ({
+                    itemName: name,
+                    chance: chance,
+                    quantity: -2
+                }));
+
+                // Выводим результат
+                document.getElementById('result').textContent = JSON.stringify(jsonResult, null, 4);
+            } catch (error) {
+                document.getElementById('error').textContent = 'Ошибка: ' + error.message;
+            }
+        }
+    </script>
+
+</body>
+</html>
