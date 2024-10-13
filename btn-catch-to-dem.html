@@ -107,7 +107,7 @@
                         const characteristic = item.ItemCharacteristic;
                         return {
                             "name": characteristic.Classname,
-                            "health01": characteristic.Damaged,
+                            "health01": 1.0,
                             "quantity01": 1,
                             "minAmount": 1,
                             "maxAmount": characteristic.Count_Stack > 1 ? characteristic.Count_Stack : 1,
