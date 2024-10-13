@@ -86,6 +86,9 @@
         <button id="btn-json-to-json">Json DayZ Editor to CacheSpawner converter</button>
         <button id="btn-extract-classnames-from-exp">Extract classnames from Exp Trader</button>
         <button id="btn-generate-sls-from-classnames">Convert Classnames to SLS</button>
+        <button id="btn-zakat-to-dem-spawner">Convert Zakat Spawner to Demands Spawner</button>
+        <button id="btn-catch-to-dem">Convert CacheSpawner to Demands Spawner</button>
+        <button id="btn-zakat-radiation-to-syberia-radiation">Convert Zakat Radiation to Syberia</button>
     </div>
     <div id="bottom-buttons" style="display: flex; justify-content: center; margin-top: 30px; position: fixed; bottom: 0; width: 100%;">
 		<button id="btn-discord">Дискорд</button>
@@ -142,8 +145,21 @@
         document.getElementById("btn-extract-classnames-from-exp").addEventListener("click", function() {
             runProgram("btn-extract-classnames-from-exp.html");
         });
+		
         document.getElementById("btn-generate-sls-from-classnames").addEventListener("click", function() {
             runProgram("btn-generate-sls-from-classnames.html");
+        });
+		
+        document.getElementById("btn-zakat-to-dem-spawner").addEventListener("click", function() {
+            runProgram("btn-zakat-to-dem-spawner.html");
+        });
+		
+        document.getElementById("btn-catch-to-dem").addEventListener("click", function() {
+            runProgram("btn-catch-to-dem.html");
+        });
+		
+        document.getElementById("btn-zakat-radiation-to-syberia-radiation").addEventListener("click", function() {
+            runProgram("btn-zakat-radiation-to-syberia-radiation.html");
         });
 		
         document.getElementById("btn-discord").addEventListener("click", function() {

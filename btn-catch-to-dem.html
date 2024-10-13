@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CacheSpawner to Demands Spawner Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1C1C1C;
+            color: white;
+            padding: 20px;
+        }
+        button {
+            background-color: #222;
+            color: #76FF03;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 50vh;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            resize: none;
+        }
+        .output {
+            white-space: pre-wrap;
+            background-color: #333;
+            padding: 10px;
+            border: none;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>JSON Converter</h2>
+
+<textarea id="inputJson" placeholder='Paste your JSON here... Example:
+
+{
+  "Classname": "ShronWoodBox1",
+  "Min_Caches_In_Map": 100,
+  "Max_Caches_In_Map": 629,
+  "Coords": [
+    {
+      "Position": [3050.46, 107.51, 9309.95],
+      "Orientation": [-170.99, 0, 0]
+    }
+  ],
+  "Time_Wait_Spawn": 15,
+  "Time_Respawn": 180,
+  "ItemsInside": [
+    {
+      "ItemCharacteristic": {
+        "Classname": "BandageDressing",
+        "Chance_Spawn": 10,
+        "Damaged": 0,
+        "Weet": 0,
+        "Themperature": 0,
+        "IsStacked": 0,
+        "Count_Stack": 0
+      }
+    }
+  ]
+}'>
+</textarea>
+<button onclick="convertJson()">Convert</button>
+
+<h3>Formatted Output</h3>
+<div id="output" class="output"></div>
+
+<script>
+    function convertJson() {
+        try {
+            const inputJson = JSON.parse(document.getElementById('inputJson').value);
+            
+            const output = {
+                "_comments": "Коментарий для этой позиции", 
+                "minSelectedPos": inputJson.Min_Caches_In_Map || 1,
+                "maxSelectedPos": inputJson.Max_Caches_In_Map || 4,
+                "positions": inputJson.Coords.map(coord => {
+                    const position = coord.Position.join(" ");
+                    const orientation = coord.Orientation.join(" ");
+                    return `${position}|${orientation}|0.5`;
+                }),
+                "byTrigger": 1, 
+                "triggerRadius": 100, 
+                "triggerHeight": 100,  
+                "triggerNegativeHeight": -1,  
+                "triggeringTimes": "-1", 
+                "storag": {
+                    "names": [inputJson.Classname],
+                    "deletable": 1, 
+                    "health01": 1.0, 
+                    "chance": 1, 
+                    "spawningCountMin": 1,
+                    "spawningCountMax": 1, 
+                    "items": inputJson.ItemsInside.map(item => {
+                        const characteristic = item.ItemCharacteristic;
+                        return {
+                            "name": characteristic.Classname,
+                            "health01": characteristic.Damaged,
+                            "quantity01": 1,
+                            "minAmount": 1,
+                            "maxAmount": characteristic.Count_Stack > 1 ? characteristic.Count_Stack : 1,
+                            "chance": characteristic.Chance_Spawn / 100,
+                            "spawningCountMin": 1,
+                            "spawningCountMax": 1,
+                            "attachments": item.ItemsAttached.map(attachment => ({
+                                "name": attachment.Classname || "Unknown",
+                                "health01": attachment.Damaged || 1,
+                                "chance": attachment.Chance_Spawn || 1
+                            }))
+                        };
+                    })
+                }
+            };
+
+            document.getElementById('output').textContent = JSON.stringify(output, null, 4);
+        } catch (error) {
+            document.getElementById('output').textContent = 'Invalid JSON input.';
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mutant Zakat Spawner to Demands Spawner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1C1C1C;
+            color: white;
+            padding: 20px;
+        }
+        button {
+            background-color: #222;
+            color: #76FF03;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 50vh;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            resize: none;
+        }
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            margin-right: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+        }
+        .output {
+            white-space: pre-wrap;
+            background-color: #333;
+            padding: 10px;
+            border: none;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Mutant JSON Converter</h2>
+
+<label for="percentage">Enter Radius Percentage:</label>
+<input type="number" id="percentage" value="100" min="0" max="100">%
+
+<br><br>
+<textarea id="inputJson" placeholder='Paste your JSON here... Example:
+
+{
+    "NameToArrMutants": "Spawns10",
+    "MutLine": [
+        {
+            "ClassNames": "KARP_Mutant_Izlom",
+            "Positions": [1816.48, 111.00, 18757.54],
+            "Count": 5,
+            "RespawnTime": 2000,
+            "Radius": 200
+        },
+        {
+            "ClassNames": "KARP_Mutant_Zombie2",
+            "Positions": [1905.04, 111.92, 18780.30],
+            "Count": 5,
+            "RespawnTime": 2000,
+            "Radius": 200
+        }
+    ]
+}'></textarea>
+<button onclick="convertJson()">Convert</button>
+
+<h3>Formatted Output</h3>
+<div id="output" class="output"></div>
+
+<script>
+    function convertJson() {
+        try {
+            const inputJson = JSON.parse(document.getElementById('inputJson').value);
+            const percentage = parseFloat(document.getElementById('percentage').value) / 100;
+            
+            const combined = {};
+
+            inputJson.MutLine.forEach(mutant => {
+                const positionString = mutant.Positions.join(" ");
+                const radiusPercentage = Math.round(mutant.Radius * percentage);
+                
+                const existing = combined[positionString];
+                
+                if (existing) {
+                    const animal = existing.animals.find(a => a.names.includes(mutant.ClassNames));
+                    if (animal) {
+                        animal.maxCount += mutant.Count;
+                    } else {
+                        existing.animals.push({
+                            "names": [mutant.ClassNames],
+                            "health01": 1.0,
+                            "spawningCountMin": 0,
+                            "spawningCountMax": 0,
+                            "attachments": [],
+                            "minCount": Math.floor((mutant.Count / 2)+1),
+                            "maxCount": mutant.Count,
+                            "chance": 1.0
+                        });
+                    }
+                } else {
+                    combined[positionString] = {
+                        "_comments": "Коментарий для этой позиции",
+                        "minSelectedPos": 1,
+                        "maxSelectedPos": 1,
+                        "positions": `${positionString}|1|${radiusPercentage}`,
+                        "byTrigger": 1,
+                        "triggerRadius": mutant.Radius,
+                        "triggerHeight": 50,
+                        "triggerNegativeHeight": -1,
+                        "triggerReloadTime": Math.round(mutant.RespawnTime / 60), 
+                        "triggeringTimes": "-1",
+                        "multiplierByPlayers": 1,
+                        "spawningCountMin": 1,
+                        "spawningCountMax": 1,
+                        "animals": [
+                            {
+                                "names": [mutant.ClassNames],
+                                "health01": 1.0,
+                                "spawningCountMin": 0,
+                                "spawningCountMax": 0,
+                                "attachments": [],
+                                "minCount": Math.floor((mutant.Count / 2)+1),
+                                "maxCount": mutant.Count,
+                                "chance": 1.0
+                            }
+                        ]
+                    };
+                }
+            });
+
+            let outputText = '';
+            const entries = Object.values(combined);
+            entries.forEach((item, index) => {
+                outputText += JSON.stringify(item, null, 4);
+                if (index < entries.length - 1) {
+                    outputText += ',\n';
+                }
+            });
+
+            document.getElementById('output').textContent = outputText;
+        } catch (error) {
+            document.getElementById('output').textContent = 'Invalid JSON input.';
+        }
+    }
+</script>
+
+</body>
+</html>
