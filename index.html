@@ -89,6 +89,7 @@
         <button id="btn-zakat-to-dem-spawner">Convert Zakat Spawner to Demands Spawner</button>
         <button id="btn-catch-to-dem">Convert CacheSpawner to Demands Spawner</button>
         <button id="btn-zakat-radiation-to-syberia-radiation">Convert Zakat Radiation to Syberia</button>
+        <button id="btn-zakat-radiation-to-dem-radiation">Convert Zakat Radiation to Demands Radiation</button>
     </div>
     <div id="bottom-buttons" style="display: flex; justify-content: center; margin-top: 30px; position: fixed; bottom: 0; width: 100%;">
 		<button id="btn-discord">Дискорд</button>
@@ -162,6 +163,9 @@
             runProgram("btn-zakat-radiation-to-syberia-radiation.html");
         });
 		
+        document.getElementById("btn-zakat-radiation-to-dem-radiation").addEventListener("click", function() {
+            runProgram("btn-zakat-radiation-to-dem-radiation.html");
+        });
         document.getElementById("btn-discord").addEventListener("click", function() {
             window.open("https://discord.gg/Mj7tFHe8Nz", "_blank");
         });
