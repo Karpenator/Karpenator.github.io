@@ -82,80 +82,51 @@
 <div id="output" class="output"></div>
 
 <script>
-    function convertJson() {
-        try {
-            const inputJson = JSON.parse(document.getElementById('inputJson').value);
-            const percentage = parseFloat(document.getElementById('percentage').value) / 100;
-            
-            const combined = {};
+function convertJson() {
+    try {
+        const inputJson = JSON.parse(document.getElementById('inputJson').value);
+        const percentage = parseFloat(document.getElementById('percentage').value) / 100;
 
-            inputJson.MutLine.forEach(mutant => {
-                const positionString = mutant.Positions.join(" ");
-                const radiusPercentage = Math.round(mutant.Radius * percentage);
-                
-                const existing = combined[positionString];
-                
-                if (existing) {
-                    const animal = existing.animals.find(a => a.names.includes(mutant.ClassNames));
-                    if (animal) {
-                        animal.maxCount += mutant.Count;
-                    } else {
-                        existing.animals.push({
-                            "names": [mutant.ClassNames],
-                            "health01": 1.0,
-                            "spawningCountMin": 0,
-                            "spawningCountMax": 0,
-                            "attachments": [],
-                            "minCount": Math.floor((mutant.Count / 2)+1),
-                            "maxCount": mutant.Count,
-                            "chance": 1.0
-                        });
-                    }
-                } else {
-                    combined[positionString] = {
-                        "_comments": "Коментарий для этой позиции",
-                        "minSelectedPos": 1,
-                        "maxSelectedPos": 1,
-                        "positions": `${positionString}|1|${radiusPercentage}`,
-                        "byTrigger": 1,
-                        "triggerRadius": mutant.Radius,
-                        "triggerHeight": 50,
-                        "triggerNegativeHeight": -1,
-                        "triggerReloadTime": Math.round(mutant.RespawnTime / 60), 
-                        "triggeringTimes": "-1",
-                        "multiplierByPlayers": 1,
-                        "spawningCountMin": 1,
-                        "spawningCountMax": 1,
-                        "animals": [
-                            {
-                                "names": [mutant.ClassNames],
-                                "health01": 1.0,
-                                "spawningCountMin": 0,
-                                "spawningCountMax": 0,
-                                "attachments": [],
-                                "minCount": Math.floor((mutant.Count / 2)+1),
-                                "maxCount": mutant.Count,
-                                "chance": 1.0
-                            }
-                        ]
-                    };
-                }
+        const combined = {
+            "_comments": "Точка 1",
+            "minSelectedPos": inputJson.MutLine.length,
+            "maxSelectedPos": inputJson.MutLine.length,
+            "positions": [],
+            "byTrigger": 1,
+            "triggerRadius": 100,
+            "triggerHeight": 600,
+            "triggerNegativeHeight": -1,
+            "triggerReloadTime": 900,
+            "triggeringTimes": "-1",
+            "multiplierByPlayers": 0,
+            "spawningCountMin": 1,
+            "spawningCountMax": 1,
+            "animals": []
+        };
+
+        inputJson.MutLine.forEach(mutant => {
+            const positionString = `${mutant.Positions.join(" ")}|1|${Math.round(mutant.Radius * percentage)}`;
+            combined.positions.push(positionString);
+
+            combined.animals.push({
+                "names": [mutant.ClassNames],
+                "health01": 1,
+                "minCount": Math.floor((mutant.Count / 2) + 1),
+                "maxCount": mutant.Count,
+                "chance": 1,
+                "spawningCountMin": 1,
+                "spawningCountMax": 1,
+                "attachments": []
             });
+        });
 
-            let outputText = '';
-            const entries = Object.values(combined);
-            entries.forEach((item, index) => {
-                outputText += JSON.stringify(item, null, 4);
-                if (index < entries.length - 1) {
-                    outputText += ',\n';
-                }
-            });
+        const outputText = JSON.stringify(combined, null, 4);
+        document.getElementById('output').textContent = outputText;
 
-            document.getElementById('output').textContent = outputText;
-        } catch (error) {
-            document.getElementById('output').textContent = 'Invalid JSON input.';
-        }
+    } catch (error) {
+        document.getElementById('output').textContent = 'Invalid JSON input.';
     }
+}
 </script>
 
 </body>
