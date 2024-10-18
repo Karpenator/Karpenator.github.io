@@ -58,23 +58,26 @@
 <textarea id="inputJson" placeholder='Paste your JSON here... Example:
 
 {
-    "NameToArrMutants": "Spawns10",
-    "MutLine": [
-        {
-            "ClassNames": "KARP_Mutant_Izlom",
-            "Positions": [1816.48, 111.00, 18757.54],
-            "Count": 5,
-            "RespawnTime": 2000,
-            "Radius": 200
-        },
-        {
-            "ClassNames": "KARP_Mutant_Zombie2",
-            "Positions": [1905.04, 111.92, 18780.30],
-            "Count": 5,
-            "RespawnTime": 2000,
-            "Radius": 200
-        }
-    ]
+    "ClassNames": "KARP_Mutant_Burer",
+    "Positions": [
+        3165.486083984375,
+        108.12999725341797,
+        12614.9296875
+    ],
+    "Count": 5,
+    "RespawnTime": 2000,
+    "Radius": 100
+},
+{
+    "ClassNames": "KARP_Mutant_Snork",
+    "Positions": [
+        3177.176513671875,
+        113.27609252929688,
+        12588.3154296875
+    ],
+    "Count": 5,
+    "RespawnTime": 2000,
+    "Radius": 100
 }'></textarea>
 <button onclick="convertJson()">Convert</button>
 
@@ -84,13 +87,16 @@
 <script>
 function convertJson() {
     try {
-        const inputJson = JSON.parse(document.getElementById('inputJson').value);
+        const inputJson = JSON.parse(`[${document.getElementById('inputJson').value}]`);
         const percentage = parseFloat(document.getElementById('percentage').value) / 100;
+
+        let totalMinCount = 0;
+        let totalMaxCount = 0;
 
         const combined = {
             "_comments": "Точка 1",
-            "minSelectedPos": inputJson.MutLine.length,
-            "maxSelectedPos": inputJson.MutLine.length,
+            "minSelectedPos": inputJson.length,
+            "maxSelectedPos": inputJson.length,
             "positions": [],
             "byTrigger": 1,
             "triggerRadius": 100,
@@ -99,26 +105,37 @@ function convertJson() {
             "triggerReloadTime": 900,
             "triggeringTimes": "-1",
             "multiplierByPlayers": 0,
-            "spawningCountMin": 1,
-            "spawningCountMax": 1,
+            "spawningCountMin": 0,
+            "spawningCountMax": 0,
             "animals": []
         };
 
-        inputJson.MutLine.forEach(mutant => {
+        inputJson.forEach(mutant => {
+            mutant.Positions[1] = -1;
+
             const positionString = `${mutant.Positions.join(" ")}|1|${Math.round(mutant.Radius * percentage)}`;
             combined.positions.push(positionString);
+
+            const minCount = Math.floor((mutant.Count / 2) + 1);
+            const maxCount = mutant.Count;
 
             combined.animals.push({
                 "names": [mutant.ClassNames],
                 "health01": 1,
-                "minCount": Math.floor((mutant.Count / 2) + 1),
-                "maxCount": mutant.Count,
+                "minCount": minCount,
+                "maxCount": maxCount,
                 "chance": 1,
                 "spawningCountMin": 1,
                 "spawningCountMax": 1,
                 "attachments": []
             });
+
+            totalMinCount += minCount;
+            totalMaxCount += maxCount;
         });
+
+        combined.spawningCountMin = totalMinCount;
+        combined.spawningCountMax = totalMaxCount;
 
         const outputText = JSON.stringify(combined, null, 4);
         document.getElementById('output').textContent = outputText;
