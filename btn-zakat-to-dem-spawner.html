@@ -37,14 +37,6 @@
             color: white;
             border: none;
         }
-        .output {
-            white-space: pre-wrap;
-            background-color: #333;
-            padding: 10px;
-            border: none;
-            color: white;
-            margin-top: 20px;
-        }
     </style>
 </head>
 <body>
@@ -82,7 +74,7 @@
 <button onclick="convertJson()">Convert</button>
 
 <h3>Formatted Output</h3>
-<div id="output" class="output"></div>
+<textarea id="output" readonly></textarea>
 
 <script>
 function convertJson() {
@@ -138,10 +130,10 @@ function convertJson() {
         combined.spawningCountMax = totalMaxCount;
 
         const outputText = JSON.stringify(combined, null, 4);
-        document.getElementById('output').textContent = outputText;
+        document.getElementById('output').value = outputText;
 
     } catch (error) {
-        document.getElementById('output').textContent = 'Invalid JSON input.';
+        document.getElementById('output').value = 'Invalid JSON input.';
     }
 }
 </script>
