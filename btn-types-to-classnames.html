@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Types to classnames converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1C1C1C;
+            color: white;
+            padding: 20px;
+        }
+        button {
+            background-color: #222;
+            color: #76FF03;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 50vh;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            resize: none;
+        }
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            margin-right: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+        }
+        .output {
+            white-space: pre-wrap;
+            background-color: #333;
+            padding: 10px;
+            border: none;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Types to classnames converter</h2>
+
+<br><br>
+<textarea id="inputJson" placeholder="Paste your XML here..."></textarea>
+<button onclick="convertXml()">Extract ClassNames from XML</button>
+
+<h3>Formatted Output</h3>
+<div id="output" class="output"></div>
+
+<script>
+    function convertJson() {
+        // Existing JSON conversion function remains the same
+    }
+
+    function convertXml() {
+        try {
+            const parser = new DOMParser();
+            const inputXml = document.getElementById('inputJson').value;
+            const xmlDoc = parser.parseFromString(inputXml, "text/xml");
+            
+            const typeElements = xmlDoc.getElementsByTagName("type");
+            const classNames = [];
+
+            for (let i = 0; i < typeElements.length; i++) {
+                const typeElement = typeElements[i];
+                const nameAttr = typeElement.getAttribute("name");
+                if (nameAttr) {
+                    classNames.push(nameAttr);
+                }
+            }
+
+            if (classNames.length > 0) {
+                document.getElementById('output').textContent = classNames.join('\n');
+            } else {
+                document.getElementById('output').textContent = 'No valid "name" attributes found in <type> tags.';
+            }
+        } catch (error) {
+            document.getElementById('output').textContent = 'Invalid XML input.';
+        }
+    }
+</script>
+
+</body>
+</html>

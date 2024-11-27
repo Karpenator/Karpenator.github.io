@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Class Name to DayZ events Formatter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1C1C1C;
+            color: white;
+            padding: 20px;
+        }
+        button {
+            background-color: #222;
+            color: #76FF03;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 50vh;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            resize: none;
+        }
+        .output {
+            white-space: pre-wrap;
+            background-color: #333;
+            padding: 10px;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Vehicle Class Name to DayZ events Formatter</h2>
+<textarea id="classNames"></textarea>
+<button onclick="convertToDayZXml()">Convert to DayZ events</button>
+
+<h3>Formatted Output</h3>
+<div id="output" class="output"></div>
+
+<script>
+    // Set default example content for the textarea
+    document.addEventListener('DOMContentLoaded', () => {
+        const exampleData = `IJ_2140_SL
+IJ_2140_SL_wheel
+IJ_2140_SL_wheel
+IJ_2140_SL_wheel
+IJ_2140_SL_wheel
+IJ_2140_SL_doors_driver
+IJ_2140_SL_doors_codriver
+IJ_2140_SL_doors_cargo1
+IJ_2140_SL_doors_cargo2
+IJ_2140_SL_doors_hood
+IJ_2140_SL_doors_trunk
+IJ_2140_SL_wheel`;
+        document.getElementById('classNames').value = exampleData;
+    });
+
+    function convertToDayZXml() {
+        const classNames = document.getElementById('classNames').value.trim().split('\n');
+        const vehicleType = classNames[0].trim(); // The first class name is used as the main type
+        const parts = classNames.slice(1).map(part => part.trim()); // Remaining class names are treated as parts
+
+        let output = `\n<type name="${vehicleType}">\n`;
+
+        // Always include these specific attachments with predefined chances
+        const mandatoryAttachments = [
+            { name: "CarRadiator", chance: "0.10" },
+            { name: "CarBattery", chance: "0.10" },
+            { name: "SparkPlug", chance: "0.10" },
+            { name: "HeadlightH7", chance: "0.40" },
+            { name: "HeadlightH7", chance: "0.40" }
+        ];
+        
+        // Adding each mandatory item to the XML output
+        mandatoryAttachments.forEach(item => {
+            output += `\t<attachments chance="1.00">\n\t\t<item name="${item.name}" chance="${item.chance}" />\n\t</attachments>\n`;
+        });
+
+        // Add each part from the input list with specific chances
+        parts.forEach(part => {
+            let chance = "0.30"; // Default chance for most parts
+            if (part.toLowerCase().includes("wheel")) {
+                chance = "0.40"; // Higher chance for wheels
+            }
+
+            output += `\t<attachments chance="1.00">\n\t\t<item name="${part}" chance="${chance}" />\n\t</attachments>\n`;
+        });
+
+        output += `</type>\n`;
+
+        document.getElementById('output').textContent = output;
+    }
+</script>
+
+</body>
+</html>

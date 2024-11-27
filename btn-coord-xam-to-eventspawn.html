@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dayz.xam.nu coordinate to XML Formatter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1C1C1C;
+            color: white;
+            padding: 20px;
+        }
+        button {
+            background-color: #222;
+            color: #76FF03;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            resize: none;
+            height: 200px;
+        }
+        .output {
+            white-space: pre-wrap;
+            background-color: #333;
+            padding: 10px;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>dayz.xam.nu coordinate to XML Formatter</h2>
+
+<textarea id="coordinateInput" placeholder="Paste coordinates here..."></textarea>
+<button onclick="convertCoordinates()">Convert to XML Format</button>
+
+<h3>Formatted Output</h3>
+<div id="output" class="output"></div>
+
+<script>
+    document.getElementById('coordinateInput').addEventListener('paste', (event) => {
+        setTimeout(() => {
+            const textarea = event.target;
+            const lines = textarea.value.split('\n');
+
+            // Automatically format pasted coordinates onto new lines
+            textarea.value = lines.map(line => line.replace(/,\s*/g, ', ')).join('\n');
+        }, 0);
+    });
+
+    function convertCoordinates() {
+        const input = document.getElementById('coordinateInput').value.trim();
+        const lines = input.split('\n');
+        let output = '';
+
+        lines.forEach(line => {
+            const coords = line.split(',').map(coord => coord.trim());
+            if (coords.length === 2) {
+                const x = coords[0];
+                const z = coords[1];
+                output += `<pos x="${x}" z="${z}" />\n`;
+            }
+        });
+
+        document.getElementById('output').textContent = output || 'Invalid input or no coordinates provided.';
+    }
+</script>
+
+</body>
+</html>

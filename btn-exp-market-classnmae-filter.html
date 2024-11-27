@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exp Market classnames filter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1C1C1C;
+            color: white;
+            padding: 20px;
+        }
+        button {
+            background-color: #222;
+            color: #76FF03;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 25vh;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            resize: none;
+        }
+        .output {
+            white-space: pre-wrap;
+            background-color: #333;
+            padding: 10px;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Exp Market classnames filte</h2>
+<p>
+    Этот инструмент берёт список названий классов и JSON-конфигурацию, фильтрует элементы JSON по совпадению с названиями классов, 
+    а также добавляет стандартные параметры к каждому элементу, если они отсутствуют.
+</p>
+
+<h3>Введите данные</h3>
+<textarea id="classNames">
+Shrimp
+WalleyePollock
+</textarea>
+<textarea id="jsonInput">[
+        {
+            "ClassName": "Carp",
+            "MaxPriceThreshold": 20,
+            "MinPriceThreshold": 20,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Mackerel",
+            "MaxPriceThreshold": 20,
+            "MinPriceThreshold": 20,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "WalleyePollock",
+            "MaxPriceThreshold": 40,
+            "MinPriceThreshold": 40,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 10000,
+            "MinStockThreshold": 1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "SteelheadTrout",
+            "MaxPriceThreshold": 30,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Shrimp",
+            "MaxPriceThreshold": 30,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 1,
+            "SpawnAttachments": [],
+            "Variants": []
+        }
+]</textarea>
+
+<button onclick="modifyJson()">Изменить JSON</button>
+
+<h3>Результат</h3>
+<div id="output" class="output"></div>
+
+<script>
+    function modifyJson() {
+        const classNames = new Set(document.getElementById('classNames').value.trim().split('\n').map(name => name.trim()));
+        const jsonText = document.getElementById('jsonInput').value;
+        
+        let data;
+        try {
+            data = JSON.parse(jsonText);
+        } catch (error) {
+            document.getElementById('output').textContent = 'Неверный формат JSON.';
+            return;
+        }
+
+        // Значения по умолчанию для добавления
+        const defaultValues = {
+            "MaxPriceThreshold": 500,
+            "MinPriceThreshold": 500,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 1,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        };
+
+        // Фильтрация и модификация JSON
+        const modifiedData = data.filter(item => classNames.has(item.ClassName))
+            .map(item => {
+                // Добавление свойств по умолчанию
+                for (const [key, value] of Object.entries(defaultValues)) {
+                    if (!item.hasOwnProperty(key)) {
+                        item[key] = value;
+                    }
+                }
+                return item;
+            });
+
+        document.getElementById('output').textContent = JSON.stringify(modifiedData, null, 2);
+    }
+</script>
+
+</body>
+</html>

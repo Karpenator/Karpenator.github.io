@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zakat radiation to Demands radiation converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1C1C1C;
+            color: white;
+            padding: 20px;
+        }
+        button {
+            background-color: #222;
+            color: #76FF03;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 50vh;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            resize: none;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 5px;
+            margin-right: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+        }
+        h1, h2 {
+            color: #76FF03;
+        }
+    </style>
+</head>
+<body>
+    <h1>Zakat radiation to Demands radiation converter</h1>
+
+    <label for="height">Height:</label>
+    <input type="number" id="height" value="5.0" step="0.1">
+    
+    <label for="damageDelay">Damage Delay (seconds):</label>
+    <input type="number" id="damageDelay" value="2.0" step="0.1">
+
+    <br><br>
+
+    <textarea id="inputData" rows="20" cols="100">
+{
+    "AllRadiatonsTestNeed": [
+        {
+            "LocationsRad": "Radiation",
+            "RadPosArrays": [
+                {
+                    "Positions": [
+                        1855.144287109375,
+                        107.52999877929688,
+                        1756.8359375
+                    ],
+                    "Radius": 150,
+                    "Power": 60
+                },
+                {
+                    "Positions": [
+                        2347.959228515625,
+                        102.52999877929688,
+                        2200.902099609375
+                    ],
+                    "Radius": 100,
+                    "Power": 30
+                }
+            ]
+        }
+    ]
+}
+    </textarea>
+    <br>
+    <button onclick="convertData()">Convert</button>
+    <h2>Converted Data</h2>
+    <textarea id="outputData" rows="20" cols="100"></textarea>
+
+    <script>
+        function convertData() {
+            const inputData = JSON.parse(document.getElementById('inputData').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const damageDelay = parseFloat(document.getElementById('damageDelay').value);
+
+            const result = {
+                "zone": []
+            };
+
+            inputData["AllRadiatonsTestNeed"][0]["RadPosArrays"].forEach(radPos => {
+                const positionString = `${radPos.Positions.join(" ")}`;
+                const damage = radPos.Power;
+
+                const zoneEntry = {
+                    "_comment": "it doesn't affect anything, write what you want",
+                    "position": positionString,
+                    "radius": radPos.Radius.toFixed(1),
+                    "negativeHeight": -1.0,
+                    "height": height,
+                    "damageType": "RADIATION",
+                    "damageDelay": damageDelay,
+                    "fullDamageDistance": 0.5,
+                    "damage": damage
+                };
+
+                result.zone.push(zoneEntry);
+            });
+
+            document.getElementById('outputData').value = JSON.stringify(result, null, 4);
+        }
+    </script>
+</body>
+</html>

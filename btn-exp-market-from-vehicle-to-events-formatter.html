@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exp Market from vehicle to events formatter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1C1C1C;
+            color: white;
+            padding: 20px;
+        }
+        button {
+            background-color: #222;
+            color: #76FF03;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            resize: none;
+        }
+        .output {
+            white-space: pre-wrap;
+            background-color: #333;
+            padding: 10px;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Exp Market from vehicle to events formatter</h2>
+
+<textarea id="jsonInput" placeholder="Paste JSON data here..."></textarea>
+<textarea id="classNameFilter" placeholder="Enter class name filters, each on a new line..."></textarea>
+
+<button onclick="convertJsonToXml()">Convert to DayZ XML Format</button>
+
+<h3>Formatted Output</h3>
+<div id="output" class="output"></div>
+
+<script>
+    function convertJsonToXml() {
+        try {
+            // Parse JSON input
+            const jsonData = JSON.parse(document.getElementById('jsonInput').value.trim());
+
+            // Get class name filters, split by new lines, and trim each
+            const filterText = document.getElementById('classNameFilter').value.trim();
+            const filters = filterText ? filterText.split('\n').map(f => f.trim().toLowerCase()) : [];
+
+            let output = '';
+
+            jsonData.forEach(item => {
+                const className = item.ClassName;
+                // Check if class name contains any of the filter texts
+                const matchesFilter = filters.length === 0 || filters.some(filter => className.toLowerCase().includes(filter));
+                
+                if (matchesFilter) {
+                    output += `<type name="${className}">\n`;
+
+                    item.SpawnAttachments.forEach(attachment => {
+                        const chance = attachment.toLowerCase().includes("wheel") ? "0.40" : "0.30"; // Adjust chance based on name
+                        output += `\t<attachments chance="1.00">\n\t\t<item name="${attachment}" chance="${chance}" />\n\t</attachments>\n`;
+                    });
+
+                    output += `</type>\n\n`;
+                }
+            });
+
+            document.getElementById('output').textContent = output || 'No matching class names found.';
+        } catch (error) {
+            document.getElementById('output').textContent = 'Error parsing JSON: ' + error.message;
+        }
+    }
+</script>
+
+</body>
+</html>

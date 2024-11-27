@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Price Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1C1C1C;
+            color: white;
+            padding: 20px;
+        }
+        button {
+            background-color: #222;
+            color: #76FF03;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        textarea, input {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            resize: none;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #444;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #222;
+        }
+        .example {
+            font-size: 0.9em;
+            color: #76FF03;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Vehicle Price Calculator</h2>
+<p class="example">Пример данных для ввода:</p>
+<p class="example">
+    уаз 2363 пикап - 800 слотов, 1 бочек, 2 ящика<br>
+    уаз 469 хантер - 800 слотов, 2 бочек, 6 ящиков 1 сундук 2 оружие, 1 рюкзак<br>
+    уаз 31519 полиция - 800 слотов, 4 ящика, 2 оружие, 1 рюкзак, 1 рация, 1 канистра<br>
+    уаз 27722 мчс - 800 слотов, 4 ящика, 2 оружие, 1 рюкзак, 1 канистра
+</p>
+<p class="example">Главное соблюдать регистр букв и сами слова: слотов, бочек, ящика, сундука, оружие, рюкзак</p>
+<textarea id="vehicleData" placeholder="Paste your vehicle data here..."></textarea>
+
+<h3>Set Prices</h3>
+<div>
+    <label>Price per 100 Slots: <input type="number" id="slotPrice" value="100"></label>
+    <label>Price per Barrel: <input type="number" id="barrelPrice" value="50"></label>
+    <label>Price per Box: <input type="number" id="boxPrice" value="30"></label>
+    <label>Price per Chest: <input type="number" id="chestPrice" value="100"></label>
+    <label>Price per Weapon: <input type="number" id="weaponPrice" value="200"></label>
+    <label>Price per Backpack: <input type="number" id="backpackPrice" value="50"></label>
+</div>
+
+<button onclick="generateTable()">Generate Table</button>
+
+<h3>Vehicle Table</h3>
+<div id="output">
+    <table id="vehicleTable">
+        <thead>
+            <tr>
+                <th>Vehicle Name</th>
+                <th>Slots</th>
+                <th>Barrels</th>
+                <th>Boxes</th>
+                <th>Chests</th>
+                <th>Weapons</th>
+                <th>Backpacks</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+    function generateTable() {
+        const vehicleData = document.getElementById('vehicleData').value.trim().split('\n');
+        
+        // Fetch prices from input fields
+        const slotPrice = parseFloat(document.getElementById('slotPrice').value) / 100;
+        const barrelPrice = parseFloat(document.getElementById('barrelPrice').value);
+        const boxPrice = parseFloat(document.getElementById('boxPrice').value);
+        const chestPrice = parseFloat(document.getElementById('chestPrice').value);
+        const weaponPrice = parseFloat(document.getElementById('weaponPrice').value);
+        const backpackPrice = parseFloat(document.getElementById('backpackPrice').value);
+
+        const tableBody = document.getElementById('vehicleTable').querySelector('tbody');
+        tableBody.innerHTML = ''; // Clear previous rows
+
+        vehicleData.forEach(line => {
+            if (!line.includes(" - ")) return; // Skip invalid lines
+            
+            const [namePart, detailsPart] = line.split(' - ');
+            const name = namePart.trim();
+            const details = detailsPart.replace(/,/g, '').trim(); // Remove commas
+
+            const slotCount = parseInt((details.match(/(\d+)\s+слотов/) || [0, "0"])[1]);
+            const barrels = parseInt((details.match(/(\d+)\s+бочек?/) || [0, "0"])[1]);
+            const boxes = parseInt((details.match(/(\d+)\s+ящика?/) || [0, "0"])[1]);
+            const chests = parseInt((details.match(/(\d+)\s+сундука?/) || [0, "0"])[1]);
+            const weapons = parseInt((details.match(/(\d+)\s+оружие?/) || [0, "0"])[1]);
+            const backpacks = parseInt((details.match(/(\d+)\s+рюкзак?/) || [0, "0"])[1]);
+
+            const totalPrice = 
+                slotCount * slotPrice +
+                barrels * barrelPrice +
+                boxes * boxPrice +
+                chests * chestPrice +
+                weapons * weaponPrice +
+                backpacks * backpackPrice;
+
+            // Create a row for each vehicle
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${name}</td>
+                <td>${slotCount}</td>
+                <td>${barrels}</td>
+                <td>${boxes}</td>
+                <td>${chests}</td>
+                <td>${weapons}</td>
+                <td>${backpacks}</td>
+                <td>${totalPrice.toFixed(2)}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+</script>
+
+</body>
+</html>

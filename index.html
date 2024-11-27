@@ -69,10 +69,34 @@
         #bottom-buttons button:hover {
             background-color: #6c6c6c;
         }
+
+        #palette {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .color-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+        }
     </style>
 </head>
 <body>
     <h1>Karpenator's Dayz Configuration Tools</h1>
+
+    <div id="palette">
+        <div class="color-swatch" style="background-color: #575757;" data-color="#575757"></div>
+        <div class="color-swatch" style="background-color: #FF5733;" data-color="#FF5733"></div>
+        <div class="color-swatch" style="background-color: #33FF57;" data-color="#33FF57"></div>
+        <div class="color-swatch" style="background-color: #3357FF;" data-color="#3357FF"></div>
+        <div class="color-swatch" style="background-color: #FFC300;" data-color="#FFC300"></div>
+    </div>
+
     <div id="main-buttons">
         <button id="btn-banking">Ultima BANK в BANKING</button>
         <button id="btn-trader-plus">Banking to TraderPlus</button>
@@ -89,19 +113,65 @@
         <button id="btn-zakat-to-dem-spawner">Convert Zakat Spawner to Demands Spawner</button>
         <button id="btn-catch-to-dem">Convert CacheSpawner to Demands Spawner</button>
         <button id="btn-zakat-radiation-to-syberia-radiation">Convert Zakat Radiation to Syberia</button>
+        <button id="btn-zakat-radiation-to-dem-radiation">Convert Zakat Radiation to Demands Radiation</button>
+        <button id="btn-scar-radiation-to-dem-radiation">Convert Scar Radiation to Demands Radiation</button>
+        <button id="btn-exp-market-from-vehicle-to-events-formatter">Exp Market from vehicle to events formatter</button>
+        <button id="btn-classnames-to-xml-nom-min">Modify types.xml from classnames</button>
+        <button id="btn-coord-xam-to-eventspawn">dayz.xam.nu coordinate to XML Formatter</button>
+        <button id="btn-exp-market-classnmae-filter">Exp Market classnames filter</button>
+        <button id="btn-vehicle-price-calculator">Vehicle Price Calculator</button>
+        <button id="btn-types-to-classnames">Types to classnames converter</button>
+        <button id="btn-classnames-to-events">Vehicle Class Name to DayZ events Formatter</button>
     </div>
-    <div id="bottom-buttons" style="display: flex; justify-content: center; margin-top: 30px; position: fixed; bottom: 0; width: 100%;">
-		<button id="btn-discord">Дискорд</button>
-		<button id="btn-donate">Пожертвовать</button>
-	</div>
+
+    <div id="bottom-buttons">
+        <button id="btn-discord">Дискорд</button>
+        <button id="btn-donate">Пожертвовать</button>
+    </div>
 
     <script>
-        // Функция для отправки запроса на запуск программы по указанному URL
+        const palette = document.querySelector('#palette');
+        const buttons = document.querySelectorAll('#main-buttons button');
+        let selectedColor = '#575757'; // Default color
+
+        // Load saved colors from localStorage
+        function loadButtonColors() {
+            buttons.forEach((button) => {
+                const savedColor = localStorage.getItem(button.id);
+                if (savedColor) {
+                    button.style.backgroundColor = savedColor;
+                }
+            });
+        }
+
+        // Save color to localStorage
+        function saveButtonColor(buttonId, color) {
+            localStorage.setItem(buttonId, color);
+        }
+
+        // Event listener for color palette
+        palette.addEventListener('click', (event) => {
+            if (event.target.classList.contains('color-swatch')) {
+                selectedColor = event.target.getAttribute('data-color');
+            }
+        });
+
+        // Event listeners for buttons
+        buttons.forEach((button) => {
+            button.addEventListener('click', () => {
+                button.style.backgroundColor = selectedColor;
+                saveButtonColor(button.id, selectedColor);
+            });
+        });
+
+        loadButtonColors(); // Initialize colors on page load
+
+        // Function to open a new program page
         function runProgram(url) {
             window.open(url, "_blank");
         }
 
-        // Обработчики событий для кнопок
+        // Event listeners for the program buttons
         document.getElementById("btn-banking").addEventListener("click", function() {
             runProgram("btn-banking.html");
         });
@@ -161,6 +231,42 @@
         document.getElementById("btn-zakat-radiation-to-syberia-radiation").addEventListener("click", function() {
             runProgram("btn-zakat-radiation-to-syberia-radiation.html");
         });
+		
+        document.getElementById("btn-zakat-radiation-to-dem-radiation").addEventListener("click", function() {
+            runProgram("btn-zakat-radiation-to-dem-radiation.html");
+        });
+		
+        document.getElementById("btn-exp-market-from-vehicle-to-events-formatter").addEventListener("click", function() {
+            runProgram("btn-exp-market-from-vehicle-to-events-formatter.html");
+        });
+		
+        document.getElementById("btn-classnames-to-xml-nom-min").addEventListener("click", function() {
+            runProgram("btn-classnames-to-xml-nom-min.html");
+        });
+		
+        document.getElementById("btn-coord-xam-to-eventspawn").addEventListener("click", function() {
+            runProgram("btn-coord-xam-to-eventspawn.html");
+        });
+		
+        document.getElementById("btn-exp-market-classnmae-filter").addEventListener("click", function() {
+            runProgram("btn-exp-market-classnmae-filter.html");
+        });
+		
+        document.getElementById("btn-vehicle-price-calculator").addEventListener("click", function() {
+            runProgram("btn-vehicle-price-calculator.html");
+        });
+		
+        document.getElementById("btn-types-to-classnames").addEventListener("click", function() {
+            runProgram("btn-types-to-classnames.html");
+        });
+		
+        document.getElementById("btn-classnames-to-events").addEventListener("click", function() {
+            runProgram("btn-classnames-to-events.html");
+        });
+		
+        document.getElementById("btn-scar-radiation-to-dem-radiation").addEventListener("click", function() {
+            runProgram("btn-scar-radiation-to-dem-radiation.html");
+        });		
 		
         document.getElementById("btn-discord").addEventListener("click", function() {
             window.open("https://discord.gg/Mj7tFHe8Nz", "_blank");

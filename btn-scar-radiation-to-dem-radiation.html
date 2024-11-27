@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scar radiation to Demands radiation converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1C1C1C;
+            color: white;
+            padding: 20px;
+        }
+        button {
+            background-color: #222;
+            color: #76FF03;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 50vh;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            resize: none;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 5px;
+            margin-right: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+        }
+        h1, h2 {
+            color: #76FF03;
+        }
+    </style>
+</head>
+<body>
+    <h1>Scar radiation to Demands radiation converter</h1>
+
+    <label for="height">Height:</label>
+    <input type="number" id="height" value="5.0" step="0.1">
+    
+    <label for="damageDelay">Damage Delay (seconds):</label>
+    <input type="number" id="damageDelay" value="2.0" step="0.1">
+
+    <br><br>
+
+    <textarea id="inputData" rows="20" cols="100">
+[
+    {
+        "position": [
+            5283.52978515625,
+            108.83100128173828,
+            1976.449951171875
+        ],
+        "radius": 60.0,
+        "name": "PerehodKordLosh",
+        "radAmount": 11
+    },
+    {
+        "position": [
+            5031.75,
+            92.24410247802735,
+            1953.56005859375
+        ],
+        "radius": 90.0,
+        "name": "ZavodKord",
+        "radAmount": 32
+    },
+    {
+        "position": [
+            4855.240234375,
+            92.97100067138672,
+            2119.4599609375
+        ],
+        "radius": 55.0,
+        "name": "ElevatorKord",
+        "radAmount": 11
+    }
+]
+    </textarea>
+    <br>
+    <button onclick="convertData()">Convert</button>
+    <h2>Converted Data</h2>
+    <textarea id="outputData" rows="20" cols="100"></textarea>
+
+    <script>
+        function convertData() {
+            const inputData = JSON.parse(document.getElementById('inputData').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const damageDelay = parseFloat(document.getElementById('damageDelay').value);
+
+            const result = {
+                "zone": []
+            };
+
+            inputData.forEach(entry => {
+                const positionString = `${entry.position.join(" ")}`;
+                const damage = entry.radAmount;
+
+                const zoneEntry = {
+                    "_comment": entry.name,
+                    "position": positionString,
+                    "radius": entry.radius.toFixed(1),
+                    "negativeHeight": -1.0,
+                    "height": height,
+                    "damageType": "RADIATION",
+                    "damageDelay": damageDelay,
+                    "fullDamageDistance": 0.5,
+                    "damage": damage
+                };
+
+                result.zone.push(zoneEntry);
+            });
+
+            document.getElementById('outputData').value = JSON.stringify(result, null, 4);
+        }
+    </script>
+</body>
+</html>
