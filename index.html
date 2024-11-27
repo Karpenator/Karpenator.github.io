@@ -78,9 +78,40 @@
         .color-swatch:hover {
             transform: scale(1.2);
         }
+		
+		#snow-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+			z-index: 1000;
+			overflow: hidden;
+		}
+
+		.snowflake {
+			position: absolute;
+			top: -10px;
+			color: white;
+			font-size: 10px;
+			opacity: 0.8;
+			animation: fall linear infinite;
+		}
+
+		@keyframes fall {
+			0% {
+				transform: translateY(-100%);
+			}
+			100% {
+				transform: translateY(100vh);
+			}
+		}
     </style>
 </head>
 <body>
+	<div id="snow-container"></div>
+	
     <h1>Karpenator's DayZ Configuration Tools</h1>
 
     <div id="palette">
@@ -125,7 +156,93 @@
     </div>
 
     <script>
-	
+		const snowContainer = document.getElementById('snow-container');
+
+		function createSnowflake() {
+			const snowflake = document.createElement('div');
+			snowflake.classList.add('snowflake');
+			snowflake.innerText = '❄';
+			snowflake.style.left = Math.random() * 100 + 'vw';
+			snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+			snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+			snowflake.style.opacity = Math.random();
+			snowContainer.appendChild(snowflake);
+			setTimeout(() => {
+				snowflake.remove();
+			}, 5000);
+		}
+
+		setInterval(createSnowflake, 50);
+
+		function createSanta() {
+		// Массив с URL гифок
+		const santaGifs = [
+			'https://i.gifer.com/Xqg8.gif',
+			'https://i.gifer.com/ZiaV.gif',
+			'https://i.gifer.com/33HU.gif',
+			'https://i.gifer.com/YzDb.gif',
+			'https://i.gifer.com/PYh.gif'
+		];
+
+		// Случайная гифка
+		const randomGif = santaGifs[Math.floor(Math.random() * santaGifs.length)];
+
+		// Создание элемента Санты
+		const santa = document.createElement('img');
+		santa.src = randomGif;
+		santa.alt = 'Santa';
+		santa.style.position = 'absolute';
+		santa.style.bottom = '10px';
+		santa.style.left = '-150px';
+		santa.style.height = '100px';
+		santa.style.cursor = 'pointer';
+
+		// Случайная скорость анимации (5–15 секунд)
+		const randomSpeed = Math.random() * 20 + 5; 
+		santa.style.animation = `santa-move ${randomSpeed}s linear`;
+		santa.style.zIndex = '2000';
+
+		santa.addEventListener('click', () => {
+			window.open('https://discord.gg/Mj7tFHe8Nz', '_blank');
+		});
+
+		document.body.appendChild(santa);
+
+		// Удаление Санты после окончания анимации
+		santa.addEventListener('animationend', () => {
+			santa.remove();
+		});
+	}
+
+	// Анимация Санты
+	const santaStyle = document.createElement('style');
+	santaStyle.innerHTML = `
+		@keyframes santa-move {
+			0% {
+				left: -150px;
+			}
+			100% {
+				left: 100vw;
+			}
+		}
+	`;
+	document.head.appendChild(santaStyle);
+
+	// Случайный запуск появления анимации
+	function startSanta() {
+		const randomInterval = Math.random() * 10000 + 5000; // Рандомное время (5–15 секунд)
+		setTimeout(() => {
+			if (Math.random() > 0.1) { // Шанс появления 90%
+				createSanta();
+			}
+			startSanta();
+		}, randomInterval);
+	}
+
+	startSanta();
+
+
+
 	document.getElementById('btn-reset-colors').addEventListener('click', () => {
 		buttons.forEach((button) => {
 			button.style.backgroundColor = '#333';
