@@ -197,7 +197,7 @@
 		santa.style.height = '100px';
 		santa.style.cursor = 'pointer';
 
-		// Случайная скорость анимации (5–15 секунд)
+		// Случайная скорость анимации (5–25 секунд)
 		const randomSpeed = Math.random() * 20 + 5; 
 		santa.style.animation = `santa-move ${randomSpeed}s linear`;
 		santa.style.zIndex = '2000';
@@ -207,7 +207,7 @@
 		});
 
 		document.body.appendChild(santa);
-
+	
 		// Удаление Санты после окончания анимации
 		santa.addEventListener('animationend', () => {
 			santa.remove();
@@ -227,7 +227,7 @@
 		}
 	`;
 	document.head.appendChild(santaStyle);
-
+	
 	// Случайный запуск появления анимации
 	function startSanta() {
 		const randomInterval = Math.random() * 10000 + 5000; // Рандомное время (5–15 секунд)
@@ -240,8 +240,6 @@
 	}
 
 	startSanta();
-
-
 
 	document.getElementById('btn-reset-colors').addEventListener('click', () => {
 		buttons.forEach((button) => {
