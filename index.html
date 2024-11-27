@@ -3,42 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karpenator's Dayz Configuration Tools</title>
+    <title>Karpenator's DayZ Configuration Tools</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1C1C1C;
-            color: white;
-            padding: 20px;
+            background-color: #0D0D0D;
+            color: #E2E2E2;
             margin: 0;
+            padding: 20px;
         }
 
         h1 {
-            font-size: 32px;
+            font-size: 40px;
             text-align: center;
+            color: #D22B2B;
+            text-shadow: 0 0 10px #8B0000;
             margin-bottom: 30px;
         }
 
         #main-buttons {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            grid-gap: 20px;
-            justify-items: center;
+            grid-gap: 15px;
+            padding: 0 10px;
         }
 
         button {
-            font-size: 18px;
-            padding: 15px 30px;
-            background-color: #575757;
-            color: white;
-            border: none;
+            font-size: 16px;
+            padding: 15px;
+            background-color: #333;
+            color: #E2E2E2;
+            border: 1px solid #444;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         button:hover {
-            background-color: #6c6c6c;
+            background-color: #D22B2B;
+            color: white;
+            box-shadow: 0 4px 15px rgba(210, 43, 43, 0.5);
         }
 
         #bottom-buttons {
@@ -49,32 +55,15 @@
 
         #bottom-buttons button {
             margin: 0 10px;
-        }
-
-        #bottom-buttons button:last-child {
-            margin-right: 0;
-        }
-
-        #bottom-buttons button {
             font-size: 16px;
             padding: 10px 20px;
-            background-color: #575757;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #bottom-buttons button:hover {
-            background-color: #6c6c6c;
         }
 
         #palette {
             display: flex;
+            justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
-            justify-content: center;
         }
 
         .color-swatch {
@@ -83,19 +72,25 @@
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid white;
+            transition: transform 0.2s;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.2);
         }
     </style>
 </head>
 <body>
-    <h1>Karpenator's Dayz Configuration Tools</h1>
+    <h1>Karpenator's DayZ Configuration Tools</h1>
 
     <div id="palette">
-        <div class="color-swatch" style="background-color: #575757;" data-color="#575757"></div>
-        <div class="color-swatch" style="background-color: #FF5733;" data-color="#FF5733"></div>
-        <div class="color-swatch" style="background-color: #33FF57;" data-color="#33FF57"></div>
-        <div class="color-swatch" style="background-color: #3357FF;" data-color="#3357FF"></div>
-        <div class="color-swatch" style="background-color: #FFC300;" data-color="#FFC300"></div>
-    </div>
+		<div class="color-swatch" style="background-color: #333;" data-color="#333"></div>
+		<div class="color-swatch" style="background-color: #D22B2B;" data-color="#D22B2B"></div>
+		<div class="color-swatch" style="background-color: #2B6ED2;" data-color="#2B6ED2"></div>
+		<div class="color-swatch" style="background-color: #28A745;" data-color="#28A745"></div>
+		<div class="color-swatch" style="background-color: #FFC107;" data-color="#FFC107"></div>
+		<button id="btn-reset-colors" style="margin-left: 20px; padding: 10px;">Сбросить цвета</button>
+	</div>
 
     <div id="main-buttons">
         <button id="btn-banking">Ultima BANK в BANKING</button>
@@ -130,9 +125,17 @@
     </div>
 
     <script>
+	
+	document.getElementById('btn-reset-colors').addEventListener('click', () => {
+		buttons.forEach((button) => {
+			button.style.backgroundColor = '#333';
+			saveButtonColor(button.id, '#333');
+		});
+		alert('Цвета кнопок успешно сброшены!');
+	});
         const palette = document.querySelector('#palette');
         const buttons = document.querySelectorAll('#main-buttons button');
-        let selectedColor = '#575757'; // Default color
+        let selectedColor = '#333'; // Default color
 
         // Load saved colors from localStorage
         function loadButtonColors() {
