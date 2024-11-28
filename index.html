@@ -194,7 +194,7 @@
 		    santa.style.position = 'absolute';
 		    santa.style.bottom = '10px';
 		    santa.style.left = '-150px';
-		    santa.style.height = '100px';
+		    santa.style.height = '120px';
 		    santa.style.cursor = 'pointer';
 		
 		    // Случайная скорость анимации (5–25 секунд)
@@ -237,7 +237,7 @@
 	
 	// Случайный запуск появления анимации
 	function startSanta() {
-		const randomInterval = Math.random() * 10000 + 5000; // Рандомное время (5–15 секунд)
+		const randomInterval = Math.random() * 10000 + 3000; // Рандомное время (3–10 секунд)
 		setTimeout(() => {
 			if (Math.random() > 0.1) { // Шанс появления 90%
 				createSanta();
