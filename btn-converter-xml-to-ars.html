@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Терминал</title>
+    <style>
+        body {
+            background-color: black;
+            color: lime;
+            font-family: "Courier New", Courier, monospace;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+        #terminal {
+            display: none;
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        #output {
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        #input-area {
+            display: flex;
+            align-items: center;
+        }
+        input, button {
+            font-family: "Courier New", Courier, monospace;
+        }
+        #user-input {
+            background: black;
+            color: lime;
+            border: none;
+            outline: none;
+            width: 100%;
+        }
+        #login-input, #password-input {
+            background: black;
+            color: lime;
+            border: 1px solid lime;
+            padding: 10px;
+            width: 300px;
+            margin: 5px 0;
+            text-align: center;
+            outline: none;
+        }
+        #login-button {
+            background: lime;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        #login-button:hover {
+            background: darkgreen;
+        }
+    </style>
+</head>
+<body>
+    <!-- Экран логина -->
+    <div id="login-screen">
+        <h1>Добро пожаловать</h1>
+        <input id="login-input" type="text" placeholder="Логин" autocomplete="off">
+        <input id="password-input" type="password" placeholder="Пароль" autocomplete="off">
+        <button id="login-button">Войти</button>
+    </div>
+
+    <!-- Терминал -->
+    <div id="terminal">
+        <div id="output"></div>
+        <div id="input-area">
+            <span>&gt;</span>
+            <input id="user-input" type="text" autocomplete="off" autofocus>
+        </div>
+    </div>
+
+    <script>
+        // Элементы интерфейса
+        const loginScreen = document.getElementById("login-screen");
+        const terminal = document.getElementById("terminal");
+        const loginInput = document.getElementById("login-input");
+        const passwordInput = document.getElementById("password-input");
+        const loginButton = document.getElementById("login-button");
+        const terminalOutput = document.getElementById("output");
+        const userInput = document.getElementById("user-input");
+
+        // Правильные логин и пароль
+        let correctLogin = "WELCOME";
+        let correctPassword = "TERMINAL";
+        let currentUser = null; // Хранит текущего пользователя
+
+        // Начальная структура файлов и папок
+        let fileSystem = {
+            root: {
+                files: ["README.txt", "LICENSE.txt"],
+                folders: {
+                    "Documents": {
+                        files: ["doc1.txt"],
+                        folders: {}
+                    },
+                    "Downloads": {
+                        files: ["file1.exe"],
+                        folders: {}
+                    },
+                    "Projects": {
+                        files: [],
+                        folders: {}
+                    }
+                }
+            },
+            users: {
+                "DayZ": {
+                    password: "Masterbot",
+                    files: ["decrypt.me"],
+                    folders: {}
+                }
+            }
+        };
+
+        let currentPath = [];
+
+        // Функция для очистки терминала
+        function clearTerminal() {
+            terminalOutput.innerHTML = "";
+        }
+
+        // Функция для получения текущей папки
+        function getCurrentFolder() {
+            let folder = currentUser ? fileSystem.users[currentUser] : fileSystem.root;
+            for (let i = 0; i < currentPath.length; i++) {
+                folder = folder.folders[currentPath[i]];
+                if (!folder) break;
+            }
+            return folder;
+        }
+
+        // Функция для отображения файлов в текущей директории
+        function listFiles() {
+            const folder = getCurrentFolder();
+            const files = folder ? folder.files : [];
+            const folders = folder ? Object.keys(folder.folders) : [];
+
+            let content = "Папки:\n";
+            content += folders.length > 0 ? folders.join('\n') : "Нет папок.";
+            content += "\n\nФайлы:\n";
+            content += files.length > 0 ? files.join('\n') : "Нет файлов.";
+
+            printToTerminal(content);
+        }
+
+        // Функция для открытия файла
+        function openFile(fileName) {
+            const folder = getCurrentFolder();
+            if (folder && folder.files.includes(fileName)) {
+                printToTerminal(`Открыт файл: ${fileName}`);
+                // Проверка текущего пути и имени файла для отображения нужного контента
+                if (!currentUser) {
+                    if (currentPath.join('/') === "Documents" && fileName === "doc1.txt") {
+                        printCaesarSaladRecipe();
+                    } else if (currentPath.length === 0 && fileName === "README.txt") {
+                        printThankYouMessage();
+                    } else if (currentPath.length === 0 && fileName === "LICENSE.txt") {
+                        printLicenseText();
+                    } else if (fileName === "file1.exe" && currentPath.join('/') === "Downloads") {
+                        printToTerminal("Матрица из символов... Возможно, это пароль?");
+                        printMatrixCode();
+                    }
+                } else if (currentUser && fileName === "decrypt.me") {
+                    printDecryptMessage();
+                }
+            } else {
+                printToTerminal(`Ошибка: файл ${fileName} не найден.`);
+            }
+        }
+
+        // Функция для отображения рецепта салата Цезарь
+        function printCaesarSaladRecipe() {
+            const recipe = `Рецепт салата "Цезарь" на Новый Год:
+
+- Ингредиенты:
+  - Листья салата
+  - Куриная грудка
+  - Сухарики
+  - Пармезан
+  - Соус Цезарь
+
+- Приготовление:
+  1. Нарежьте куриную грудку и обжарьте до золотистой корочки.
+  2. Порвите листья салата руками.
+  3. Смешайте все ингредиенты, добавьте сухарики и тертый пармезан.
+  4. Заправьте соусом Цезарь и подавайте к столу.
+
+Приятного аппетита и С Новым Годом!`;
+            printToTerminal(recipe);
+        }
+
+        // Функция для отображения благодарственного сообщения
+        function printThankYouMessage() {
+            const message = `Спасибо за интерес к нашему новогоднему ивенту!
+
+Следите за обновлениями и приятной игры!`;
+            printToTerminal(message);
+        }
+
+        // Функция для отображения текста лицензии
+        function printLicenseText() {
+            const license = `Все создано сообществом мододелов DayZ "Syndicate Guild".
+Все права принадлежат пользователю rodion_sg (BOT).`;
+            printToTerminal(license);
+        }
+
+        // Функция для отображения матрицы символов
+        function printMatrixCode() {
+            const matrix = [
+                "SAD dfdpvjn jfjghv nb sadujhdgf rwv cvsdf sd",
+                "lkkdi lbnj fd ehzbg WtrS itl Ftlmxkuhm",
+                "xemty syz kxvklasd ASDOklckxzop",
+                "ehzbg WtrS itl Ftlmxkuhm uiqweg pbvbza",
+                "gsvjf rxpyi ldMUl cqfnk hlevi gsvoz abwlt",
+                "ghpamfgvckd ehzbg WtrS itl Ftlmxkuhm",
+                "qwkh ert yuiopas p dfghjkl ziudnba xcvbnm",
+                "asmo ehzbg qhal iAA FfDASxkuhm"
+            ];
+            matrix.forEach(line => {
+                printToTerminal(line);
+            });
+        }
+
+        // Функция для вывода сообщения из файла decrypt.me
+        function printDecryptMessage() {
+            const message = `16-20-12-18-16-11 20-10-12-6-20 10 15-1-17-10-26-10 20-1-14 12-16-5
+"19-13-6-5-21-32-27-10-11 4-16-5 5-6-18-6-3-33-15-15-16-11 9-6-13-7-15-16-11 9-14-6-10"`;
+            printToTerminal(message);
+        }
+
+        // Функция для перехода в папку
+        function changeDirectory(folderName) {
+            const folder = getCurrentFolder();
+            if (folder && folder.folders[folderName]) {
+                currentPath.push(folderName);
+                printToTerminal(`Вы перешли в папку: /${currentPath.join('/')}`);
+            } else {
+                printToTerminal(`Ошибка: папка ${folderName} не найдена.`);
+            }
+        }
+
+        // Функция для возврата в предыдущую папку
+        function goBack() {
+            if (currentPath.length > 0) {
+                currentPath.pop();
+                printToTerminal(`Вы вернулись в папку: /${currentPath.join('/')}`);
+            } else {
+                printToTerminal("Вы уже в корневой директории.");
+            }
+        }
+
+        // Функция для вывода текста в терминал
+        function printToTerminal(text) {
+            terminalOutput.innerHTML += text.replace(/\n/g, '<br>') + '<br>';
+            terminalOutput.scrollTop = terminalOutput.scrollHeight; // Автопрокрутка
+        }
+
+        // Логика входа
+        function showLoginScreen() {
+            loginScreen.style.display = "flex";
+            terminal.style.display = "none";
+            loginInput.value = "";
+            passwordInput.value = "";
+            loginInput.focus();
+        }
+
+        function showTerminal() {
+            loginScreen.style.display = "none";
+            terminal.style.display = "block";
+            userInput.focus();
+        }
+
+        // Функция для входа
+        function loginUser(login, password) {
+            if (login === correctLogin && password === correctPassword) {
+                currentUser = null;
+                currentPath = [];
+                clearTerminal();
+                showTerminal();
+                printToTerminal(`Добро пожаловать в терминал.`);
+                printToTerminal("Введите 'help' для списка команд.");
+                listFiles();
+            } else if (fileSystem.users[login] && fileSystem.users[login].password === password) {
+                currentUser = login;
+                currentPath = [];
+                clearTerminal();
+                showTerminal();
+                printToTerminal(`Добро пожаловать, ${login}.`);
+                printToTerminal("Введите 'help' для списка команд.");
+                listFiles();
+            } else {
+                alert("Неверный логин или пароль.");
+            }
+        }
+
+        // Обработка входа
+        loginButton.addEventListener("click", () => {
+            const enteredLogin = loginInput.value.trim();
+            const enteredPassword = passwordInput.value.trim();
+            loginUser(enteredLogin, enteredPassword);
+        });
+
+        // Функция выхода из системы
+        function logout() {
+            currentUser = null;
+            currentPath = [];
+            clearTerminal();
+            showLoginScreen();
+        }
+
+        // Обработка команд терминала
+        function handleCommand(input) {
+            const args = input.split(" ");
+            const command = args[0];
+            const argument = args[1];
+
+            switch (command) {
+                case "help":
+                    printToTerminal(`Доступные команды:
+- cd <папка>: Перейти в указанную папку
+- ls: Показать файлы и папки в текущей директории
+- open <файл>: Открыть файл
+- cd ..: Вернуться в предыдущую папку
+- logout: Выйти из терминала`);
+                    break;
+                case "ls":
+                    listFiles();
+                    break;
+                case "cd":
+                    if (argument === "..") {
+                        goBack();
+                    } else {
+                        changeDirectory(argument);
+                    }
+                    break;
+                case "open":
+                    if (argument) {
+                        openFile(argument);
+                    } else {
+                        printToTerminal("Ошибка: укажите файл для открытия.");
+                    }
+                    break;
+                case "logout":
+                    logout();
+                    break;
+                default:
+                    printToTerminal("Неизвестная команда. Введите 'help' для списка команд.");
+            }
+        }
+
+        userInput.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                const input = userInput.value.trim();
+                userInput.value = "";
+                printToTerminal("> " + input);
+                handleCommand(input);
+            }
+        });
+
+        // Показ экрана логина при загрузке
+        showLoginScreen();
+    </script>
+</body>
+</html>
