@@ -175,44 +175,51 @@
 		setInterval(createSnowflake, 50);
 
 		function createSanta() {
-		// Массив с URL гифок
-		const santaGifs = [
-			'https://i.gifer.com/Xqg8.gif',
-			'https://i.gifer.com/ZiaV.gif',
-			'https://i.gifer.com/33HU.gif',
-			'https://i.gifer.com/YzDb.gif',
-			'https://i.gifer.com/PYh.gif'
-		];
-
-		// Случайная гифка
-		const randomGif = santaGifs[Math.floor(Math.random() * santaGifs.length)];
-
-		// Создание элемента Санты
-		const santa = document.createElement('img');
-		santa.src = randomGif;
-		santa.alt = 'Santa';
-		santa.style.position = 'absolute';
-		santa.style.bottom = '10px';
-		santa.style.left = '-150px';
-		santa.style.height = '100px';
-		santa.style.cursor = 'pointer';
-
-		// Случайная скорость анимации (5–25 секунд)
-		const randomSpeed = Math.random() * 20 + 5; 
-		santa.style.animation = `santa-move ${randomSpeed}s linear`;
-		santa.style.zIndex = '2000';
-
-		santa.addEventListener('click', () => {
-			window.open('https://discord.gg/Mj7tFHe8Nz', '_blank');
-		});
-
-		document.body.appendChild(santa);
-	
-		// Удаление Санты после окончания анимации
-		santa.addEventListener('animationend', () => {
-			santa.remove();
-		});
-	}
+		    // Массив с URL гифок
+		    const santaGifs = [
+		        'https://i.gifer.com/Xqg8.gif',
+		        'https://i.gifer.com/ZiaV.gif',
+		        'https://i.gifer.com/33HU.gif',
+		        'https://i.gifer.com/YzDb.gif',
+		        'https://i.gifer.com/PYh.gif'
+		    ];
+		
+		    // Случайная гифка
+		    const randomGif = santaGifs[Math.floor(Math.random() * santaGifs.length)];
+		
+		    // Создание элемента Санты
+		    const santa = document.createElement('img');
+		    santa.src = randomGif;
+		    santa.alt = 'Santa';
+		    santa.style.position = 'absolute';
+		    santa.style.bottom = '10px';
+		    santa.style.left = '-150px';
+		    santa.style.height = '100px';
+		    santa.style.cursor = 'pointer';
+		
+		    // Случайная скорость анимации (5–25 секунд)
+		    const randomSpeed = Math.random() * 20 + 5; 
+		    santa.style.animation = `santa-move ${randomSpeed}s linear`;
+		    santa.style.zIndex = '2000';
+		
+		    // Проверяем, является ли гифка нужной
+		    if (randomGif === 'https://i.gifer.com/ZiaV.gif') {
+		        santa.addEventListener('click', () => {
+		            window.open('btn-converter-xml-to-ars.html', '_blank');
+		        });
+		    } else {
+		        santa.addEventListener('click', () => {
+		            window.open('https://discord.gg/Mj7tFHe8Nz', '_blank');
+		        });
+		    }
+		
+		    document.body.appendChild(santa);
+		
+		    // Удаление Санты после окончания анимации
+		    santa.addEventListener('animationend', () => {
+		        santa.remove();
+		    });
+		}
 
 	// Анимация Санты
 	const santaStyle = document.createElement('style');
