@@ -36,9 +36,9 @@
 </head>
 <body>
 <h2>Json DayZ Editor to CacheSpawner converter</h2>
-<textarea id="inputData" rows="20" placeholder="Paste input data here"></textarea>
-<button onclick="convertData()">Convert</button>
-<textarea id="outputData" rows="20" placeholder="Converted data will appear here"></textarea>
+<textarea id="inputData" rows="20" placeholder="Вставьте входные данные здесь"></textarea>
+<button onclick="convertData()">Конвертировать</button>
+<textarea id="outputData" rows="20" placeholder="Конвертированные данные появятся здесь"></textarea>
 
 <script>
 function convertData() {
@@ -54,8 +54,16 @@ function convertData() {
 
         var cacheMap = {}; // для отслеживания одинаковых класснеймов
 
-        inputData.m_SceneObjects.forEach(function(item) {
-            var className = item.param1;
+        // Проверяем, существует ли ключ 'Objects'
+        if (!inputData.Objects || !Array.isArray(inputData.Objects)) {
+            throw new Error("Неверный формат входных данных: отсутствует массив 'Objects'.");
+        }
+
+        inputData.Objects.forEach(function(item) {
+            var className = item.name;
+            var position = item.pos;
+            var orientation = item.ypr;
+
             if (!cacheMap[className]) { // Если такой класснейм еще не встречался
                 var cacheItem = {
                     "Classname": className,
@@ -83,8 +91,8 @@ function convertData() {
                 cacheMap[className] = cacheItem; // Добавляем в отслеживание
             }
             cacheMap[className].Coords.push({
-                "Position": item.param2,
-                "Orientation": item.param3
+                "Position": position,
+                "Orientation": orientation
             });
         });
 
@@ -96,7 +104,7 @@ function convertData() {
 
         document.getElementById('outputData').value = JSON.stringify(outputData, null, 2);
     } catch (error) {
-        document.getElementById('outputData').value = "Error: " + error.message;
+        document.getElementById('outputData').value = "Ошибка: " + error.message;
     }
 }
 </script>
