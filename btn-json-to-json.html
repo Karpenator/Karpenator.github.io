@@ -52,9 +52,8 @@ function convertData() {
             "CacheList": []
         };
 
-        var cacheMap = {}; // для отслеживания одинаковых класснеймов
+        var cacheMap = {};
 
-        // Проверяем, существует ли ключ 'Objects'
         if (!inputData.Objects || !Array.isArray(inputData.Objects)) {
             throw new Error("Неверный формат входных данных: отсутствует массив 'Objects'.");
         }
@@ -63,8 +62,7 @@ function convertData() {
             var className = item.name;
             var position = item.pos;
             var orientation = item.ypr;
-
-            if (!cacheMap[className]) { // Если такой класснейм еще не встречался
+            if (!cacheMap[className]) {
                 var cacheItem = {
                     "Classname": className,
                     "Min_Caches_In_Map": 0,
@@ -88,7 +86,7 @@ function convertData() {
                     }]
                 };
                 outputData.CacheList.push(cacheItem);
-                cacheMap[className] = cacheItem; // Добавляем в отслеживание
+                cacheMap[className] = cacheItem;
             }
             cacheMap[className].Coords.push({
                 "Position": position,
@@ -96,7 +94,6 @@ function convertData() {
             });
         });
 
-        // Задаем количество для каждого класса
         outputData.CacheList.forEach(function(cacheItem) {
             cacheItem.Min_Caches_In_Map = 0;
             cacheItem.Max_Caches_In_Map = cacheItem.Coords.length;
