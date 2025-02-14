@@ -148,6 +148,8 @@
         <button id="btn-vehicle-price-calculator">Vehicle Price Calculator</button>
         <button id="btn-types-to-classnames">Types to classnames converter</button>
         <button id="btn-classnames-to-events">Vehicle Class Name to DayZ events Formatter</button>
+        <button id="btn-class-to-exp-trader-veh">Classnames to EXP vehicle trader</button>
+        <button id="btn-exp-trader-veh-to-exp-trader-variants">Exp trader vehicle to EXP trader parts</button>
     </div>
 
     <div id="bottom-buttons">
@@ -391,8 +393,16 @@
 		
         document.getElementById("btn-scar-radiation-to-dem-radiation").addEventListener("click", function() {
             runProgram("btn-scar-radiation-to-dem-radiation.html");
-        });		
+        });	
 		
+        document.getElementById(btn-class-to-exp-trader-veh").addEventListener("click", function() {
+            runProgram("btn-class-to-exp-trader-veh.html");
+        });	
+		
+        document.getElementById("btn-exp-trader-veh-to-exp-trader-variants").addEventListener("click", function() {
+            runProgram("btn-exp-trader-veh-to-exp-trader-variants.html");
+        });
+	    
         document.getElementById("btn-discord").addEventListener("click", function() {
             window.open("https://discord.gg/Mj7tFHe8Nz", "_blank");
         });
