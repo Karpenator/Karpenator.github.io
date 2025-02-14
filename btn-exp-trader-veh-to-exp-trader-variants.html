@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exp trader vehicle to EXP trader parts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1C1C1C;
+            color: white;
+            padding: 20px;
+        }
+        button {
+            background-color: #222;
+            color: #76FF03;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 50vh;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            resize: none;
+        }
+        h1, h2 {
+            color: #76FF03;
+        }
+    </style>
+</head>
+<body>
+    <h1>Exp trader vehicle to EXP trader parts</h1>
+
+    <textarea id="inputData" rows="20" cols="100">
+{
+    "m_Version": 12,
+    "DisplayName": "Автомобили",
+    "Icon": "Deliver",
+    "Color": "FBFCFEFF",
+    "IsExchange": 0,
+    "InitStockPercent": 100,
+    "Items": [
+        {
+            "ClassName": "Jeep_Wrangler",
+            "MaxPriceThreshold": 20000000,
+            "MinPriceThreshold": 20000000,
+            "SellPricePercent": -1.0,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 1,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "Jeep_Wrangler_Doors_Driver",
+                "Jeep_Wrangler_Doors_coDriver",
+                "Jeep_Wrangler_Doors_trunk",
+                "Jeep_Wrangler_Doors_hood",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "HeadlightH7",
+                "HeadlightH7",
+                "CarBattery",
+                "CarRadiator",
+                "SparkPlug"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Jeep_Wrangler_blue",
+            "MaxPriceThreshold": 20000000,
+            "MinPriceThreshold": 20000000,
+            "SellPricePercent": -1.0,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 1,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "Jeep_Wrangler_Doors_Driver_blue",
+                "Jeep_Wrangler_Doors_coDriver_blue",
+                "Jeep_Wrangler_Doors_trunk_blue",
+                "Jeep_Wrangler_Doors_hood_blue",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "HeadlightH7",
+                "HeadlightH7",
+                "CarBattery",
+                "CarRadiator",
+                "SparkPlug"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Jeep_Wrangler_kamo",
+            "MaxPriceThreshold": 20000000,
+            "MinPriceThreshold": 20000000,
+            "SellPricePercent": -1.0,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 1,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "Jeep_Wrangler_Doors_Driver_kamo",
+                "Jeep_Wrangler_Doors_coDriver_kamo",
+                "Jeep_Wrangler_Doors_trunk_kamo",
+                "Jeep_Wrangler_Doors_hood_kamo",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "HeadlightH7",
+                "HeadlightH7",
+                "CarBattery",
+                "CarRadiator",
+                "SparkPlug"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Jeep_Wrangler_red",
+            "MaxPriceThreshold": 20000000,
+            "MinPriceThreshold": 20000000,
+            "SellPricePercent": -1.0,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 1,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "Jeep_Wrangler_Doors_Driver_red",
+                "Jeep_Wrangler_Doors_coDriver_red",
+                "Jeep_Wrangler_Doors_trunk_red",
+                "Jeep_Wrangler_Doors_hood_red",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "Jeep_Wrangler_Wheel",
+                "HeadlightH7",
+                "HeadlightH7",
+                "CarBattery",
+                "CarRadiator",
+                "SparkPlug"
+            ],
+            "Variants": []
+        }
+    ]
+}
+    </textarea>
+    <br>
+    <button onclick="convertData()">Convert</button>
+    <h2>Converted Data</h2>
+    <textarea id="outputData" rows="20" cols="100"></textarea>
+    <script>
+        function convertData() {
+            const input = JSON.parse(document.getElementById('inputData').value);
+            const items = input.Items;
+
+            const groupedParts = {};
+            const suffixPattern = /_(driver|coDriver|trunk|hood|wheel|blue|red|kamo|black|green|yellow|rust|cargo\d+|wheel\d+)$/i;
+
+            items.forEach(item => {
+                const spawnAttachments = item.SpawnAttachments;
+
+                spawnAttachments.forEach(part => {
+                    if (["HeadlightH7", "CarBattery", "CarRadiator", "SparkPlug"].includes(part)) return;
+
+                    if (!suffixPattern.test(part)) return;
+
+                    const parts = part.split('_');
+                    
+                    let baseLength = parts.length - 1;
+                    while (baseLength > 0 && !suffixPattern.test(parts.slice(0, baseLength).join('_'))) {
+                        baseLength--;
+                    }
+
+                    if (baseLength <= 0) return;
+
+                    const basePart = parts.slice(0, baseLength).join('_');
+                    const suffix = parts.slice(baseLength).join('_');
+
+                    if (!basePart.includes('_Doors_') && !basePart.includes('_Wheel')) {
+                        if (!/_(Doors|Wheel)/.test(basePart)) return;
+                    }
+
+                    if (!groupedParts[basePart]) {
+                        groupedParts[basePart] = {
+                            ClassName: basePart,
+                            Variants: []
+                        };
+                    }
+
+                    if (!groupedParts[basePart].Variants.includes(part)) {
+                        groupedParts[basePart].Variants.push(part);
+                    }
+                });
+            });
+
+            const result = {
+                "m_Version": 12,
+                "DisplayName": "Детали для авто",
+                "Icon": "Deliver",
+                "Color": "FBFCFEFF",
+                "IsExchange": 0,
+                "InitStockPercent": 100,
+                "Items": Object.values(groupedParts).map(part => ({
+                    "ClassName": part.ClassName,
+                    "MaxPriceThreshold": 5000,
+                    "MinPriceThreshold": 5000,
+                    "SellPricePercent": -1.0,
+                    "MaxStockThreshold": 1,
+                    "MinStockThreshold": 1,
+                    "QuantityPercent": -1,
+                    "SpawnAttachments": [],
+                    "Variants": part.Variants
+                }))
+            };
+
+            document.getElementById('outputData').value = JSON.stringify(result, null, 4);
+        }
+    </script>
+</body>
+</html>
