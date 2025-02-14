@@ -21,10 +21,10 @@
             margin-bottom: 30px;
         }
 
-        #main-buttons {
+        #main-buttons, #bottom-buttons {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            grid-gap: 15px;
+            gap: 15px;
             padding: 0 10px;
         }
 
@@ -48,15 +48,8 @@
         }
 
         #bottom-buttons {
-            display: flex;
             justify-content: center;
             margin-top: 30px;
-        }
-
-        #bottom-buttons button {
-            margin: 0 10px;
-            font-size: 16px;
-            padding: 10px 20px;
         }
 
         #palette {
@@ -78,50 +71,45 @@
         .color-swatch:hover {
             transform: scale(1.2);
         }
-		
-		#snow-container {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			pointer-events: none;
-			z-index: 1000;
-			overflow: hidden;
-		}
 
-		.snowflake {
-			position: absolute;
-			top: -10px;
-			color: white;
-			font-size: 10px;
-			opacity: 0.8;
-			animation: fall linear infinite;
-		}
+        #snow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
 
-		@keyframes fall {
-			0% {
-				transform: translateY(-100%);
-			}
-			100% {
-				transform: translateY(100vh);
-			}
-		}
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: white;
+            font-size: 10px;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
     </style>
 </head>
 <body>
-	<div id="snow-container"></div>
-	
+    <div id="snow-container"></div>
     <h1>Karpenator's DayZ Configuration Tools</h1>
 
     <div id="palette">
-		<div class="color-swatch" style="background-color: #333;" data-color="#333"></div>
-		<div class="color-swatch" style="background-color: #D22B2B;" data-color="#D22B2B"></div>
-		<div class="color-swatch" style="background-color: #2B6ED2;" data-color="#2B6ED2"></div>
-		<div class="color-swatch" style="background-color: #28A745;" data-color="#28A745"></div>
-		<div class="color-swatch" style="background-color: #FFC107;" data-color="#FFC107"></div>
-		<button id="btn-reset-colors" style="margin-left: 20px; padding: 10px;">Сбросить цвета</button>
-	</div>
+        <div class="color-swatch" style="background-color: #333;" data-color="#333"></div>
+        <div class="color-swatch" style="background-color: #D22B2B;" data-color="#D22B2B"></div>
+        <div class="color-swatch" style="background-color: #2B6ED2;" data-color="#2B6ED2"></div>
+        <div class="color-swatch" style="background-color: #28A745;" data-color="#28A745"></div>
+        <div class="color-swatch" style="background-color: #FFC107;" data-color="#FFC107"></div>
+        <button id="btn-reset-colors" style="margin-left: 20px; padding: 10px;">Сбросить цвета</button>
+    </div>
 
     <div id="main-buttons">
         <button id="btn-banking">Ultima BANK в BANKING</button>
@@ -158,257 +146,130 @@
     </div>
 
     <script>
-		const snowContainer = document.getElementById('snow-container');
-
-		function createSnowflake() {
-			const snowflake = document.createElement('div');
-			snowflake.classList.add('snowflake');
-			snowflake.innerText = '❄';
-			snowflake.style.left = Math.random() * 100 + 'vw';
-			snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
-			snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
-			snowflake.style.opacity = Math.random();
-			snowContainer.appendChild(snowflake);
-			setTimeout(() => {
-				snowflake.remove();
-			}, 5000);
-		}
-
-		setInterval(createSnowflake, 50);
-
-		function createSanta() {
-		    // Массив с URL гифок
-		    const santaGifs = [
-		        'https://i.gifer.com/Xqg8.gif',
-		        'https://i.gifer.com/ZiaV.gif',
-		        'https://i.gifer.com/33HU.gif',
-		        'https://i.gifer.com/YzDb.gif',
-		        'https://i.gifer.com/PYh.gif'
-		    ];
-		
-		    // Случайная гифка
-		    const randomGif = santaGifs[Math.floor(Math.random() * santaGifs.length)];
-		
-		    // Создание элемента Санты
-		    const santa = document.createElement('img');
-		    santa.src = randomGif;
-		    santa.alt = 'Santa';
-		    santa.style.position = 'absolute';
-		    santa.style.bottom = '10px';
-		    santa.style.left = '-150px';
-		    santa.style.height = '120px';
-		    santa.style.cursor = 'pointer';
-		
-		    // Случайная скорость анимации (5–25 секунд)
-		    const randomSpeed = Math.random() * 20 + 5; 
-		    santa.style.animation = `santa-move ${randomSpeed}s linear`;
-		    santa.style.zIndex = '2000';
-		
-		    // Проверяем, является ли гифка нужной
-		    if (randomGif === 'https://i.gifer.com/ZiaV.gif') {
-		        santa.addEventListener('click', () => {
-		            window.open('btn-converter-xml-to-ars.html', '_blank');
-		        });
-		    } else {
-		        santa.addEventListener('click', () => {
-		            window.open('https://discord.gg/Mj7tFHe8Nz', '_blank');
-		        });
-		    }
-		
-		    document.body.appendChild(santa);
-		
-		    // Удаление Санты после окончания анимации
-		    santa.addEventListener('animationend', () => {
-		        santa.remove();
-		    });
-		}
-
-	// Анимация Санты
-	const santaStyle = document.createElement('style');
-	santaStyle.innerHTML = `
-		@keyframes santa-move {
-			0% {
-				left: -150px;
-			}
-			100% {
-				left: 100vw;
-			}
-		}
-	`;
-	document.head.appendChild(santaStyle);
-	
-	// Случайный запуск появления анимации
-	function startSanta() {
-		const randomInterval = Math.random() * 10000 + 3000; // Рандомное время (3–10 секунд)
-		setTimeout(() => {
-			if (Math.random() > 0.1) { // Шанс появления 90%
-				createSanta();
-			}
-			startSanta();
-		}, randomInterval);
-	}
-
-	startSanta();
-
-	document.getElementById('btn-reset-colors').addEventListener('click', () => {
-		buttons.forEach((button) => {
-			button.style.backgroundColor = '#333';
-			saveButtonColor(button.id, '#333');
-		});
-		alert('Цвета кнопок успешно сброшены!');
-	});
+        const snowContainer = document.getElementById('snow-container');
+        const buttons = document.querySelectorAll('#main-buttons button, #bottom-buttons button');
         const palette = document.querySelector('#palette');
-        const buttons = document.querySelectorAll('#main-buttons button');
-        let selectedColor = '#333'; // Default color
+        let selectedColor = '#333';
 
-        // Load saved colors from localStorage
-        function loadButtonColors() {
-            buttons.forEach((button) => {
-                const savedColor = localStorage.getItem(button.id);
-                if (savedColor) {
-                    button.style.backgroundColor = savedColor;
-                }
+        // Snowflake animation
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.innerText = '❄';
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+            snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+            snowflake.style.opacity = Math.random();
+            snowContainer.appendChild(snowflake);
+            setTimeout(() => snowflake.remove(), 5000);
+        }
+
+        setInterval(createSnowflake, 50);
+
+        // Santa animation
+        const santaGifs = [
+            'https://i.gifer.com/Xqg8.gif',
+            'https://i.gifer.com/ZiaV.gif',
+            'https://i.gifer.com/33HU.gif',
+            'https://i.gifer.com/YzDb.gif',
+            'https://i.gifer.com/PYh.gif'
+        ];
+
+        function createSanta() {
+            const randomGif = santaGifs[Math.floor(Math.random() * santaGifs.length)];
+            const santa = document.createElement('img');
+            santa.src = randomGif;
+            santa.alt = 'Santa';
+            santa.style.position = 'absolute';
+            santa.style.bottom = '10px';
+            santa.style.left = '-150px';
+            santa.style.height = '120px';
+            santa.style.cursor = 'pointer';
+            santa.style.animation = `santa-move ${Math.random() * 20 + 5}s linear`;
+            santa.style.zIndex = '2000';
+
+            santa.addEventListener('click', () => {
+                window.open(randomGif === 'https://i.gifer.com/ZiaV.gif' ? 'btn-converter-xml-to-ars.html' : 'https://discord.gg/Mj7tFHe8Nz', '_blank');
             });
+
+            document.body.appendChild(santa);
+            santa.addEventListener('animationend', () => santa.remove());
         }
 
-        // Save color to localStorage
-        function saveButtonColor(buttonId, color) {
-            localStorage.setItem(buttonId, color);
+        function startSanta() {
+            setTimeout(() => {
+                if (Math.random() > 0.1) createSanta();
+                startSanta();
+            }, Math.random() * 10000 + 3000);
         }
 
-        // Event listener for color palette
+        startSanta();
+
+        // Color palette functionality
         palette.addEventListener('click', (event) => {
             if (event.target.classList.contains('color-swatch')) {
                 selectedColor = event.target.getAttribute('data-color');
             }
         });
 
-        // Event listeners for buttons
-        buttons.forEach((button) => {
+        buttons.forEach(button => {
             button.addEventListener('click', () => {
-                button.style.backgroundColor = selectedColor;
-                saveButtonColor(button.id, selectedColor);
+                if (button.id === 'btn-reset-colors') {
+                    buttons.forEach(btn => {
+                        btn.style.backgroundColor = '#333';
+                        localStorage.setItem(btn.id, '#333');
+                    });
+                    alert('Цвета кнопок успешно сброшены!');
+                } else {
+                    button.style.backgroundColor = selectedColor;
+                    localStorage.setItem(button.id, selectedColor);
+                }
             });
         });
 
-        loadButtonColors(); // Initialize colors on page load
-
-        // Function to open a new program page
-        function runProgram(url) {
-            window.open(url, "_blank");
-        }
-
-        // Event listeners for the program buttons
-        document.getElementById("btn-banking").addEventListener("click", function() {
-            runProgram("btn-banking.html");
+        // Load saved colors
+        buttons.forEach(button => {
+            const savedColor = localStorage.getItem(button.id);
+            if (savedColor) button.style.backgroundColor = savedColor;
         });
 
-        document.getElementById("btn-trader-plus").addEventListener("click", function() {
-            runProgram("btn-trader-plus.html");
-        });
+        // Button URLs
+        const buttonUrls = {
+            'btn-banking': 'btn-banking.html',
+            'btn-trader-plus': 'btn-trader-plus.html',
+            'btn-trader-creator': 'btn-trader-creator.html',
+            'btn-c-converter': 'btn-c-converter.html',
+            'btn-exp-to-jones': 'btn-exp-to-jones.html',
+            'btn-exp-to-traderplus': 'btn-exp-to-traderplus.html',
+            'btn-jones-to-exp': 'btn-jones-to-exp.html',
+            'btn-traderplus-to-exp': 'btn-traderplus-to-exp.html',
+            'btn-traderplus-to-jones': 'btn-traderplus-to-jones.html',
+            'btn-json-to-json': 'btn-json-to-json.html',
+            'btn-extract-classnames-from-exp': 'btn-extract-classnames-from-exp.html',
+            'btn-generate-sls-from-classnames': 'btn-generate-sls-from-classnames.html',
+            'btn-zakat-to-dem-spawner': 'btn-zakat-to-dem-spawner.html',
+            'btn-catch-to-dem': 'btn-catch-to-dem.html',
+            'btn-zakat-radiation-to-syberia-radiation': 'btn-zakat-radiation-to-syberia-radiation.html',
+            'btn-zakat-radiation-to-dem-radiation': 'btn-zakat-radiation-to-dem-radiation.html',
+            'btn-scar-radiation-to-dem-radiation': 'btn-scar-radiation-to-dem-radiation.html',
+            'btn-exp-market-from-vehicle-to-events-formatter': 'btn-exp-market-from-vehicle-to-events-formatter.html',
+            'btn-classnames-to-xml-nom-min': 'btn-classnames-to-xml-nom-min.html',
+            'btn-coord-xam-to-eventspawn': 'btn-coord-xam-to-eventspawn.html',
+            'btn-exp-market-classnmae-filter': 'btn-exp-market-classnmae-filter.html',
+            'btn-vehicle-price-calculator': 'btn-vehicle-price-calculator.html',
+            'btn-types-to-classnames': 'btn-types-to-classnames.html',
+            'btn-classnames-to-events': 'btn-classnames-to-events.html',
+            'btn-class-to-exp-trader-veh': 'btn-class-to-exp-trader-veh.html',
+            'btn-exp-trader-veh-to-exp-trader-variants': 'btn-exp-trader-veh-to-exp-trader-variants.html',
+            'btn-discord': 'https://discord.gg/Mj7tFHe8Nz',
+            'btn-donate': 'https://boosty.to/karpenator/donate'
+        };
 
-        document.getElementById("btn-trader-creator").addEventListener("click", function() {
-            runProgram("btn-trader-creator.html");
-        });
-
-        document.getElementById("btn-c-converter").addEventListener("click", function() {
-            runProgram("btn-c-converter.html");
-        });
-
-        document.getElementById("btn-exp-to-jones").addEventListener("click", function() {
-            runProgram("btn-exp-to-jones.html");
-        });
-
-        document.getElementById("btn-exp-to-traderplus").addEventListener("click", function() {
-            runProgram("btn-exp-to-traderplus.html");
-        });
-
-        document.getElementById("btn-jones-to-exp").addEventListener("click", function() {
-            runProgram("btn-jones-to-exp.html");
-        });
-
-        document.getElementById("btn-traderplus-to-exp").addEventListener("click", function() {
-            runProgram("btn-traderplus-to-exp.html");
-        });
-
-        document.getElementById("btn-traderplus-to-jones").addEventListener("click", function() {
-            runProgram("btn-traderplus-to-jones.html");
-        });
-
-        document.getElementById("btn-json-to-json").addEventListener("click", function() {
-            runProgram("btn-json-to-json.html");
-        });
-		
-        document.getElementById("btn-extract-classnames-from-exp").addEventListener("click", function() {
-            runProgram("btn-extract-classnames-from-exp.html");
-        });
-		
-        document.getElementById("btn-generate-sls-from-classnames").addEventListener("click", function() {
-            runProgram("btn-generate-sls-from-classnames.html");
-        });
-		
-        document.getElementById("btn-zakat-to-dem-spawner").addEventListener("click", function() {
-            runProgram("btn-zakat-to-dem-spawner.html");
-        });
-		
-        document.getElementById("btn-catch-to-dem").addEventListener("click", function() {
-            runProgram("btn-catch-to-dem.html");
-        });
-		
-        document.getElementById("btn-zakat-radiation-to-syberia-radiation").addEventListener("click", function() {
-            runProgram("btn-zakat-radiation-to-syberia-radiation.html");
-        });
-		
-        document.getElementById("btn-zakat-radiation-to-dem-radiation").addEventListener("click", function() {
-            runProgram("btn-zakat-radiation-to-dem-radiation.html");
-        });
-		
-        document.getElementById("btn-exp-market-from-vehicle-to-events-formatter").addEventListener("click", function() {
-            runProgram("btn-exp-market-from-vehicle-to-events-formatter.html");
-        });
-		
-        document.getElementById("btn-classnames-to-xml-nom-min").addEventListener("click", function() {
-            runProgram("btn-classnames-to-xml-nom-min.html");
-        });
-		
-        document.getElementById("btn-coord-xam-to-eventspawn").addEventListener("click", function() {
-            runProgram("btn-coord-xam-to-eventspawn.html");
-        });
-		
-        document.getElementById("btn-exp-market-classnmae-filter").addEventListener("click", function() {
-            runProgram("btn-exp-market-classnmae-filter.html");
-        });
-		
-        document.getElementById("btn-vehicle-price-calculator").addEventListener("click", function() {
-            runProgram("btn-vehicle-price-calculator.html");
-        });
-		
-        document.getElementById("btn-types-to-classnames").addEventListener("click", function() {
-            runProgram("btn-types-to-classnames.html");
-        });
-		
-        document.getElementById("btn-classnames-to-events").addEventListener("click", function() {
-            runProgram("btn-classnames-to-events.html");
-        });
-		
-        document.getElementById("btn-scar-radiation-to-dem-radiation").addEventListener("click", function() {
-            runProgram("btn-scar-radiation-to-dem-radiation.html");
-        });	
-		
-        document.getElementById(btn-class-to-exp-trader-veh").addEventListener("click", function() {
-            runProgram("btn-class-to-exp-trader-veh.html");
-        });	
-		
-        document.getElementById("btn-exp-trader-veh-to-exp-trader-variants").addEventListener("click", function() {
-            runProgram("btn-exp-trader-veh-to-exp-trader-variants.html");
-        });
-	    
-        document.getElementById("btn-discord").addEventListener("click", function() {
-            window.open("https://discord.gg/Mj7tFHe8Nz", "_blank");
-        });
-
-        document.getElementById("btn-donate").addEventListener("click", function() {
-            window.open("https://boosty.to/karpenator/donate", "_blank");
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const url = buttonUrls[button.id];
+                if (url) window.open(url, '_blank');
+            });
         });
     </script>
 </body>
