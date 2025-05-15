@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,275 +14,270 @@
             padding: 20px;
         }
 
-        h1 {
-            font-size: 40px;
-            text-align: center;
-            color: #D22B2B;
-            text-shadow: 0 0 10px #8B0000;
-            margin-bottom: 30px;
-        }
+```
+    h1 {
+        font-size: 40px;
+        text-align: center;
+        color: #D22B2B;
+        text-shadow: 0 0 10px #8B0000;
+        margin-bottom: 30px;
+    }
 
-        #main-buttons, #bottom-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            padding: 0 10px;
-        }
+    #main-buttons, #bottom-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        padding: 0 10px;
+    }
 
-        button {
-            font-size: 16px;
-            padding: 15px;
-            background-color: #333;
-            color: #E2E2E2;
-            border: 1px solid #444;
-            border-radius: 5px;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
+    button {
+        font-size: 16px;
+        padding: 15px;
+        background-color: #333;
+        color: #E2E2E2;
+        border: 1px solid #444;
+        border-radius: 5px;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
 
-        button:hover {
-            background-color: #D22B2B;
-            color: white;
-            box-shadow: 0 4px 15px rgba(210, 43, 43, 0.5);
-        }
+    button:hover {
+        background-color: #D22B2B;
+        color: white;
+        box-shadow: 0 4px 15px rgba(210, 43, 43, 0.5);
+    }
 
-        #bottom-buttons {
-            justify-content: center;
-            margin-top: 30px;
-        }
+    #bottom-buttons {
+        justify-content: center;
+        margin-top: 30px;
+    }
 
-        #palette {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+    #palette {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
 
-        .color-swatch {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid white;
-            transition: transform 0.2s;
-        }
+    .color-swatch {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid white;
+        transition: transform 0.2s;
+    }
 
-        .color-swatch:hover {
-            transform: scale(1.2);
-        }
+    .color-swatch:hover {
+        transform: scale(1.2);
+    }
 
-        #snow-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1000;
-            overflow: hidden;
-        }
+    #snow-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1000;
+        overflow: hidden;
+    }
 
-        .snowflake {
-            position: absolute;
-            top: -10px;
-            color: white;
-            font-size: 10px;
-            opacity: 0.8;
-            animation: fall linear infinite;
-        }
+    .snowflake {
+        position: absolute;
+        top: -10px;
+        color: white;
+        font-size: 10px;
+        opacity: 0.8;
+        animation: fall linear infinite;
+    }
 
-        @keyframes fall {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100vh); }
-        }
-    </style>
+    @keyframes fall {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100vh); }
+    }
+</style>
+```
+
 </head>
 <body>
     <div id="snow-container"></div>
     <h1>Karpenator's DayZ Configuration Tools</h1>
 
-    <div id="palette">
-        <div class="color-swatch" style="background-color: #333;" data-color="#333"></div>
-        <div class="color-swatch" style="background-color: #D22B2B;" data-color="#D22B2B"></div>
-        <div class="color-swatch" style="background-color: #2B6ED2;" data-color="#2B6ED2"></div>
-        <div class="color-swatch" style="background-color: #28A745;" data-color="#28A745"></div>
-        <div class="color-swatch" style="background-color: #FFC107;" data-color="#FFC107"></div>
-        <button id="btn-reset-colors" style="margin-left: 20px; padding: 10px;">Сбросить цвета</button>
-    </div>
+```
+<div id="palette">
+    <div class="color-swatch" style="background-color: #333;" data-color="#333"></div>
+    <div class="color-swatch" style="background-color: #D22B2B;" data-color="#D22B2B"></div>
+    <div class="color-swatch" style="background-color: #2B6ED2;" data-color="#2B6ED2"></div>
+    <div class="color-swatch" style="background-color: #28A745;" data-color="#28A745"></div>
+    <div class="color-swatch" style="background-color: #FFC107;" data-color="#FFC107"></div>
+    <button id="btn-reset-colors" style="margin-left: 20px; padding: 10px;">Сбросить цвета</button>
+</div>
 
-    <div id="main-buttons">
-        <button id="btn-banking">Ultima BANK в BANKING</button>
-        <button id="btn-trader-plus">Banking to TraderPlus</button>
-        <button id="btn-trader-creator">Trader Config Creator</button>
-        <button id="btn-c-converter">C to map converter</button>
-        <button id="btn-exp-to-jones">Exp to Jones</button>
-        <button id="btn-exp-to-traderplus">Exp to TraderPlus</button>
-        <button id="btn-jones-to-exp">Jones to Exp</button>
-        <button id="btn-traderplus-to-exp">TraderPlus to Exp</button>
-        <button id="btn-traderplus-to-jones">TraderPlus to Jones</button>
-        <button id="btn-json-to-json">Json DayZ Editor to CacheSpawner converter</button>
-        <button id="btn-extract-classnames-from-exp">Extract classnames from Exp Trader</button>
-        <button id="btn-generate-sls-from-classnames">Convert Classnames to SLS</button>
-        <button id="btn-zakat-to-dem-spawner">Convert Zakat Spawner to Demands Spawner</button>
-        <button id="btn-catch-to-dem">Convert CacheSpawner to Demands Spawner</button>
-        <button id="btn-zakat-radiation-to-syberia-radiation">Convert Zakat Radiation to Syberia</button>
-        <button id="btn-zakat-radiation-to-dem-radiation">Convert Zakat Radiation to Demands Radiation</button>
-        <button id="btn-scar-radiation-to-dem-radiation">Convert Scar Radiation to Demands Radiation</button>
-        <button id="btn-exp-market-from-vehicle-to-events-formatter">Exp Market from vehicle to events formatter</button>
-        <button id="btn-classnames-to-xml-nom-min">Modify types.xml from classnames</button>
-        <button id="btn-coord-xam-to-eventspawn">dayz.xam.nu coordinate to XML Formatter</button>
-        <button id="btn-exp-market-classnmae-filter">Exp Market classnames filter</button>
-        <button id="btn-vehicle-price-calculator">Vehicle Price Calculator</button>
-        <button id="btn-types-to-classnames">Types to classnames converter</button>
-        <button id="btn-classnames-to-events">Vehicle Class Name to DayZ events Formatter</button>
-        <button id="btn-class-to-exp-trader-veh">Classnames to EXP vehicle trader</button>
-        <button id="btn-exp-trader-veh-to-exp-trader-variants">Exp trader vehicle to EXP trader parts</button>
-    </div>
+<div id="main-buttons">
+    <button id="btn-banking">Ultima BANK в BANKING</button>
+    <button id="btn-trader-plus">Banking to TraderPlus</button>
+    <button id="btn-trader-creator">Trader Config Creator</button>
+    <button id="btn-c-converter">C to map converter</button>
+    <button id="btn-exp-to-jones">Exp to Jones</button>
+    <button id="btn-exp-to-traderplus">Exp to TraderPlus</button>
+    <button id="btn-jones-to-exp">Jones to Exp</button>
+    <button id="btn-traderplus-to-exp">TraderPlus to Exp</button>
+    <button id="btn-traderplus-to-jones">TraderPlus to Jones</button>
+    <button id="btn-json-to-json">Json DayZ Editor to CacheSpawner converter</button>
+    <button id="btn-extract-classnames-from-exp">Extract classnames from Exp Trader</button>
+    <button id="btn-generate-sls-from-classnames">Convert Classnames to SLS</button>
+    <button id="btn-zakat-to-dem-spawner">Convert Zakat Spawner to Demands Spawner</button>
+    <button id="btn-catch-to-dem">Convert CacheSpawner to Demands Spawner</button>
+    <button id="btn-zakat-radiation-to-syberia-radiation">Convert Zakat Radiation to Syberia</button>
+    <button id="btn-zakat-radiation-to-dem-radiation">Convert Zakat Radiation to Demands Radiation</button>
+    <button id="btn-scar-radiation-to-dem-radiation">Convert Scar Radiation to Demands Radiation</button>
+    <button id="btn-exp-market-from-vehicle-to-events-formatter">Exp Market from vehicle to events formatter</button>
+    <button id="btn-classnames-to-xml-nom-min">Modify types.xml from classnames</button>
+    <button id="btn-coord-xam-to-eventspawn">dayz.xam.nu coordinate to XML Formatter</button>
+    <button id="btn-exp-market-classnmae-filter">Exp Market classnames filter</button>
+    <button id="btn-vehicle-price-calculator">Vehicle Price Calculator</button>
+    <button id="btn-types-to-classnames">Types to classnames converter</button>
+    <button id="btn-classnames-to-events">Vehicle Class Name to DayZ events Formatter</button>
+    <button id="btn-class-to-exp-trader-veh">Classnames to EXP vehicle trader</button>
+    <button id="btn-exp-trader-veh-to-exp-trader-variants">Exp trader vehicle to EXP trader parts</button>
+</div>
 
-    <div id="bottom-buttons">
-        <button id="btn-discord">Дискорд</button>
-        <button id="btn-donate">Пожертвовать</button>
-    </div>
+<div id="bottom-buttons">
+    <button id="btn-discord">Дискорд</button>
+    <button id="btn-donate">Пожертвовать</button>
+</div>
 
-    <script>
-        const snowContainer = document.getElementById('snow-container');
-        const buttons = document.querySelectorAll('#main-buttons button, #bottom-buttons button');
-        const palette = document.querySelector('#palette');
-        const toggleSnow = document.getElementById('toggle-snow');
-        let selectedColor = '#333';
-        let snowEnabled = true;
-        
-        toggleSnow.addEventListener('change', () => {
-            snowEnabled = toggleSnow.checked;
+<script>
+    const snowContainer = document.getElementById('snow-container');
+    const buttons = document.querySelectorAll('#main-buttons button, #bottom-buttons button');
+    const palette = document.querySelector('#palette');
+    let selectedColor = '#333';
+
+    // Snowflake animation
+    function createSnowflake() {
+        const snowflake = document.createElement('div');
+        snowflake.classList.add('snowflake');
+        snowflake.innerText = '❄';
+        snowflake.style.left = Math.random() * 100 + 'vw';
+        snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+        snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+        snowflake.style.opacity = Math.random();
+        snowContainer.appendChild(snowflake);
+        setTimeout(() => snowflake.remove(), 5000);
+    }
+
+    setInterval(createSnowflake, 50);
+
+    // Santa animation
+    const santaGifs = [
+        'https://i.gifer.com/Xqg8.gif',
+        'https://i.gifer.com/ZiaV.gif',
+        'https://i.gifer.com/33HU.gif',
+        'https://i.gifer.com/YzDb.gif',
+        'https://i.gifer.com/PYh.gif'
+    ];
+
+    function createSanta() {
+        const randomGif = santaGifs[Math.floor(Math.random() * santaGifs.length)];
+        const santa = document.createElement('img');
+        santa.src = randomGif;
+        santa.alt = 'Santa';
+        santa.style.position = 'absolute';
+        santa.style.bottom = '10px';
+        santa.style.left = '-150px';
+        santa.style.height = '120px';
+        santa.style.cursor = 'pointer';
+        santa.style.animation = `santa-move ${Math.random() * 20 + 5}s linear`;
+        santa.style.zIndex = '2000';
+
+        santa.addEventListener('click', () => {
+            window.open(randomGif === 'https://i.gifer.com/ZiaV.gif' ? 'btn-converter-xml-to-ars.html' : 'https://discord.gg/Mj7tFHe8Nz', '_blank');
         });
-        
-        // Snowflake animation
-        function createSnowflake() {
-            if (!snowEnabled) return;
-            const snowflake = document.createElement('div');
-            snowflake.classList.add('snowflake');
-            snowflake.innerText = '❄';
-            snowflake.style.left = Math.random() * 100 + 'vw';
-            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
-            snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
-            snowflake.style.opacity = Math.random();
-            snowContainer.appendChild(snowflake);
-            setTimeout(() => snowflake.remove(), 5000);
+
+        document.body.appendChild(santa);
+        santa.addEventListener('animationend', () => santa.remove());
+    }
+
+    function startSanta() {
+        setTimeout(() => {
+            if (Math.random() > 0.1) createSanta();
+            startSanta();
+        }, Math.random() * 10000 + 3000);
+    }
+
+    startSanta();
+
+    // Color palette functionality
+    palette.addEventListener('click', (event) => {
+        if (event.target.classList.contains('color-swatch')) {
+            selectedColor = event.target.getAttribute('data-color');
         }
-    
-        setInterval(createSnowflake, 50)
+    });
 
-        // Santa animation
-        const santaGifs = [
-            'https://i.gifer.com/Xqg8.gif',
-            'https://i.gifer.com/ZiaV.gif',
-            'https://i.gifer.com/33HU.gif',
-            'https://i.gifer.com/YzDb.gif',
-            'https://i.gifer.com/PYh.gif'
-        ];
-
-        function createSanta() {
-            const randomGif = santaGifs[Math.floor(Math.random() * santaGifs.length)];
-            const santa = document.createElement('img');
-            santa.src = randomGif;
-            santa.alt = 'Santa';
-            santa.style.position = 'absolute';
-            santa.style.bottom = '10px';
-            santa.style.left = '-150px';
-            santa.style.height = '120px';
-            santa.style.cursor = 'pointer';
-            santa.style.animation = `santa-move ${Math.random() * 20 + 5}s linear`;
-            santa.style.zIndex = '2000';
-
-            santa.addEventListener('click', () => {
-                window.open(randomGif === 'https://i.gifer.com/ZiaV.gif' ? 'btn-converter-xml-to-ars.html' : 'https://discord.gg/Mj7tFHe8Nz', '_blank');
-            });
-
-            document.body.appendChild(santa);
-            santa.addEventListener('animationend', () => santa.remove());
-        }
-
-        function startSanta() {
-            setTimeout(() => {
-                if (Math.random() > 0.1) createSanta();
-                startSanta();
-            }, Math.random() * 10000 + 3000);
-        }
-
-        startSanta();
-
-        // Color palette functionality
-        palette.addEventListener('click', (event) => {
-            if (event.target.classList.contains('color-swatch')) {
-                selectedColor = event.target.getAttribute('data-color');
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (button.id === 'btn-reset-colors') {
+                buttons.forEach(btn => {
+                    btn.style.backgroundColor = '#333';
+                    localStorage.setItem(btn.id, '#333');
+                });
+                alert('Цвета кнопок успешно сброшены!');
+            } else {
+                button.style.backgroundColor = selectedColor;
+                localStorage.setItem(button.id, selectedColor);
             }
         });
+    });
 
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                if (button.id === 'btn-reset-colors') {
-                    buttons.forEach(btn => {
-                        btn.style.backgroundColor = '#333';
-                        localStorage.setItem(btn.id, '#333');
-                    });
-                    alert('Цвета кнопок успешно сброшены!');
-                } else {
-                    button.style.backgroundColor = selectedColor;
-                    localStorage.setItem(button.id, selectedColor);
-                }
-            });
+    // Load saved colors
+    buttons.forEach(button => {
+        const savedColor = localStorage.getItem(button.id);
+        if (savedColor) button.style.backgroundColor = savedColor;
+    });
+
+    // Button URLs
+    const buttonUrls = {
+        'btn-banking': 'btn-banking.html',
+        'btn-trader-plus': 'btn-trader-plus.html',
+        'btn-trader-creator': 'btn-trader-creator.html',
+        'btn-c-converter': 'btn-c-converter.html',
+        'btn-exp-to-jones': 'btn-exp-to-jones.html',
+        'btn-exp-to-traderplus': 'btn-exp-to-traderplus.html',
+        'btn-jones-to-exp': 'btn-jones-to-exp.html',
+        'btn-traderplus-to-exp': 'btn-traderplus-to-exp.html',
+        'btn-traderplus-to-jones': 'btn-traderplus-to-jones.html',
+        'btn-json-to-json': 'btn-json-to-json.html',
+        'btn-extract-classnames-from-exp': 'btn-extract-classnames-from-exp.html',
+        'btn-generate-sls-from-classnames': 'btn-generate-sls-from-classnames.html',
+        'btn-zakat-to-dem-spawner': 'btn-zakat-to-dem-spawner.html',
+        'btn-catch-to-dem': 'btn-catch-to-dem.html',
+        'btn-zakat-radiation-to-syberia-radiation': 'btn-zakat-radiation-to-syberia-radiation.html',
+        'btn-zakat-radiation-to-dem-radiation': 'btn-zakat-radiation-to-dem-radiation.html',
+        'btn-scar-radiation-to-dem-radiation': 'btn-scar-radiation-to-dem-radiation.html',
+        'btn-exp-market-from-vehicle-to-events-formatter': 'btn-exp-market-from-vehicle-to-events-formatter.html',
+        'btn-classnames-to-xml-nom-min': 'btn-classnames-to-xml-nom-min.html',
+        'btn-coord-xam-to-eventspawn': 'btn-coord-xam-to-eventspawn.html',
+        'btn-exp-market-classnmae-filter': 'btn-exp-market-classnmae-filter.html',
+        'btn-vehicle-price-calculator': 'btn-vehicle-price-calculator.html',
+        'btn-types-to-classnames': 'btn-types-to-classnames.html',
+        'btn-classnames-to-events': 'btn-classnames-to-events.html',
+        'btn-class-to-exp-trader-veh': 'btn-class-to-exp-trader-veh.html',
+        'btn-exp-trader-veh-to-exp-trader-variants': 'btn-exp-trader-veh-to-exp-trader-variants.html',
+        'btn-discord': 'https://discord.gg/Mj7tFHe8Nz',
+        'btn-donate': 'https://boosty.to/karpenator/donate'
+    };
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const url = buttonUrls[button.id];
+            if (url) window.open(url, '_blank');
         });
+    });
+</script>
+```
 
-        // Load saved colors
-        buttons.forEach(button => {
-            const savedColor = localStorage.getItem(button.id);
-            if (savedColor) button.style.backgroundColor = savedColor;
-        });
-
-        // Button URLs
-        const buttonUrls = {
-            'btn-banking': 'btn-banking.html',
-            'btn-trader-plus': 'btn-trader-plus.html',
-            'btn-trader-creator': 'btn-trader-creator.html',
-            'btn-c-converter': 'btn-c-converter.html',
-            'btn-exp-to-jones': 'btn-exp-to-jones.html',
-            'btn-exp-to-traderplus': 'btn-exp-to-traderplus.html',
-            'btn-jones-to-exp': 'btn-jones-to-exp.html',
-            'btn-traderplus-to-exp': 'btn-traderplus-to-exp.html',
-            'btn-traderplus-to-jones': 'btn-traderplus-to-jones.html',
-            'btn-json-to-json': 'btn-json-to-json.html',
-            'btn-extract-classnames-from-exp': 'btn-extract-classnames-from-exp.html',
-            'btn-generate-sls-from-classnames': 'btn-generate-sls-from-classnames.html',
-            'btn-zakat-to-dem-spawner': 'btn-zakat-to-dem-spawner.html',
-            'btn-catch-to-dem': 'btn-catch-to-dem.html',
-            'btn-zakat-radiation-to-syberia-radiation': 'btn-zakat-radiation-to-syberia-radiation.html',
-            'btn-zakat-radiation-to-dem-radiation': 'btn-zakat-radiation-to-dem-radiation.html',
-            'btn-scar-radiation-to-dem-radiation': 'btn-scar-radiation-to-dem-radiation.html',
-            'btn-exp-market-from-vehicle-to-events-formatter': 'btn-exp-market-from-vehicle-to-events-formatter.html',
-            'btn-classnames-to-xml-nom-min': 'btn-classnames-to-xml-nom-min.html',
-            'btn-coord-xam-to-eventspawn': 'btn-coord-xam-to-eventspawn.html',
-            'btn-exp-market-classnmae-filter': 'btn-exp-market-classnmae-filter.html',
-            'btn-vehicle-price-calculator': 'btn-vehicle-price-calculator.html',
-            'btn-types-to-classnames': 'btn-types-to-classnames.html',
-            'btn-classnames-to-events': 'btn-classnames-to-events.html',
-            'btn-class-to-exp-trader-veh': 'btn-class-to-exp-trader-veh.html',
-            'btn-exp-trader-veh-to-exp-trader-variants': 'btn-exp-trader-veh-to-exp-trader-variants.html',
-            'btn-discord': 'https://discord.gg/Mj7tFHe8Nz',
-            'btn-donate': 'https://boosty.to/karpenator/donate'
-        };
-
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                const url = buttonUrls[button.id];
-                if (url) window.open(url, '_blank');
-            });
-        });
-    </script>
 </body>
-<label style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;">
-    <input type="checkbox" id="toggle-snow" checked>
-    Включить снег
-</label>
 </html>
