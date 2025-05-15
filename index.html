@@ -149,10 +149,17 @@
         const snowContainer = document.getElementById('snow-container');
         const buttons = document.querySelectorAll('#main-buttons button, #bottom-buttons button');
         const palette = document.querySelector('#palette');
+        const toggleSnow = document.getElementById('toggle-snow');
         let selectedColor = '#333';
-
+        let snowEnabled = true;
+        
+        toggleSnow.addEventListener('change', () => {
+            snowEnabled = toggleSnow.checked;
+        });
+        
         // Snowflake animation
         function createSnowflake() {
+            if (!snowEnabled) return;
             const snowflake = document.createElement('div');
             snowflake.classList.add('snowflake');
             snowflake.innerText = '❄';
@@ -163,8 +170,8 @@
             snowContainer.appendChild(snowflake);
             setTimeout(() => snowflake.remove(), 5000);
         }
-
-        setInterval(createSnowflake, 50);
+    
+        setInterval(createSnowflake, 50)
 
         // Santa animation
         const santaGifs = [
@@ -273,4 +280,8 @@
         });
     </script>
 </body>
+<label style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;">
+    <input type="checkbox" id="toggle-snow" checked>
+    Включить снег
+</label>
 </html>
