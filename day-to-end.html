@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epidemic DayZ</title>
+    <style>
+        * {margin:0; padding:0; box-sizing:border-box;}
+        body {
+            background: radial-gradient(circle at center, #0c0f14 0%, #060708 100%);
+            color: #e6e6e6;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        .container {
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            height:100vh; z-index:5; position:relative;
+        }
+        .timer {
+            background-color:rgba(0,0,0,0.7);
+            border:2px solid #5a1f1f; border-radius:10px;
+            padding:20px; text-align:center; margin-bottom:30px;
+            box-shadow:0 0 20px rgba(255,0,0,0.4);
+        }
+        h1 {
+            color:#ff3a3a; text-shadow:0 0 15px rgba(255,0,0,0.7);
+            margin-bottom:20px; font-size:2.2rem; font-weight:bold; letter-spacing:2px;
+        }
+        #countdown {
+            font-size:2.5rem; letter-spacing:2px; color:#00ff22;
+            text-shadow:0 0 10px rgba(0,255,34,0.6);
+        }
+        .city {
+            width:220px; height:160px;
+            background:linear-gradient(to bottom,#1a1a1a,#0d0d0d);
+            border:2px solid #444; border-radius:8px; position:relative; z-index:4;
+            box-shadow:0 0 25px rgba(0,0,0,0.8);
+            display:flex; align-items:center; justify-content:center;
+            color:#ffcc00; font-weight:bold; text-transform:uppercase;
+            text-shadow:0 0 8px rgba(255,204,0,0.6); font-size:1.2rem;
+        }
+        .zombie {
+            position:absolute; width:40px; height:40px;
+            background:radial-gradient(circle,#111 0%,#000 100%);
+            border-radius:50%; z-index:2; opacity:0.7; filter:blur(1px);
+        }
+        .zombie::before, .zombie::after {
+            content:''; position:absolute; width:8px; height:8px;
+            background-color:#ff0000; border-radius:50%;
+            top:12px; box-shadow:0 0 6px rgba(255,0,0,0.8);
+        }
+        .zombie::before { left:8px; }
+        .zombie::after { right:8px; }
+        .progress-container {
+            width:80%; height:22px; background-color:#111;
+            border-radius:10px; margin:25px 0; overflow:hidden;
+            border:1px solid #5a1f1f; box-shadow:inset 0 0 10px rgba(255,0,0,0.3);
+        }
+        .progress-bar {
+            height:100%; background:linear-gradient(to right,#5a1f1f,#ff3a3a);
+            width:0%; transition:width 0.5s; box-shadow:0 0 15px rgba(255,0,0,0.6);
+        }
+        .message {
+            position:absolute; top:20%; left:50%; transform:translateX(-50%);
+            background-color:rgba(0,0,0,0.95); padding:35px;
+            border:3px solid #5a1f1f; border-radius:12px; text-align:center;
+            z-index:100; display:none; width:80%; max-width:650px;
+            box-shadow:0 0 25px rgba(255,0,0,0.5);
+        }
+        .message h2 {
+            color:#ff3a3a; margin-bottom:20px; font-size:2.5rem;
+            text-shadow:0 0 15px rgba(255,0,0,0.7);
+            animation:flicker 2s infinite;
+        }
+        @keyframes flicker {
+            0%,18%,22%,25%,53%,57%,100% {opacity:1;}
+            20%,24%,55% {opacity:0.4;}
+        }
+        .message p {margin-bottom:20px; font-size:1.5rem; color:#ccc;}
+    </style>
+</head>
+<body>
+    <div class="message" id="endMessage">
+        <h2>СУДНЫЙ ДЕНЬ НАСТУПИЛ!</h2>
+        <p>Вы выжили, чтобы умереть в этот день...</p>
+    </div>
+
+    <div class="container">
+        <div class="timer">
+            <h1>Судный день через:</h1>
+            <div id="countdown">00:00:00:000</div>
+        </div>
+        <div class="city">ГОРОД</div>
+        <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+    </div>
+    <div id="zombieContainer"></div>
+
+    <script>
+		const TARGET_DATE = new Date('2025-08-19T20:00:00'); 
+		const ZOMBIE_INTERVAL = 1; 
+		const zombies = [];
+		let lastZombieTime = 0;
+		let cityX, cityY;
+		const city = document.querySelector('.city');
+		const countdownElement = document.getElementById('countdown');
+		const progressBar = document.getElementById('progressBar');
+		const zombieContainer = document.getElementById('zombieContainer');
+		const endMessage = document.getElementById('endMessage');
+		const initialTotalMs = TARGET_DATE - Date.now();
+
+		function calculateCityPosition() {
+			const cityRect = city.getBoundingClientRect();
+			cityX = cityRect.left + cityRect.width / 2;
+			cityY = cityRect.top + cityRect.height / 2;
+		}
+		calculateCityPosition();
+		window.addEventListener('resize', calculateCityPosition);
+
+		function spawnZombie() {
+			const zombie = document.createElement('div');
+			zombie.classList.add('zombie');
+
+			let startX, startY;
+			const side = Math.floor(Math.random() * 4); // 0=верх,1=право,2=низ,3=лево
+
+			switch(side) {
+				case 0: // верх
+					startX = Math.random() * window.innerWidth;
+					startY = -40; // за экраном сверху
+					break;
+				case 1: // право
+					startX = window.innerWidth + 40; // за экраном справа
+					startY = Math.random() * window.innerHeight;
+					break;
+				case 2: // низ
+					startX = Math.random() * window.innerWidth;
+					startY = window.innerHeight + 40; // за экраном снизу
+					break;
+				case 3: // лево
+					startX = -40; // за экраном слева
+					startY = Math.random() * window.innerHeight;
+					break;
+			}
+
+			zombie.style.left = startX + 'px';
+			zombie.style.top = startY + 'px';
+			zombieContainer.appendChild(zombie);
+
+			// сохраняем стартовые координаты и случайное смещение
+			zombies.push({
+				el: zombie,
+				startX,
+				startY,
+				offsetX: (Math.random() - 0.5) * 200, // добавим небольшое случайное смещение
+				offsetY: (Math.random() - 0.5) * 200
+			});
+		}
+		
+		function animate() {
+			const now = Date.now();
+			const totalMs = TARGET_DATE - now;
+			if (totalMs <= 0) {
+				countdownElement.textContent = "00:00:00:000";
+				endMessage.style.display = 'block';
+				return;
+			}
+
+			const days = Math.floor(totalMs / 86400000);
+			const hours = Math.floor((totalMs % 86400000) / 3600000);
+			const minutes = Math.floor((totalMs % 3600000) / 60000);
+			const seconds = Math.floor((totalMs % 60000) / 1000);
+			const ms = totalMs % 1000;
+			countdownElement.textContent =
+				`${pad(days)}:${pad(hours)}:${pad(minutes)}:${pad(seconds)}:${ms.toString().padStart(3,'0')}`;
+
+			const progress = 1 - (totalMs / initialTotalMs);
+			progressBar.style.width = (progress*100)+"%";
+
+			if (now - lastZombieTime > ZOMBIE_INTERVAL) {
+				spawnZombie();
+				lastZombieTime = now;
+			}
+
+			zombies.forEach(z => {
+				const zombieProgress = 1 - (totalMs / initialTotalMs);
+				z.el.style.left = z.startX + (cityX - z.startX) * zombieProgress + z.offsetX + "px";
+				z.el.style.top = z.startY + (cityY - z.startY) * zombieProgress + z.offsetY + "px";
+			});
+
+			requestAnimationFrame(animate);
+		}
+
+		function pad(num) { return num < 10 ? "0"+num : num; }
+		animate();
+	</script>
+
+</body>
+</html>
