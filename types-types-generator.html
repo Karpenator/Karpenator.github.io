@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DayZ Types Generator</title>
+    <style>
+        :root {
+            --dark-bg: #1b1b1b;
+            --dark-border: #535353;
+            --text-light: #fff;
+            --accent: #de3d42;
+            --accent-hover: #c23535;
+            --success: #1585e7;
+            --success-hover: #116ab8;
+        }        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.6;
+        }        
+        .container {
+            display: grid;
+            grid-template-areas: 
+                "navbar navbar"
+                "form table"
+                "form actions";
+            grid-template-columns: 400px 1fr;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+            gap: 0;
+        }        
+        .navbar {
+            grid-area: navbar;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--dark-border);
+        }        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }        
+        .logo img {
+            height: 40px;
+            width: auto;
+        }        
+        .form-section {
+            grid-area: form;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            padding: 24px;
+            overflow-y: auto;
+            border-right: 2px solid var(--dark-border);
+        }        
+        .table-section {
+            grid-area: table;
+            background-color: var(--dark-bg);
+            overflow-y: auto;
+        }        
+        .actions-section {
+            grid-area: actions;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }        
+        .form-group {
+            margin-bottom: 16px;
+        }        
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+            font-size: 14px;
+        }        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--dark-border);
+            border-radius: 4px;
+            background-color: #fff;
+            color: #333;
+        }        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }        
+        .checkbox-group input {
+            width: auto;
+            margin-right: 8px;
+        }        
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }        
+        .btn-primary {
+            background-color: var(--success);
+            color: white;
+        }        
+        .btn-primary:hover {
+            background-color: var(--success-hover);
+        }        
+        .btn-danger {
+            background-color: var(--accent);
+            color: white;
+        }        
+        .btn-danger:hover {
+            background-color: var(--accent-hover);
+        }        
+        .btn-default {
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+        }        
+        .btn-default:hover {
+            background-color: #f2f2f2;
+        }        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-light);
+        }        
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--dark-border);
+        }        
+        th {
+            background-color: #2a2a2a;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }        
+        tr:hover {
+            background-color: #2a2a2a;
+        }        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            font-size: 16px;
+        }        
+        .action-btn:hover {
+            color: var(--accent);
+        }        
+        .flag-section {
+            border: 1px solid var(--dark-border);
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }        
+        .flag-section h3 {
+            margin-bottom: 12px;
+            font-size: 14px;
+        }        
+        .info-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-color: #666;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 12px;
+            margin-left: 8px;
+            cursor: help;
+        }        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-areas: 
+                    "navbar"
+                    "form"
+                    "table"
+                    "actions";
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto 1fr auto;
+            }
+            
+            .form-section {
+                border-right: none;
+                border-bottom: 2px solid var(--dark-border);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="navbar">
+            <div class="logo">
+                <h1>DayZ Types Generator</h1>
+            </div>
+            <div class="github-link">
+                <a href="https://github.com/" target="_blank" style="color: white;">
+                    <svg height="32" viewBox="0 0 16 16" width="32" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                    </svg>
+                </a>
+            </div>
+        </header>
+        
+        <section class="form-section">
+            <form id="type-form">
+                <div class="form-group">
+                    <label for="name">Name <span class="info-icon" title="Class Name of Item to Spawn">?</span></label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                
+                <div class="form-group" style="display: flex; gap: 16px;">
+                    <div style="flex: 1;">
+                        <label for="nominal">Nominal <span class="info-icon" title="Number of items spawned in the world at any given time">?</span></label>
+                        <input type="number" id="nominal" name="nominal" required min="0">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="lifetime">Lifetime <span class="info-icon" title="Time (in seconds) before item gets deleted">?</span></label>
+                        <input type="number" id="lifetime" name="lifetime" value="7200" required min="0">
+                    </div>
+                </div>
+                
+                <div class="form-group" style="display: flex; gap: 16px;">
+                    <div style="flex: 1;">
+                        <label for="restock">Restock <span class="info-icon" title="Time in seconds to respawn items">?</span></label>
+                        <input type="number" id="restock" name="restock" value="1800" required min="0">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="min">Min <span class="info-icon" title="Minimum number of items in world">?</span></label>
+                        <input type="number" id="min" name="min" required min="0">
+                    </div>
+                </div>
+                
+                <div class="form-group" style="display: flex; gap: 16px;">
+                    <div style="flex: 1;">
+                        <label for="quantmin">Quantmin <span class="info-icon" title="Minimum quantity value">?</span></label>
+                        <input type="number" id="quantmin" name="quantmin" value="-1">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="quantmax">Quantmax <span class="info-icon" title="Maximum quantity value">?</span></label>
+                        <input type="number" id="quantmax" name="quantmax" value="-1">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cost">Cost <span class="info-icon" title="Priority of Item Spawning">?</span></label>
+                    <input type="number" id="cost" name="cost" value="100" required min="0">
+                </div>
+                
+                <div class="flag-section">
+                    <h3>Flags <span class="info-icon" title="Flags direct the spawner behavior">?</span></h3>
+                    
+                    <div class="form-group" style="display: flex; gap: 16px;">
+                        <div class="checkbox-group" style="flex: 1;">
+                            <input type="checkbox" id="count_in_cargo" name="count_in_cargo">
+                            <label for="count_in_cargo">count_in_cargo <span class="info-icon" title="Count items in containers">?</span></label>
+                        </div>
+                        <div class="checkbox-group" style="flex: 1;">
+                            <input type="checkbox" id="count_in_hoarder" name="count_in_hoarder">
+                            <label for="count_in_hoarder">count_in_hoarder <span class="info-icon" title="Count items in stashes">?</span></label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="display: flex; gap: 16px;">
+                        <div class="checkbox-group" style="flex: 1;">
+                            <input type="checkbox" id="count_in_map" name="count_in_map" checked>
+                            <label for="count_in_map">count_in_map <span class="info-icon" title="Count items in world">?</span></label>
+                        </div>
+                        <div class="checkbox-group" style="flex: 1;">
+                            <input type="checkbox" id="count_in_player" name="count_in_player">
+                            <label for="count_in_player">count_in_player <span class="info-icon" title="Count items in player inventory">?</span></label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="display: flex; gap: 16px;">
+                        <div class="checkbox-group" style="flex: 1;">
+                            <input type="checkbox" id="crafted" name="crafted">
+                            <label for="crafted">crafted <span class="info-icon" title="Is the item crafted">?</span></label>
+                        </div>
+                        <div class="checkbox-group" style="flex: 1;">
+                            <input type="checkbox" id="deloot" name="deloot">
+                            <label for="deloot">deloot <span class="info-icon" title="Dynamic event loot">?</span></label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Category <span class="info-icon" title="Internal category for sorting">?</span></label>
+                    <select id="category" name="category">
+                        <option value="Weapons">Weapons</option>
+                        <option value="Vehicle Parts">Vehicle Parts</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Containers">Containers</option>
+                        <option value="Explosives">Explosives</option>
+                        <option value="Food">Food</option>
+                        <option value="Tools">Tools</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tag">Tag <span class="info-icon" title="Additional classification tag">?</span></label>
+                    <select id="tag" name="tag">
+                        <option value=""></option>
+                        <option value="floor">floor</option>
+                        <option value="shelves">shelves</option>
+                        <option value="ground">ground</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="usage">Usage <span class="info-icon" title="How the item is used">?</span></label>
+                    <select id="usage" name="usage">
+                        <option value=""></option>
+                        <option value="Military">Military</option>
+                        <option value="Police">Police</option>
+                        <option value="Medic">Medic</option>
+                        <option value="Firefighter">Firefighter</option>
+                        <option value="Industrial">Industrial</option>
+                        <option value="Farm">Farm</option>
+                        <option value="Coast">Coast</option>
+                        <option value="Town">Town</option>
+                        <option value="Village">Village</option>
+                        <option value="Hunting">Hunting</option>
+                        <option value="Office">Office</option>
+                        <option value="School">School</option>
+                        <option value="Prison">Prison</option>
+                        <option value="Lunapark">Lunapark</option>
+                        <option value="SeasonalEvent">SeasonalEvent</option>
+                        <option value="ContaminatedArea">ContaminatedArea</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="value">Value <span class="info-icon" title="Loot tier">?</span></label>
+                    <select id="value" name="value">
+                        <option value=""></option>
+                        <option value="Tier1">Tier1</option>
+                        <option value="Tier2">Tier2</option>
+                        <option value="Tier3">Tier3</option>
+                        <option value="Tier4">Tier4</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-primary">Add New Type</button>
+            </form>
+            
+            <hr style="margin: 24px 0; border-color: var(--dark-border);">
+            
+            <form id="separator-form">
+                <div class="form-group">
+                    <label for="separator">Separator Comment</label>
+                    <textarea id="separator" name="separator" rows="3" placeholder="<!-- Section Separator -->"></textarea>
+                </div>
+                <button type="submit" class="btn-default">Add Separator</button>
+            </form>
+        </section>
+        
+        <section class="table-section">
+            <table id="types-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Nominal</th>
+                        <th>Lifetime</th>
+                        <th>Restock</th>
+                        <th>Min</th>
+                        <th>Quantmin</th>
+                        <th>Quantmax</th>
+                        <th>Cost</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Types will be added here dynamically -->
+                </tbody>
+            </table>
+        </section>
+        
+        <section class="actions-section">
+            <div>
+                <strong>Total Types: <span id="total-count">0</span></strong>
+            </div>
+            <div>
+                <button class="btn-default" id="import-btn">Import XML</button>
+                <button class="btn-danger" id="clear-btn">Remove All</button>
+                <button class="btn-default" id="export-names-btn">Export Only Names</button>
+                <button class="btn-primary" id="export-btn">Export Types</button>
+				<button class="btn-default" id="import-names-btn">Import Names List</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const typeForm = document.getElementById('type-form');
+            const separatorForm = document.getElementById('separator-form');
+            const typesTable = document.getElementById('types-table').querySelector('tbody');
+            const totalCount = document.getElementById('total-count');
+            const clearBtn = document.getElementById('clear-btn');
+            const exportBtn = document.getElementById('export-btn');
+            const exportNamesBtn = document.getElementById('export-names-btn');
+            const importBtn = document.getElementById('import-btn');
+            
+            let types = [];
+            
+            // Load data from localStorage if available
+            if (localStorage.getItem('dayzTypes')) {
+                types = JSON.parse(localStorage.getItem('dayzTypes'));
+                renderTypes();
+            }
+            
+            // Add new type
+            typeForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(typeForm);
+                const type = {
+                    name: formData.get('name'),
+                    nominal: parseInt(formData.get('nominal')),
+                    lifetime: parseInt(formData.get('lifetime')),
+                    restock: parseInt(formData.get('restock')),
+                    min: parseInt(formData.get('min')),
+                    quantmin: parseInt(formData.get('quantmin')),
+                    quantmax: parseInt(formData.get('quantmax')),
+                    cost: parseInt(formData.get('cost')),
+                    flags: {
+                        count_in_cargo: formData.get('count_in_cargo') === 'on' ? 1 : 0,
+                        count_in_hoarder: formData.get('count_in_hoarder') === 'on' ? 1 : 0,
+                        count_in_map: formData.get('count_in_map') === 'on' ? 1 : 0,
+                        count_in_player: formData.get('count_in_player') === 'on' ? 1 : 0,
+                        crafted: formData.get('crafted') === 'on' ? 1 : 0,
+                        deloot: formData.get('deloot') === 'on' ? 1 : 0
+                    },
+                    category: formData.get('category'),
+                    tag: formData.get('tag'),
+                    usage: formData.get('usage'),
+                    value: formData.get('value')
+                };
+                
+                types.push(type);
+                saveTypes();
+                renderTypes();
+                typeForm.reset();
+            });
+			
+			const importNamesBtn = document.getElementById('import-names-btn');
+
+			// Импорт списка класснеймов из txt
+			importNamesBtn.addEventListener('click', function() {
+				const input = document.createElement('input');
+				input.type = 'file';
+				input.accept = '.txt';
+
+				input.onchange = function(e) {
+					const file = e.target.files[0];
+					const reader = new FileReader();
+
+					reader.onload = function(e) {
+						try {
+							const content = e.target.result;
+							const names = content.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+
+							if (names.length === 0) {
+								alert("Файл пустой или неверный формат");
+								return;
+							}
+
+							// Читаем значения из формы, чтобы применить их ко всем класснеймам
+							const formData = new FormData(typeForm);
+
+							names.forEach(name => {
+								const type = {
+									name: name,
+									nominal: parseInt(formData.get('nominal')),
+									lifetime: parseInt(formData.get('lifetime')),
+									restock: parseInt(formData.get('restock')),
+									min: parseInt(formData.get('min')),
+									quantmin: parseInt(formData.get('quantmin')),
+									quantmax: parseInt(formData.get('quantmax')),
+									cost: parseInt(formData.get('cost')),
+									flags: {
+										count_in_cargo: formData.get('count_in_cargo') === 'on' ? 1 : 0,
+										count_in_hoarder: formData.get('count_in_hoarder') === 'on' ? 1 : 0,
+										count_in_map: formData.get('count_in_map') === 'on' ? 1 : 0,
+										count_in_player: formData.get('count_in_player') === 'on' ? 1 : 0,
+										crafted: formData.get('crafted') === 'on' ? 1 : 0,
+										deloot: formData.get('deloot') === 'on' ? 1 : 0
+									},
+									category: formData.get('category'),
+									tag: formData.get('tag'),
+									usage: formData.get('usage'),
+									value: formData.get('value')
+								};
+								types.push(type);
+							});
+
+							saveTypes();
+							renderTypes();
+							alert(`Импортировано ${names.length} класснеймов`);
+						} catch (error) {
+							alert('Ошибка при чтении файла: ' + error.message);
+						}
+					};
+
+					reader.readAsText(file);
+				};
+
+				input.click();
+			});
+            
+            // Add separator
+            separatorForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(separatorForm);
+                const separator = {
+                    separator: true,
+                    comment: formData.get('separator')
+                };
+                
+                types.push(separator);
+                saveTypes();
+                renderTypes();
+                separatorForm.reset();
+            });
+            
+            // Clear all types
+            clearBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to remove all types?')) {
+                    types = [];
+                    saveTypes();
+                    renderTypes();
+                }
+            });
+            
+            // Export types to XML
+            exportBtn.addEventListener('click', function() {
+                const xml = generateXML();
+                downloadFile(xml, 'types.xml', 'application/xml');
+            });
+            
+            // Export only names
+            exportNamesBtn.addEventListener('click', function() {
+                const names = types
+                    .filter(type => !type.separator)
+                    .map(type => type.name)
+                    .join('\n');
+                
+                downloadFile(names, 'types_names.txt', 'text/plain');
+            });
+            
+            // Import XML
+            importBtn.addEventListener('click', function() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.xml';
+                
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        try {
+                            const xmlContent = e.target.result;
+                            // This would need a proper XML parser in a real implementation
+                            alert('XML import would be implemented here with a proper parser');
+                        } catch (error) {
+                            alert('Error parsing XML: ' + error.message);
+                        }
+                    };
+                    
+                    reader.readAsText(file);
+                };
+                
+                input.click();
+            });
+            
+            // Render types to table
+            function renderTypes() {
+                typesTable.innerHTML = '';
+                
+                types.forEach((type, index) => {
+                    if (type.separator) {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td colspan="9" style="background-color: #2a2a2a; text-align: center; font-style: italic;">
+                                ${type.comment || 'Separator'}
+                            </td>
+                        `;
+                        typesTable.appendChild(row);
+                    } else {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${type.name}</td>
+                            <td>${type.nominal}</td>
+                            <td>${type.lifetime}</td>
+                            <td>${type.restock}</td>
+                            <td>${type.min}</td>
+                            <td>${type.quantmin}</td>
+                            <td>${type.quantmax}</td>
+                            <td>${type.cost}</td>
+                            <td class="action-buttons">
+                                <button class="action-btn" onclick="editType(${index})">✏️</button>
+                                <button class="action-btn" onclick="deleteType(${index})">❌</button>
+                            </td>
+                        `;
+                        typesTable.appendChild(row);
+                    }
+                });
+                
+                // Update count
+                const typeCount = types.filter(type => !type.separator).length;
+                totalCount.textContent = typeCount;
+            }
+            
+            // Save types to localStorage
+            function saveTypes() {
+                localStorage.setItem('dayzTypes', JSON.stringify(types));
+            }
+            
+            // Generate XML from types
+            function generateXML() {
+                let xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<types>\n';
+                
+                types.forEach(type => {
+                    if (type.separator) {
+                        xml += `    ${type.comment || '<!-- Separator -->'}\n`;
+                    } else {
+                        xml += `    <type name="${type.name}">\n`;
+                        xml += `        <nominal>${type.nominal}</nominal>\n`;
+                        xml += `        <lifetime>${type.lifetime}</lifetime>\n`;
+                        xml += `        <restock>${type.restock}</restock>\n`;
+                        xml += `        <min>${type.min}</min>\n`;
+                        xml += `        <quantmin>${type.quantmin}</quantmin>\n`;
+                        xml += `        <quantmax>${type.quantmax}</quantmax>\n`;
+                        xml += `        <cost>${type.cost}</cost>\n`;
+                        xml += `        <flags count_in_cargo="${type.flags.count_in_cargo}" count_in_hoarder="${type.flags.count_in_hoarder}" count_in_map="${type.flags.count_in_map}" count_in_player="${type.flags.count_in_player}" crafted="${type.flags.crafted}" deloot="${type.flags.deloot}"/>\n`;
+                        
+                        if (type.category) {
+                            xml += `        <category name="${type.category}"/>\n`;
+                        }
+                        
+                        if (type.tag) {
+                            xml += `        <tag name="${type.tag}"/>\n`;
+                        }
+                        
+                        if (type.usage) {
+                            xml += `        <usage name="${type.usage}"/>\n`;
+                        }
+                        
+                        if (type.value) {
+                            xml += `        <value name="${type.value}"/>\n`;
+                        }
+                        
+                        xml += '    </type>\n';
+                    }
+                });
+                
+                xml += '</types>';
+                return xml;
+            }
+            
+            // Download file helper
+            function downloadFile(content, fileName, contentType) {
+                const blob = new Blob([content], { type: contentType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+            
+            // Global functions for action buttons
+            window.deleteType = function(index) {
+                if (confirm('Are you sure you want to delete this type?')) {
+                    types.splice(index, 1);
+                    saveTypes();
+                    renderTypes();
+                }
+            };
+            
+            window.editType = function(index) {
+                const type = types[index];
+                
+                // Fill form with type data
+                document.getElementById('name').value = type.name;
+                document.getElementById('nominal').value = type.nominal;
+                document.getElementById('lifetime').value = type.lifetime;
+                document.getElementById('restock').value = type.restock;
+                document.getElementById('min').value = type.min;
+                document.getElementById('quantmin').value = type.quantmin;
+                document.getElementById('quantmax').value = type.quantmax;
+                document.getElementById('cost').value = type.cost;
+                document.getElementById('count_in_cargo').checked = type.flags.count_in_cargo === 1;
+                document.getElementById('count_in_hoarder').checked = type.flags.count_in_hoarder === 1;
+                document.getElementById('count_in_map').checked = type.flags.count_in_map === 1;
+                document.getElementById('count_in_player').checked = type.flags.count_in_player === 1;
+                document.getElementById('crafted').checked = type.flags.crafted === 1;
+                document.getElementById('deloot').checked = type.flags.deloot === 1;
+                document.getElementById('category').value = type.category || '';
+                document.getElementById('tag').value = type.tag || '';
+                document.getElementById('usage').value = type.usage || '';
+                document.getElementById('value').value = type.value || '';
+                
+                // Remove the type from the array
+                types.splice(index, 1);
+                saveTypes();
+                renderTypes();
+                
+                // Scroll to form
+                document.querySelector('.form-section').scrollIntoView();
+            };
+        });
+    </script>
+</body>
+</html>
