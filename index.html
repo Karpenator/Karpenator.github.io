@@ -96,6 +96,15 @@
         0% { transform: translateY(-100%); }
         100% { transform: translateY(100vh); }
     }
+        
+    @keyframes santa-move {
+    from {
+        transform: translateX(-150px); /* Начальное положение за левой границей экрана */
+    }
+    to {
+        transform: translateX(100vw); /* Конечное положение за правой границей экрана */
+    }
+}
 </style>
 
 </head>
