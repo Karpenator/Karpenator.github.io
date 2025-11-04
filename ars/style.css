@@ -1,0 +1,251 @@
+/* style.css */
+/* Базовые стили и "хакерский" вид */
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #000;
+    color: #0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* Добавим текстуру или градиент для "хакерского" вида */
+    background-image: radial-gradient(rgba(0, 50, 0, 0.1) 1px, transparent 1px),
+                      radial-gradient(rgba(0, 50, 0, 0.1) 1px, transparent 1px);
+    background-position: 0 0, 10px 10px;
+    background-size: 20px 20px;
+}
+
+/* Эффект сканирующей линии */
+#scanline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 255, 0, 0.1) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 1000;
+    animation: scan 8s linear infinite;
+}
+
+@keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+}
+
+/* Контейнер для эффектов */
+#glitch-container {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+}
+
+.terminal {
+    border: 1px solid #0f0;
+    background-color: #000;
+    padding: 20px;
+    box-sizing: border-box;
+    /* Убираем прокрутку у самого терминала */
+    overflow: hidden;
+    position: relative; /* Для позиционирования курсора */
+    font-size: 14px;
+    line-height: 1.5;
+    /* Установим фиксированную высоту или высоту окна */
+    height: 80vh; /* Или height: 80vh; например */
+    max-width: 80vh; /* Или другое значение */
+    margin: 0 auto; /* Центрируем */
+}
+
+.terminal-header {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: 16px;
+    border-bottom: 1px solid #0f0;
+    padding-bottom: 10px;
+    position: relative;
+}
+
+.terminal-output {
+    /* Явно задаем высоту, чтобы появилась полоса прокрутки при необходимости */
+    height: calc(100% - 80px); /* Вычитаем примерно высоту заголовка и поля ввода */
+    overflow-y: auto; /* Включаем вертикальный скролл */
+    margin-bottom: 10px;
+    /* Убираем внутренние отступы справа, чтобы не мешала полоса прокрутки */
+    padding-right: 5px;
+    /* Добавим небольшой отступ слева */
+    padding-left: 5px;
+    /* Убедимся, что фон прозрачный */
+    background-color: transparent;
+    /* Добавим стиль скроллбара, если нужно */
+    /* scrollbar-width: thin; */
+    /* scrollbar-color: #0f0 #000; */
+}
+
+.terminal-input {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    position: relative; /* Для позиционирования курсора */
+}
+
+.prompt {
+    color: #0f0;
+    margin-right: 5px;
+}
+
+#input-field {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #0f0;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+    padding: 5px;
+    padding-right: 10px; /* Место для курсора */
+}
+
+#input-field:focus {
+    outline: none;
+}
+
+#cursor {
+    color: #0f0;
+    margin-left: 2px;
+    position: absolute;
+    right: 5px; /* Позиционируем курсор справа от поля ввода */
+    pointer-events: none; /* Курсор не должен мешать кликам */
+}
+
+.blink {
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.hint-box {
+    background-color: rgba(0, 255, 0, 0.1);
+    border: 1px dashed #0f0;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    display: none; /* Скрыто по умолчанию */
+}
+
+.hidden {
+    display: none;
+}
+
+.success-message {
+    color: #00ff00;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 20px;
+    animation: pulse 1s ease-in-out infinite;
+    background-color: rgba(0, 50, 0, 0.5);
+    padding: 15px;
+    border: 1px solid #0f0;
+    border-radius: 5px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.prize-link {
+    color: #0f0;
+    text-decoration: underline;
+    font-weight: bold;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+/* Эффекты "глюков" */
+.glitch {
+    position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glitch::before {
+    left: 2px;
+    text-shadow: -2px 0 #f00;
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim 5s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+    left: -2px;
+    text-shadow: -2px 0 #00f;
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim2 5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+    0% { clip: rect(42px, 9999px, 44px, 0); }
+    5% { clip: rect(12px, 9999px, 59px, 0); }
+    10% { clip: rect(48px, 9999px, 29px, 0); }
+    15% { clip: rect(42px, 9999px, 73px, 0); }
+    20% { clip: rect(63px, 9999px, 27px, 0); }
+    25% { clip: rect(34px, 9999px, 55px, 0); }
+    30% { clip: rect(86px, 9999px, 73px, 0); }
+    35% { clip: rect(20px, 9999px, 20px, 0); }
+    40% { clip: rect(26px, 9999px, 60px, 0); }
+    45% { clip: rect(25px, 9999px, 66px, 0); }
+    50% { clip: rect(57px, 9999px, 98px, 0); }
+    55% { clip: rect(5px, 9999px, 46px, 0); }
+    60% { clip: rect(82px, 9999px, 31px, 0); }
+    65% { clip: rect(54px, 9999px, 27px, 0); }
+    70% { clip: rect(28px, 9999px, 99px, 0); }
+    75% { clip: rect(45px, 9999px, 69px, 0); }
+    80% { clip: rect(23px, 9999px, 85px, 0); }
+    85% { clip: rect(54px, 9999px, 84px, 0); }
+    90% { clip: rect(45px, 9999px, 47px, 0); }
+    95% { clip: rect(37px, 9999px, 20px, 0); }
+    100% { clip: rect(73px, 9999px, 99px, 0); }
+}
+
+@keyframes glitch-anim2 {
+    0% { clip: rect(65px, 9999px, 100px, 0); }
+    5% { clip: rect(52px, 9999px, 74px, 0); }
+    10% { clip: rect(79px, 9999px, 85px, 0); }
+    15% { clip: rect(75px, 9999px, 5px, 0); }
+    20% { clip: rect(67px, 9999px, 61px, 0); }
+    25% { clip: rect(14px, 9999px, 79px, 0); }
+    30% { clip: rect(1px, 9999px, 66px, 0); }
+    35% { clip: rect(86px, 9999px, 30px, 0); }
+    40% { clip: rect(23px, 9999px, 98px, 0); }
+    45% { clip: rect(85px, 9999px, 72px, 0); }
+    50% { clip: rect(71px, 9999px, 75px, 0); }
+    55% { clip: rect(2px, 9999px, 48px, 0); }
+    60% { clip: rect(30px, 9999px, 16px, 0); }
+    65% { clip: rect(59px, 9999px, 50px, 0); }
+    70% { clip: rect(41px, 9999px, 62px, 0); }
+    75% { clip: rect(2px, 9999px, 82px, 0); }
+    80% { clip: rect(47px, 9999px, 73px, 0); }
+    85% { clip: rect(3px, 9999px, 27px, 0); }
+    90% { clip: rect(26px, 9999px, 55px, 0); }
+    95% { clip: rect(42px, 9999px, 97px, 0); }
+    100% { clip: rect(38px, 9999px, 49px, 0); }
+}

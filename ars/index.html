@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SG Terminal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="scanline"></div>
+    <div id="glitch-container">
+        <div class="terminal">
+            <div class="terminal-header">[SG TERMINAL v0.1.4b] — INITIALIZING...</div>
+            <div id="output" class="terminal-output">
+                > SYSTEM ONLINE...<br>
+                > ACCESS GRANTED TO SG PROTOCOL...<br>
+                > ERROR... file load data...<br>
+                > TYPE 'help' FOR COMMAND LIST.
+            </div>
+            <div class="terminal-input">
+                <span class="prompt">></span>
+                <input type="text" id="input-field" autofocus />
+                <span id="cursor" class="blink">|</span>
+            </div>
+        </div>
+    </div>
+    <div id="success-message" class="success-message hidden">
+        🎉 CONGRATULATIONS! YOU HAVE SUCCESSFULLY DECRYPTED THE SG PROTOCOL.<br>
+        YOUR REWARD: A SPECIAL LINK IS UNLOCKED.<br>
+        <a href="https://discord.com/channels/1033275564963926046/1033286277291851806" target="_blank" class="prize-link">Open ticket at DISCORD</a>
+    </div>
+
+    <script src="glitch.min.js"></script>
+    <script src="glitch.js"></script>
+</body>
+</html>
