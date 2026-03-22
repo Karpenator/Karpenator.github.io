@@ -3,36 +3,172 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Конвертер маппинга из .с в .map</title>
+<title>Конвертер маппинга из .c в .map</title>
 <style>
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background-color: #1C1C1C;
-		color: white;
+        color: #E0E0E0;
         padding: 20px;
+        margin: 0;
     }
-    button {
-        font-size: 16px;
+
+    h1 {
+        color: #76FF03;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .description {
+        text-align: center;
+        color: #888;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .example-box {
+        background-color: #252525;
+        border: 1px solid #444;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .example-box h3 {
+        color: #76FF03;
+        margin-top: 0;
+        font-size: 15px;
+    }
+
+    .example-box code {
+        color: #aaa;
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 13px;
+        display: block;
+        line-height: 1.6;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #76FF03;
+        font-weight: 500;
+    }
+
+    input[type="text"] {
+        width: 100%;
         padding: 10px;
-        margin: 5px;
+        margin-bottom: 15px;
+        background-color: #2D2D2D;
+        color: #E0E0E0;
+        border: 1px solid #444;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        background-color: #2D2D2D;
+        color: #E0E0E0;
+        border: 1px solid #444;
+        border-radius: 6px;
+    }
+
+    button {
+        padding: 12px 25px;
+        background-color: #2D2D2D;
+        color: #76FF03;
+        border: 1px solid #444;
+        border-radius: 6px;
         cursor: pointer;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+    }
+
+    button:hover {
+        background-color: #3D3D3D;
+        border-color: #76FF03;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
+    }
+
+    progress {
+        width: 100%;
+        height: 25px;
+        margin: 20px 0;
+        border-radius: 6px;
+        border: 1px solid #444;
+    }
+
+    progress::-webkit-progress-bar {
+        background-color: #2D2D2D;
+        border-radius: 6px;
+    }
+
+    progress::-webkit-progress-value {
+        background-color: #76FF03;
+        border-radius: 6px;
+    }
+
+    progress::-moz-progress-bar {
+        background-color: #76FF03;
+        border-radius: 6px;
+    }
+
+    #info {
+        color: #76FF03;
+        text-align: center;
+        font-size: 16px;
+        margin-top: 15px;
+    }
+
+    .buttons-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 15px;
     }
 </style>
 </head>
 <body>
-    <h1>Конвертер маппинга из .с в .map</h1>
-    <label for="ultima-path">Путь к маппинг файлу в формате .c:</label>
-    <input type="file" id="ultima-path" accept=".c">
-    <br>
-    <label for="save-folder">Куда сохранить:</label>
-    <input type="text" id="save-folder">
-    <button id="select-save-folder">Выбрать</button>
-    <br>
-    <button id="convert">Конвертировать</button>
-    <br>
-    <progress id="progress-bar" value="0" max="100"></progress>
-    <span id="progress-label"></span>
-    <p id="info"></p>
+    <div class="container">
+        <h1>📜 Конвертер маппинга из .c в .map</h1>
+        <p class="description">
+            Конвертирует файлы маппинга из формата .c (SpawnObject) в формат .map для спавнеров.
+        </p>
+
+        <div class="example-box">
+            <h3>📖 Как использовать:</h3>
+            <code>
+                Входной формат (.c):<br>
+                SpawnObject("ItemName", "1000 2000 3000", "0 0 0");<br><br>
+                Выходной формат (.map):<br>
+                SpawnerObject | ItemName | 1000 2000 3000 | 0 0 0 |
+            </code>
+        </div>
+
+        <label for="ultima-path">Путь к маппинг файлу в формате .c:</label>
+        <input type="file" id="ultima-path" accept=".c">
+        <br>
+        <label for="save-folder">Куда сохранить:</label>
+        <div class="buttons-row">
+            <input type="text" id="save-folder" placeholder="Введите путь или нажмите Выбрать">
+            <button id="select-save-folder">Выбрать</button>
+        </div>
+        <button id="convert">Конвертировать</button>
+        <br>
+        <progress id="progress-bar" value="0" max="100"></progress>
+        <span id="progress-label"></span>
+        <p id="info"></p>
+    </div>
 
     <script>
         document.getElementById("convert").addEventListener("click", function() {
@@ -48,7 +184,7 @@
             reader.onload = function(event) {
                 let data = event.target.result;
                 let lines = data.split('\n');
-                let filesCount = lines.length - 26;  // Count of files to be processed
+                let filesCount = lines.length - 26;
                 let progressStep = 100 / filesCount;
                 let currentProgress = 0;
 
@@ -77,9 +213,8 @@
                 link.download = newFileName;
                 link.click();
 
-                document.getElementById("info").textContent = 'Конвертация завершена';
+                document.getElementById("info").textContent = '✅ Конвертация завершена';
                 console.log(`Конвертация завершена. Файл сохранен по пути: ${filePath}`);
-                console.log(`Преобразованные строки: ${convertedLines}`);
             };
 
             reader.readAsText(ultimaPath);
@@ -87,7 +222,6 @@
 
         document.getElementById("select-save-folder").addEventListener("click", function() {
             let saveFolder = prompt("Введите путь для сохранения:");
-
             if (saveFolder) {
                 document.getElementById("save-folder").value = saveFolder;
             }

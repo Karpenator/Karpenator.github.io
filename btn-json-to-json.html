@@ -6,99 +6,182 @@
 <title>Json DayZ Editor to CacheSpawner converter</title>
 <style>
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background-color: #1C1C1C;
-        color: white;
+        color: #E0E0E0;
         padding: 20px;
+        margin: 0;
     }
-    input[type="text"],
+
+    h1 {
+        color: #76FF03;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .description {
+        text-align: center;
+        color: #888;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .example-box {
+        background-color: #252525;
+        border: 1px solid #444;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .example-box h3 {
+        color: #76FF03;
+        margin-top: 0;
+        font-size: 15px;
+    }
+
+    .example-box code {
+        color: #aaa;
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 13px;
+        display: block;
+        line-height: 1.6;
+    }
+
     textarea {
         width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-        background-color: #333;
-        color: white;
-        border: none;
-        resize: none;
+        padding: 12px;
+        margin-bottom: 15px;
+        background-color: #2D2D2D;
+        color: #E0E0E0;
+        border: 1px solid #444;
+        border-radius: 6px;
+        resize: vertical;
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 14px;
     }
+
     button {
-        background-color: #222;
-        color: white;
-        border: none;
-        padding: 10px 20px;
+        padding: 12px 25px;
+        background-color: #2D2D2D;
+        color: #76FF03;
+        border: 1px solid #444;
+        border-radius: 6px;
         cursor: pointer;
-        margin-top: 10px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        margin-right: 10px;
     }
-    .tab {
-        display: none;
+
+    button:hover {
+        background-color: #3D3D3D;
+        border-color: #76FF03;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
     }
 </style>
 </head>
 <body>
-<h2>Json DayZ Editor to CacheSpawner converter</h2>
-<textarea id="inputData" rows="20" placeholder="Paste input data here"></textarea>
-<button onclick="convertData()">Convert</button>
-<textarea id="outputData" rows="20" placeholder="Converted data will appear here"></textarea>
+    <div class="container">
+        <h1>📦 DayZ Editor to CacheSpawner</h1>
+        <p class="description">
+            Конвертирует JSON из DayZ Editor в формат CacheSpawner.
+        </p>
 
-<script>
-function convertData() {
-    try {
-        var inputText = document.getElementById('inputData').value.trim();
-        var inputData = JSON.parse(inputText);
-        var outputData = {
-            "DebugLogs_enabled": 0,
-            "Enable_ChatMessageWhenSpawned": 0,
-            "ChatMessageWhenSpawned": "",
-            "CacheList": []
-        };
+        <div class="example-box">
+            <h3>📖 Как использовать:</h3>
+            <code>
+                1. Вставьте JSON из DayZ Editor (m_SceneObjects)<br>
+                2. Нажмите "Convert"<br>
+                3. Скопируйте результат в конфиг CacheSpawner<br><br>
+                Входной формат: {"m_SceneObjects": [[classname, [x,y,z], [rx,ry,rz]], ...]}<br>
+                Выходной формат: CacheList с Classname, Coords, ItemsInside
+            </code>
+        </div>
 
-        var cacheMap = {}; // для отслеживания одинаковых класснеймов
+        <textarea id="inputData" rows="15" placeholder='Paste input data here. Example:
+{
+  "m_SceneObjects": [
+    ["BandageDressing", [1000, 200, 3000], [0, 0, 0]],
+    ["AmmoBox", [1010, 200, 3010], [0, 90, 0]]
+  ]
+}'></textarea>
+        <button onclick="convertData()">🔄 Convert</button>
+        <textarea id="outputData" rows="15" placeholder="Converted data will appear here..."></textarea>
+    </div>
 
-        inputData.m_SceneObjects.forEach(function(item) {
-            var className = item.param1;
-            if (!cacheMap[className]) { // Если такой класснейм еще не встречался
-                var cacheItem = {
-                    "Classname": className,
-                    "Min_Caches_In_Map": 0,
-                    "Max_Caches_In_Map": 0,
-                    "Coords": [],
-                    "Time_Wait_Spawn": 0,
-                    "Time_Respawn": 0,
-                    "ItemsInside": [{
-                      "ItemCharacteristic": {
-                        "Classname": "BandageDressing",
-                        "Chance_Spawn": 80,
-                        "Damaged": 0.0,
-                        "Weet": 0,
-                        "Themperature": 0,
-                        "IsStacked": 0,
-                        "Count_Stack": 0,
-                        "IsMeat": 0,
-                        "MeatFoodStage": ""
-                      },
-                      "ItemsAttached": []
-                    }]
+    <script>
+        function convertData() {
+            try {
+                var inputText = document.getElementById('inputData').value.trim();
+                if (!inputText) {
+                    document.getElementById('outputData').value = "Error: Please enter input data";
+                    return;
+                }
+                
+                var inputData = JSON.parse(inputText);
+                var outputData = {
+                    "DebugLogs_enabled": 0,
+                    "Enable_ChatMessageWhenSpawned": 0,
+                    "ChatMessageWhenSpawned": "",
+                    "CacheList": []
                 };
-                outputData.CacheList.push(cacheItem);
-                cacheMap[className] = cacheItem; // Добавляем в отслеживание
+
+                var cacheMap = {};
+
+                inputData.m_SceneObjects.forEach(function(item) {
+                    var className = item.param1 || item[0];
+                    if (!cacheMap[className]) {
+                        var cacheItem = {
+                            "Classname": className,
+                            "Min_Caches_In_Map": 0,
+                            "Max_Caches_In_Map": 0,
+                            "Coords": [],
+                            "Time_Wait_Spawn": 0,
+                            "Time_Respawn": 0,
+                            "ItemsInside": [{
+                              "ItemCharacteristic": {
+                                "Classname": "BandageDressing",
+                                "Chance_Spawn": 80,
+                                "Damaged": 0.0,
+                                "Weet": 0,
+                                "Themperature": 0,
+                                "IsStacked": 0,
+                                "Count_Stack": 0,
+                                "IsMeat": 0,
+                                "MeatFoodStage": ""
+                              },
+                              "ItemsAttached": []
+                            }]
+                        };
+                        outputData.CacheList.push(cacheItem);
+                        cacheMap[className] = cacheItem;
+                    }
+                    
+                    var position = item.param2 || item[1];
+                    var orientation = item.param3 || item[2];
+                    
+                    cacheMap[className].Coords.push({
+                        "Position": position,
+                        "Orientation": orientation
+                    });
+                });
+
+                outputData.CacheList.forEach(function(cacheItem) {
+                    cacheItem.Min_Caches_In_Map = 0;
+                    cacheItem.Max_Caches_In_Map = cacheItem.Coords.length;
+                });
+
+                document.getElementById('outputData').value = JSON.stringify(outputData, null, 2);
+            } catch (error) {
+                document.getElementById('outputData').value = "Error: " + error.message;
             }
-            cacheMap[className].Coords.push({
-                "Position": item.param2,
-                "Orientation": item.param3
-            });
-        });
-
-        // Задаем количество для каждого класса
-        outputData.CacheList.forEach(function(cacheItem) {
-            cacheItem.Min_Caches_In_Map = 0;
-            cacheItem.Max_Caches_In_Map = cacheItem.Coords.length;
-        });
-
-        document.getElementById('outputData').value = JSON.stringify(outputData, null, 2);
-    } catch (error) {
-        document.getElementById('outputData').value = "Error: " + error.message;
-    }
-}
-</script>
+        }
+        </script>
 </body>
 </html>

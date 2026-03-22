@@ -6,44 +6,126 @@
     <title>CacheSpawner to Demands Spawner Converter</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1C1C1C;
-            color: white;
+            color: #E0E0E0;
             padding: 20px;
+            margin: 0;
         }
-        button {
-            background-color: #222;
+
+        h1 {
             color: #76FF03;
-            border: none;
-            padding: 10px 20px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            text-align: center;
+            color: #888;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .example-box {
+            background-color: #252525;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .example-box h3 {
+            color: #76FF03;
+            margin-top: 0;
+            font-size: 15px;
+        }
+
+        .example-box code {
+            color: #aaa;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            display: block;
+            line-height: 1.6;
+        }
+
+        button {
+            background-color: #2D2D2D;
+            color: #76FF03;
+            border: 1px solid #444;
+            padding: 12px 25px;
             cursor: pointer;
+            font-size: 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
             margin-right: 10px;
         }
+
+        button:hover {
+            background-color: #3D3D3D;
+            border-color: #76FF03;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
+        }
+
         textarea {
             width: 100%;
-            height: 50vh;
+            height: 40vh;
             margin-top: 10px;
-            padding: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
+            padding: 12px;
+            background-color: #2D2D2D;
+            color: #E0E0E0;
+            border: 1px solid #444;
+            border-radius: 6px;
             resize: none;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
         }
+
         .output {
             white-space: pre-wrap;
-            background-color: #333;
-            padding: 10px;
-            border: none;
-            color: white;
+            background-color: #252525;
+            padding: 15px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #E0E0E0;
             margin-top: 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        h2, h3 {
+            color: #76FF03;
+            font-size: 18px;
+            margin-top: 25px;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>🔄 CacheSpawner to Demands Spawner</h1>
+        <p class="description">
+            Конвертирует конфиг CacheSpawner в формат Demands Spawner.
+        </p>
 
-<h2>JSON Converter</h2>
+        <div class="example-box">
+            <h3>📖 Как использовать:</h3>
+            <code>
+                1. Вставьте JSON CacheSpawner<br>
+                2. Нажмите "Convert"<br>
+                3. Скопируйте результат в конфиг Demands<br><br>
+                Входной формат: {"Classname": "...", "Coords": [{Position, Orientation}], "ItemsInside": [...] }<br>
+                Выходной формат: Demands с positions, storag, items
+            </code>
+        </div>
 
-<textarea id="inputJson" placeholder='Paste your JSON here... Example:
+        <h2>Input JSON</h2>
+        <textarea id="inputJson" placeholder='Paste your JSON here... Example:
 
 {
   "Classname": "ShronWoodBox1",
@@ -70,66 +152,65 @@
       }
     }
   ]
-}'>
-</textarea>
-<button onclick="convertJson()">Convert</button>
+}'></textarea>
+        <button onclick="convertJson()">🔄 Convert</button>
 
-<h3>Formatted Output</h3>
-<div id="output" class="output"></div>
+        <h3>Formatted Output</h3>
+        <div id="output" class="output">// Result will appear here...</div>
+    </div>
 
-<script>
-    function convertJson() {
-        try {
-            const inputJson = JSON.parse(document.getElementById('inputJson').value);
-            
-            const output = {
-                "_comments": "Коментарий для этой позиции", 
-                "minSelectedPos": inputJson.Min_Caches_In_Map || 1,
-                "maxSelectedPos": inputJson.Max_Caches_In_Map || 4,
-                "positions": inputJson.Coords.map(coord => {
-                    const position = coord.Position.join(" ");
-                    const orientation = coord.Orientation.join(" ");
-                    return `${position}|${orientation}|0.5`;
-                }),
-                "byTrigger": 1, 
-                "triggerRadius": 100, 
-                "triggerHeight": 100,  
-                "triggerNegativeHeight": -1,  
-                "triggeringTimes": "-1", 
-                "storag": {
-                    "names": [inputJson.Classname],
-                    "deletable": 1, 
-                    "health01": 1.0, 
-                    "chance": 1, 
-                    "spawningCountMin": 1,
-                    "spawningCountMax": 1, 
-                    "items": inputJson.ItemsInside.map(item => {
-                        const characteristic = item.ItemCharacteristic;
-                        return {
-                            "name": characteristic.Classname,
-                            "health01": 1.0,
-                            "quantity01": 1,
-                            "minAmount": 1,
-                            "maxAmount": characteristic.Count_Stack > 1 ? characteristic.Count_Stack : 1,
-                            "chance": characteristic.Chance_Spawn / 100,
-                            "spawningCountMin": 1,
-                            "spawningCountMax": 1,
-                            "attachments": item.ItemsAttached.map(attachment => ({
-                                "name": attachment.Classname || "Unknown",
-                                "health01": attachment.Damaged || 1,
-                                "chance": attachment.Chance_Spawn || 1
-                            }))
-                        };
-                    })
-                }
-            };
+    <script>
+        function convertJson() {
+            try {
+                const inputJson = JSON.parse(document.getElementById('inputJson').value);
 
-            document.getElementById('output').textContent = JSON.stringify(output, null, 4);
-        } catch (error) {
-            document.getElementById('output').textContent = 'Invalid JSON input.';
+                const output = {
+                    "_comments": "Коментарий для этой позиции",
+                    "minSelectedPos": inputJson.Min_Caches_In_Map || 1,
+                    "maxSelectedPos": inputJson.Max_Caches_In_Map || 4,
+                    "positions": inputJson.Coords.map(coord => {
+                        const position = coord.Position.join(" ");
+                        const orientation = coord.Orientation.join(" ");
+                        return `${position}|${orientation}|0.5`;
+                    }),
+                    "byTrigger": 1,
+                    "triggerRadius": 100,
+                    "triggerHeight": 100,
+                    "triggerNegativeHeight": -1,
+                    "triggeringTimes": "-1",
+                    "storag": {
+                        "names": [inputJson.Classname],
+                        "deletable": 1,
+                        "health01": 1.0,
+                        "chance": 1,
+                        "spawningCountMin": 1,
+                        "spawningCountMax": 1,
+                        "items": inputJson.ItemsInside.map(item => {
+                            const characteristic = item.ItemCharacteristic;
+                            return {
+                                "name": characteristic.Classname,
+                                "health01": 1.0,
+                                "quantity01": 1,
+                                "minAmount": 1,
+                                "maxAmount": characteristic.Count_Stack > 1 ? characteristic.Count_Stack : 1,
+                                "chance": characteristic.Chance_Spawn / 100,
+                                "spawningCountMin": 1,
+                                "spawningCountMax": 1,
+                                "attachments": item.ItemsAttached.map(attachment => ({
+                                    "name": attachment.Classname || "Unknown",
+                                    "health01": attachment.Damaged || 1,
+                                    "chance": attachment.Chance_Spawn || 1
+                                }))
+                            };
+                        })
+                    }
+                };
+
+                document.getElementById('output').textContent = JSON.stringify(output, null, 4);
+            } catch (error) {
+                document.getElementById('output').textContent = 'Invalid JSON input: ' + error.message;
+            }
         }
-    }
-</script>
-
+    </script>
 </body>
 </html>

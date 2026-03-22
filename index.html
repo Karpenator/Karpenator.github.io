@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Karpenator's Dayz Configuration Tools</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1C1C1C;
-            color: white;
+            color: #E0E0E0;
             padding: 20px;
             margin: 0;
         }
@@ -16,124 +20,516 @@
         h1 {
             font-size: 32px;
             text-align: center;
+            margin-bottom: 10px;
+            color: #76FF03;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
             margin-bottom: 30px;
+            font-size: 14px;
         }
 
         #main-buttons {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            grid-gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-gap: 15px;
             justify-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .button-container {
+            width: 100%;
+            position: relative;
         }
 
         button {
-            font-size: 18px;
-            padding: 15px 30px;
-            background-color: #575757;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            font-size: 16px;
+            padding: 18px 25px;
+            background-color: #2D2D2D;
+            color: #E0E0E0;
+            border: 1px solid #444;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: left;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         button:hover {
-            background-color: #6c6c6c;
+            background-color: #3D3D3D;
+            border-color: #76FF03;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .button-icon {
+            font-size: 20px;
+            min-width: 24px;
+        }
+
+        .button-text {
+            flex: 1;
+        }
+
+        /* Tooltip styles */
+        .tooltip {
+            visibility: hidden;
+            background-color: #1a1a1a;
+            border: 1px solid #444;
+            color: #E0E0E0;
+            text-align: left;
+            border-radius: 6px;
+            padding: 12px;
+            position: absolute;
+            z-index: 1000;
+            width: 320px;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            margin-top: 5px;
+        }
+
+        .tooltip::before {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent #444 transparent;
+        }
+
+        .button-container:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip-title {
+            font-weight: bold;
+            color: #76FF03;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .tooltip-example {
+            background-color: #252525;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 12px;
+            color: #aaa;
+            overflow-x: auto;
         }
 
         #bottom-buttons {
             display: flex;
             justify-content: center;
-            margin-top: 30px;
+            margin-top: 40px;
+            gap: 15px;
         }
 
         #bottom-buttons button {
-            margin: 0 10px;
-        }
-
-        #bottom-buttons button:last-child {
-            margin-right: 0;
-        }
-
-        #bottom-buttons button {
-            font-size: 16px;
-            padding: 10px 20px;
-            background-color: #575757;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            width: auto;
+            font-size: 15px;
+            padding: 12px 25px;
+            background-color: #2D2D2D;
+            color: #E0E0E0;
+            border: 1px solid #444;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            text-align: center;
+            justify-content: center;
         }
 
         #bottom-buttons button:hover {
-            background-color: #6c6c6c;
+            background-color: #3D3D3D;
+            border-color: #76FF03;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
         }
 
         #palette {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .color-swatch {
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             cursor: pointer;
-            border: 2px solid white;
+            border: 2px solid #555;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.15);
+            border-color: #76FF03;
+        }
+
+        .color-swatch.active {
+            border-color: #76FF03;
+            box-shadow: 0 0 10px rgba(118, 255, 3, 0.5);
+        }
+
+        /* Category labels */
+        .category-label {
+            grid-column: 1 / -1;
+            text-align: left;
+            font-size: 14px;
+            color: #76FF03;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            border-left: 3px solid #76FF03;
         }
     </style>
 </head>
 <body>
-    <h1>Karpenator's Dayz Configuration Tools</h1>
+    <h1>⚙️ Karpenator's Dayz Configuration Tools</h1>
+    <p class="subtitle">Наведите на кнопку для получения справки по инструменту</p>
 
     <div id="palette">
-        <div class="color-swatch" style="background-color: #575757;" data-color="#575757"></div>
+        <div class="color-swatch active" style="background-color: #2D2D2D;" data-color="#2D2D2D"></div>
+        <div class="color-swatch" style="background-color: #76FF03;" data-color="#76FF03"></div>
         <div class="color-swatch" style="background-color: #FF5733;" data-color="#FF5733"></div>
         <div class="color-swatch" style="background-color: #33FF57;" data-color="#33FF57"></div>
         <div class="color-swatch" style="background-color: #3357FF;" data-color="#3357FF"></div>
         <div class="color-swatch" style="background-color: #FFC300;" data-color="#FFC300"></div>
+        <div class="color-swatch" style="background-color: #9C27B0;" data-color="#9C27B0"></div>
+        <div class="color-swatch" style="background-color: #00BCD4;" data-color="#00BCD4"></div>
     </div>
 
     <div id="main-buttons">
-        <button id="btn-banking">Ultima BANK в BANKING</button>
-        <button id="btn-trader-plus">Banking to TraderPlus</button>
-        <button id="btn-trader-creator">Trader Config Creator</button>
-        <button id="btn-c-converter">C to map converter</button>
-        <button id="btn-exp-to-jones">Exp to Jones</button>
-        <button id="btn-exp-to-traderplus">Exp to TraderPlus</button>
-        <button id="btn-jones-to-exp">Jones to Exp</button>
-        <button id="btn-traderplus-to-exp">TraderPlus to Exp</button>
-        <button id="btn-traderplus-to-jones">TraderPlus to Jones</button>
-        <button id="btn-json-to-json">Json DayZ Editor to CacheSpawner converter</button>
-        <button id="btn-extract-classnames-from-exp">Extract classnames from Exp Trader</button>
-        <button id="btn-generate-sls-from-classnames">Convert Classnames to SLS</button>
-        <button id="btn-zakat-to-dem-spawner">Convert Zakat Spawner to Demands Spawner</button>
-        <button id="btn-catch-to-dem">Convert CacheSpawner to Demands Spawner</button>
-        <button id="btn-zakat-radiation-to-syberia-radiation">Convert Zakat Radiation to Syberia</button>
-        <button id="btn-zakat-radiation-to-dem-radiation">Convert Zakat Radiation to Demands Radiation</button>
-        <button id="btn-scar-radiation-to-dem-radiation">Convert Scar Radiation to Demands Radiation</button>
-        <button id="btn-exp-market-from-vehicle-to-events-formatter">Exp Market from vehicle to events formatter</button>
-        <button id="btn-classnames-to-xml-nom-min">Modify types.xml from classnames</button>
-        <button id="btn-coord-xam-to-eventspawn">dayz.xam.nu coordinate to XML Formatter</button>
-        <button id="btn-exp-market-classnmae-filter">Exp Market classnames filter</button>
-        <button id="btn-vehicle-price-calculator">Vehicle Price Calculator</button>
-        <button id="btn-types-to-classnames">Types to classnames converter</button>
-        <button id="btn-classnames-to-events">Vehicle Class Name to DayZ events Formatter</button>
-        <button id="btn-zakat-radiation-to-dem-radiation">Convert Zakat Radiation to Demands Radiation</button>
+        <!-- Trader Converters -->
+        <div class="category-label">🔄 Trader Converters</div>
+        
+        <div class="button-container">
+            <button id="btn-exp-to-jones">
+                <span class="button-icon">📤</span>
+                <span class="button-text">Exp to Jones</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Exp to Jones Trader</div>
+                <div>Конвертирует конфиг Expansion Trader в формат Dr. Jones Trader.</div>
+                <div class="tooltip-example">Пример входа: JSON файл EXP<br>Пример выхода: txt файл Jones</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-exp-to-traderplus">
+                <span class="button-icon">📤</span>
+                <span class="button-text">Exp to TraderPlus</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Exp to TraderPlus</div>
+                <div>Конвертирует конфиг Expansion Trader в формат TraderPlus.</div>
+                <div class="tooltip-example">Пример входа: {"Items": [...]}<br>Пример выхода: {"CategoryName": "...", "Products": [...]}</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-jones-to-exp">
+                <span class="button-icon">📤</span>
+                <span class="button-text">Jones to Exp</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Jones to Expansion Trader</div>
+                <div>Конвертирует конфиг Dr. Jones Trader в формат Expansion Trader.</div>
+                <div class="tooltip-example">Пример входа: &lt;Category&gt; Name...<br>Пример выхода: JSON EXP формата</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-traderplus-to-exp">
+                <span class="button-icon">📤</span>
+                <span class="button-text">TraderPlus to Exp</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">TraderPlus to Expansion</div>
+                <div>Конвертирует конфиг TraderPlus в формат Expansion Trader.</div>
+                <div class="tooltip-example">Пример входа: {"CategoryName": "...", "Products": [...]}<br>Пример выхода: JSON EXP формата</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-traderplus-to-jones">
+                <span class="button-icon">📤</span>
+                <span class="button-text">TraderPlus to Jones</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">TraderPlus to Dr. Jones</div>
+                <div>Конвертирует конфиг TraderPlus в формат Dr. Jones Trader.</div>
+                <div class="tooltip-example">Пример входа: {"TraderCategories": [...]}<br>Пример выхода: txt Jones формата</div>
+            </div>
+        </div>
+
+        <!-- Config Generators -->
+        <div class="category-label">🛠️ Config Generators</div>
+
+        <div class="button-container">
+            <button id="btn-trader-creator">
+                <span class="button-icon">🏪</span>
+                <span class="button-text">Trader Config Creator</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Trader Config Creator</div>
+                <div>Генератор конфигов для различных трейдеров. Поддерживает: Expansion Trader, Dr. Jones, Trader Plus, Ultima.</div>
+                <div class="tooltip-example">Вставьте список classnames, укажите цены и лимиты</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-banking">
+                <span class="button-icon">🏦</span>
+                <span class="button-text">Ultima BANK в BANKING</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Ultima BANK Converter</div>
+                <div>Конвертирует файлы Ultima BANK в формат BANKING с сохранением балансов игроков.</div>
+                <div class="tooltip-example">Вход: BANKING_*.txt файлы<br>Выход: JSON файлы для каждого игрока</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-generate-sls-from-classnames">
+                <span class="button-icon">📋</span>
+                <span class="button-text">Classnames to SLS</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Classnames to SLS Generator</div>
+                <div>Генерирует JSON для SLS (Simple Loot Spawner) из списка classnames.</div>
+                <div class="tooltip-example">Вход: список classnames<br>Выход: JSON с chance и quantity</div>
+            </div>
+        </div>
+
+        <!-- Spawner Converters -->
+        <div class="category-label">🎯 Spawner Converters</div>
+
+        <div class="button-container">
+            <button id="btn-catch-to-dem">
+                <span class="button-icon">🔄</span>
+                <span class="button-text">CacheSpawner to Demands</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">CacheSpawner to Demands Spawner</div>
+                <div>Конвертирует конфиг CacheSpawner в формат Demands Spawner.</div>
+                <div class="tooltip-example">Вход: JSON CacheSpawner<br>Выход: JSON Demands формата</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-zakat-to-dem-spawner">
+                <span class="button-icon">🧬</span>
+                <span class="button-text">Zakat Spawner to Demands</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Zakat Mutant Spawner to Demands</div>
+                <div>Конвертирует конфиг Zakat Mutant Spawner в Demands Spawner с настройкой радиуса.</div>
+                <div class="tooltip-example">Вход: JSON Zakat с ClassNames и Positions<br>Выход: JSON Demands для мутантов</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-json-to-json">
+                <span class="button-icon">📦</span>
+                <span class="button-text">DayZ Editor to CacheSpawner</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Json DayZ Editor to CacheSpawner</div>
+                <div>Конвертирует JSON из DayZ Editor в формат CacheSpawner.</div>
+                <div class="tooltip-example">Вход: {"m_SceneObjects": [...]}<br>Выход: CacheList для CacheSpawner</div>
+            </div>
+        </div>
+
+        <!-- Mapping Tools -->
+        <div class="category-label">🗺️ Mapping Tools</div>
+
+        <div class="button-container">
+            <button id="btn-c-converter">
+                <span class="button-icon">📜</span>
+                <span class="button-text">C to Map Converter</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Конвертер маппинга .c в .map</div>
+                <div>Конвертирует файлы маппинга из формата .c (SpawnObject) в формат .map для спавнеров.</div>
+                <div class="tooltip-example">Вход: файл .c с SpawnObject()<br>Выход: файл .map с SpawnerObject | ...</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-coord-xam-to-eventspawn">
+                <span class="button-icon">📍</span>
+                <span class="button-text">dayz.xam.nu to XML</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Coordinate Converter</div>
+                <div>Конвертирует координаты с dayz.xam.nu в XML формат для event spawn.</div>
+                <div class="tooltip-example">Вход: 1234.56, 7890.12<br>Выход: &lt;pos x="1234.56" z="7890.12" /&gt;</div>
+            </div>
+        </div>
+
+        <!-- Classname Tools -->
+        <div class="category-label">🏷️ Classname Tools</div>
+
+        <div class="button-container">
+            <button id="btn-extract-classnames-from-exp">
+                <span class="button-icon">📥</span>
+                <span class="button-text">Extract Classnames from EXP</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Extract Classnames from EXP</div>
+                <div>Извлекает список classnames из конфига Expansion Trader и фильтрует по максимальной цене.</div>
+                <div class="tooltip-example">Вход: JSON EXP конфига<br>Выход: список classnames</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-types-to-classnames">
+                <span class="button-icon">📄</span>
+                <span class="button-text">Types to Classnames</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Types.xml to Classnames</div>
+                <div>Извлекает все classnames из файла types.xml.</div>
+                <div class="tooltip-example">Вход: XML types.xml<br>Выход: список classnames</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-classnames-to-events">
+                <span class="button-icon">🚗</span>
+                <span class="button-text">Classnames to Events</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Vehicle Classnames to Events XML</div>
+                <div>Создаёт XML для event spawn с attachments из списка classnames автомобиля и его частей.</div>
+                <div class="tooltip-example">Вход: список classnames (авто + части)<br>Выход: XML с attachments</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-classnames-to-xml-nom-min">
+                <span class="button-icon">⚙️</span>
+                <span class="button-text">Modify types.xml</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Modify types.xml Nominal/Min</div>
+                <div>Обновляет значения nominal и min в types.xml для указанных classnames.</div>
+                <div class="tooltip-example">Вход: classnames + types.xml<br>Выход: модифицированный XML</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-exp-market-classnmae-filter">
+                <span class="button-icon">🔍</span>
+                <span class="button-text">EXP Market Filter</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">EXP Market Classnames Filter</div>
+                <div>Фильтрует JSON EXP Market по списку classnames и добавляет стандартные параметры.</div>
+                <div class="tooltip-example">Вход: список classnames + JSON EXP<br>Выход: отфильтрованный JSON</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-exp-market-from-vehicle-to-events-formatter">
+                <span class="button-icon">🚙</span>
+                <span class="button-text">Vehicle Market to Events</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Vehicle Market to Events XML</div>
+                <div>Конвертирует JSON EXP Market с автомобилями в XML формат для event spawn.</div>
+                <div class="tooltip-example">Вход: JSON EXP Market<br>Выход: XML с type и attachments</div>
+            </div>
+        </div>
+
+        <!-- Price Calculator -->
+        <div class="category-label">💰 Price Calculator</div>
+
+        <div class="button-container">
+            <button id="btn-vehicle-price-calculator">
+                <span class="button-icon">🧮</span>
+                <span class="button-text">Vehicle Price Calculator</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Vehicle Price Calculator</div>
+                <div>Рассчитывает цену транспортных средств на основе слотов, бочек, ящиков и других параметров.</div>
+                <div class="tooltip-example">Вход: "уаз 2363 - 800 слотов, 1 бочек, 2 ящика"</div>
+            </div>
+        </div>
+
+        <!-- Radiation Converters -->
+        <div class="category-label">☢️ Radiation Converters</div>
+
+        <div class="button-container">
+            <button id="btn-zakat-radiation-to-syberia-radiation">
+                <span class="button-icon">☢️</span>
+                <span class="button-text">Zakat to Syberia Radiation</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Zakat to Syberia Radiation</div>
+                <div>Конвертирует зоны радиации Zakat в формат Syberia Radiation.</div>
+                <div class="tooltip-example">Вход: JSON Zakat с RadPosArrays<br>Выход: JSON Syberia с m_customZones</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-zakat-radiation-to-dem-radiation">
+                <span class="button-icon">☢️</span>
+                <span class="button-text">Zakat to Demands Radiation</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Zakat to Demands Radiation</div>
+                <div>Конвертирует зоны радиации Zakat в формат Demands Radiation с настройкой высоты и задержки урона.</div>
+                <div class="tooltip-example">Вход: JSON Zakat<br>Выход: JSON Demands zone</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="btn-scar-radiation-to-dem-radiation">
+                <span class="button-icon">☢️</span>
+                <span class="button-text">Scar to Demands Radiation</span>
+            </button>
+            <div class="tooltip">
+                <div class="tooltip-title">Scar to Demands Radiation</div>
+                <div>Конвертирует зоны радиации Scar в формат Demands Radiation.</div>
+                <div class="tooltip-example">Вход: JSON Scar с position и radAmount<br>Выход: JSON Demands zone</div>
+            </div>
+        </div>
     </div>
 
     <div id="bottom-buttons">
-        <button id="btn-discord">Дискорд</button>
-        <button id="btn-donate">Пожертвовать</button>
+        <button id="btn-discord">💬 Дискорд</button>
+        <button id="btn-donate">💎 Пожертвовать</button>
     </div>
 
     <script>
         const palette = document.querySelector('#palette');
         const buttons = document.querySelectorAll('#main-buttons button');
-        let selectedColor = '#575757'; // Default color
+        let selectedColor = '#2D2D2D';
 
         // Load saved colors from localStorage
         function loadButtonColors() {
@@ -153,19 +549,29 @@
         // Event listener for color palette
         palette.addEventListener('click', (event) => {
             if (event.target.classList.contains('color-swatch')) {
+                // Remove active class from all swatches
+                document.querySelectorAll('.color-swatch').forEach(swatch => {
+                    swatch.classList.remove('active');
+                });
+                // Add active class to clicked swatch
+                event.target.classList.add('active');
                 selectedColor = event.target.getAttribute('data-color');
             }
         });
 
         // Event listeners for buttons
         buttons.forEach((button) => {
-            button.addEventListener('click', () => {
+            button.addEventListener('click', (e) => {
+                // Don't change color if clicking on tooltip
+                if (e.target.classList.contains('tooltip') || e.target.classList.contains('tooltip-title') || e.target.classList.contains('tooltip-example')) {
+                    return;
+                }
                 button.style.backgroundColor = selectedColor;
                 saveButtonColor(button.id, selectedColor);
             });
         });
 
-        loadButtonColors(); // Initialize colors on page load
+        loadButtonColors();
 
         // Function to open a new program page
         function runProgram(url) {
@@ -175,10 +581,6 @@
         // Event listeners for the program buttons
         document.getElementById("btn-banking").addEventListener("click", function() {
             runProgram("btn-banking.html");
-        });
-
-        document.getElementById("btn-trader-plus").addEventListener("click", function() {
-            runProgram("btn-trader-plus.html");
         });
 
         document.getElementById("btn-trader-creator").addEventListener("click", function() {
@@ -212,63 +614,63 @@
         document.getElementById("btn-json-to-json").addEventListener("click", function() {
             runProgram("btn-json-to-json.html");
         });
-		
+
         document.getElementById("btn-extract-classnames-from-exp").addEventListener("click", function() {
             runProgram("btn-extract-classnames-from-exp.html");
         });
-		
+
         document.getElementById("btn-generate-sls-from-classnames").addEventListener("click", function() {
             runProgram("btn-generate-sls-from-classnames.html");
         });
-		
+
         document.getElementById("btn-zakat-to-dem-spawner").addEventListener("click", function() {
             runProgram("btn-zakat-to-dem-spawner.html");
         });
-		
+
         document.getElementById("btn-catch-to-dem").addEventListener("click", function() {
             runProgram("btn-catch-to-dem.html");
         });
-		
+
         document.getElementById("btn-zakat-radiation-to-syberia-radiation").addEventListener("click", function() {
             runProgram("btn-zakat-radiation-to-syberia-radiation.html");
         });
-		
+
         document.getElementById("btn-zakat-radiation-to-dem-radiation").addEventListener("click", function() {
             runProgram("btn-zakat-radiation-to-dem-radiation.html");
         });
-		
+
+        document.getElementById("btn-scar-radiation-to-dem-radiation").addEventListener("click", function() {
+            runProgram("btn-scar-radiation-to-dem-radiation.html");
+        });
+
         document.getElementById("btn-exp-market-from-vehicle-to-events-formatter").addEventListener("click", function() {
             runProgram("btn-exp-market-from-vehicle-to-events-formatter.html");
         });
-		
+
         document.getElementById("btn-classnames-to-xml-nom-min").addEventListener("click", function() {
             runProgram("btn-classnames-to-xml-nom-min.html");
         });
-		
+
         document.getElementById("btn-coord-xam-to-eventspawn").addEventListener("click", function() {
             runProgram("btn-coord-xam-to-eventspawn.html");
         });
-		
+
         document.getElementById("btn-exp-market-classnmae-filter").addEventListener("click", function() {
             runProgram("btn-exp-market-classnmae-filter.html");
         });
-		
+
         document.getElementById("btn-vehicle-price-calculator").addEventListener("click", function() {
             runProgram("btn-vehicle-price-calculator.html");
         });
-		
+
         document.getElementById("btn-types-to-classnames").addEventListener("click", function() {
             runProgram("btn-types-to-classnames.html");
         });
-		
+
         document.getElementById("btn-classnames-to-events").addEventListener("click", function() {
             runProgram("btn-classnames-to-events.html");
         });
-		
-        document.getElementById("btn-scar-radiation-to-dem-radiation").addEventListener("click", function() {
-            runProgram("btn-scar-radiation-to-dem-radiation.html");
-        });		
-		
+
         document.getElementById("btn-discord").addEventListener("click", function() {
             window.open("https://discord.gg/Mj7tFHe8Nz", "_blank");
         });

@@ -6,76 +6,169 @@
     <title>dayz.xam.nu coordinate to XML Formatter</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1C1C1C;
-            color: white;
+            color: #E0E0E0;
             padding: 20px;
+            margin: 0;
         }
-        button {
-            background-color: #222;
+
+        h1 {
             color: #76FF03;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin-top: 10px;
+            text-align: center;
+            margin-bottom: 10px;
         }
+
+        .description {
+            text-align: center;
+            color: #888;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .example-box {
+            background-color: #252525;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .example-box h3 {
+            color: #76FF03;
+            margin-top: 0;
+            font-size: 15px;
+        }
+
+        .example-box code {
+            color: #aaa;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            display: block;
+            line-height: 1.6;
+        }
+
         textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-top: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
-            resize: none;
-            height: 200px;
+            background-color: #2D2D2D;
+            color: #E0E0E0;
+            border: 1px solid #444;
+            border-radius: 6px;
+            resize: vertical;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
         }
+
+        #coordinateInput {
+            height: 150px;
+        }
+
+        button {
+            background-color: #2D2D2D;
+            color: #76FF03;
+            border: 1px solid #444;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #3D3D3D;
+            border-color: #76FF03;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
+        }
+
         .output {
             white-space: pre-wrap;
-            background-color: #333;
-            padding: 10px;
-            color: white;
+            background-color: #252525;
+            padding: 15px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #E0E0E0;
             margin-top: 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            min-height: 100px;
+        }
+
+        h2, h3 {
+            color: #76FF03;
+            font-size: 18px;
+            margin-top: 25px;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>📍 dayz.xam.nu Coordinate to XML</h1>
+        <p class="description">
+            Конвертирует координаты с dayz.xam.nu в XML формат для event spawn.
+        </p>
 
-<h2>dayz.xam.nu coordinate to XML Formatter</h2>
+        <div class="example-box">
+            <h3>📖 Как использовать:</h3>
+            <code>
+                1. Скопируйте координаты с dayz.xam.nu<br>
+                2. Вставьте координаты в формате: x, z (каждая пара с новой строки)<br>
+                3. Нажмите "Convert to XML Format"<br>
+                4. Скопируйте результат<br><br>
+                Пример входа:<br>
+                1234.56, 7890.12<br>
+                2345.67, 8901.23<br><br>
+                Пример выхода:<br>
+                &lt;pos x="1234.56" z="7890.12" /&gt;<br>
+                &lt;pos x="2345.67" z="8901.23" /&gt;
+            </code>
+        </div>
 
-<textarea id="coordinateInput" placeholder="Paste coordinates here..."></textarea>
-<button onclick="convertCoordinates()">Convert to XML Format</button>
+        <textarea id="coordinateInput" placeholder="Paste coordinates here... Example:
+1234.56, 7890.12
+2345.67, 8901.23
+3456.78, 9012.34"></textarea>
 
-<h3>Formatted Output</h3>
-<div id="output" class="output"></div>
+        <button onclick="convertCoordinates()">🔄 Convert to XML Format</button>
 
-<script>
-    document.getElementById('coordinateInput').addEventListener('paste', (event) => {
-        setTimeout(() => {
-            const textarea = event.target;
-            const lines = textarea.value.split('\n');
+        <h3>Formatted Output</h3>
+        <div id="output" class="output">// Result will appear here...</div>
+    </div>
 
-            // Automatically format pasted coordinates onto new lines
-            textarea.value = lines.map(line => line.replace(/,\s*/g, ', ')).join('\n');
-        }, 0);
-    });
-
-    function convertCoordinates() {
-        const input = document.getElementById('coordinateInput').value.trim();
-        const lines = input.split('\n');
-        let output = '';
-
-        lines.forEach(line => {
-            const coords = line.split(',').map(coord => coord.trim());
-            if (coords.length === 2) {
-                const x = coords[0];
-                const z = coords[1];
-                output += `<pos x="${x}" z="${z}" />\n`;
-            }
+    <script>
+        document.getElementById('coordinateInput').addEventListener('paste', (event) => {
+            setTimeout(() => {
+                const textarea = event.target;
+                const lines = textarea.value.split('\n');
+                textarea.value = lines.map(line => line.replace(/,\s*/g, ', ')).join('\n');
+            }, 0);
         });
 
-        document.getElementById('output').textContent = output || 'Invalid input or no coordinates provided.';
-    }
-</script>
+        function convertCoordinates() {
+            const input = document.getElementById('coordinateInput').value.trim();
+            const lines = input.split('\n');
+            let output = '';
 
+            lines.forEach(line => {
+                const coords = line.split(',').map(coord => coord.trim());
+                if (coords.length >= 2 && coords[0] && coords[1]) {
+                    const x = coords[0];
+                    const z = coords[1];
+                    output += `<pos x="${x}" z="${z}" />\n`;
+                }
+            });
+
+            document.getElementById('output').textContent = output || 'Invalid input or no coordinates provided.';
+        }
+    </script>
 </body>
 </html>

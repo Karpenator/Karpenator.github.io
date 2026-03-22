@@ -3,99 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор JSON</title>
+    <title>Генератор JSON для SLS</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1C1C1C;
+            color: #E0E0E0;
             padding: 20px;
+            margin: 0;
         }
+
         h1 {
             text-align: center;
+            color: #76FF03;
+            margin-bottom: 10px;
         }
+
+        .description {
+            text-align: center;
+            color: #888;
+            margin-bottom: 25px;
+            font-size: 14px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #76FF03;
+            font-weight: 500;
+        }
+
         textarea, input {
             width: 100%;
-            margin-bottom: 10px;
-            padding: 10px;
-            box-sizing: border-box;
+            margin-bottom: 15px;
+            padding: 12px;
+            background-color: #2D2D2D;
+            color: #E0E0E0;
+            border: 1px solid #444;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
         }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        input[type="number"] {
+            max-width: 200px;
+        }
+
         button {
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
+            padding: 12px 25px;
+            background-color: #2D2D2D;
+            color: #76FF03;
+            border: 1px solid #444;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            margin-right: 10px;
         }
+
         button:hover {
-            background-color: #218838;
+            background-color: #3D3D3D;
+            border-color: #76FF03;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
         }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        h2 {
+            color: #76FF03;
+            margin-top: 25px;
+            font-size: 18px;
+        }
+
         pre {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            white-space: pre-wrap; /* Allows for wrapping of long lines */
+            background-color: #252525;
+            color: #E0E0E0;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
         }
+
         .error {
-            color: red;
+            color: #FF5733;
+            background-color: rgba(255, 87, 51, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #FF5733;
+            margin-top: 10px;
+        }
+
+        .example-box {
+            background-color: #252525;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .example-box h3 {
+            color: #76FF03;
+            margin-top: 0;
+            font-size: 15px;
+        }
+
+        .example-box code {
+            color: #aaa;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            display: block;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>📋 Генератор JSON для SLS</h1>
+        <p class="description">
+            Генерирует JSON конфигурацию для Simple Loot Spawner (SLS) из списка classnames предметов.
+            Укажите шанс спавна и получите готовый конфиг.
+        </p>
 
-    <h1>Генератор JSON</h1>
-    
-    <label for="itemNames">Введите названия предметов:</label>
-    <textarea id="itemNames" rows="10">
-SurgicalKit
+        <div class="example-box">
+            <h3>📖 Как использовать:</h3>
+            <code>
+                1. Введите названия предметов (каждый с новой строки)<br>
+                2. Укажите шанс спавна (например, 0.53 = 53%)<br>
+                3. Нажмите "Генерировать"<br>
+                4. Скопируйте результат в конфиг SLS
+            </code>
+        </div>
+
+        <label for="itemNames">Названия предметов (каждый с новой строки):</label>
+        <textarea id="itemNames" rows="10">SurgicalKit
 Stethoscope
 MedContainerSmall
 MedContainerMedium
-MedContainerLarge
-    </textarea>
-    
-    <label for="chance">Введите значение chance:</label>
-    <input type="number" step="0.01" id="chance" placeholder="0.53" value="0.53">
+MedContainerLarge</textarea>
 
-    <button onclick="generateJSON()">Генерировать</button>
+        <label for="chance">Значение chance (0.0 - 1.0):</label>
+        <input type="number" step="0.01" id="chance" placeholder="0.53" value="0.53" min="0" max="1">
 
-    <h2>Результат:</h2>
-    <pre id="result"></pre>
+        <button onclick="generateJSON()">🚀 Генерировать</button>
+        <button onclick="clearAll()">🗑️ Очистить</button>
 
-    <div id="error" class="error"></div>
+        <h2>📄 Результат:</h2>
+        <pre id="result">// Здесь появится сгенерированный JSON...</pre>
+
+        <div id="error" class="error" style="display: none;"></div>
+    </div>
 
     <script>
         function generateJSON() {
-            // Получаем список названий предметов и значение chance
             const itemNamesText = document.getElementById('itemNames').value.trim();
             const chance = parseFloat(document.getElementById('chance').value);
+            const errorDiv = document.getElementById('error');
+            const resultPre = document.getElementById('result');
 
-            // Очистка предыдущих ошибок
-            document.getElementById('error').textContent = '';
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+
+            if (!itemNamesText) {
+                showError('Введите названия предметов!');
+                return;
+            }
+
+            if (isNaN(chance) || chance < 0 || chance > 1) {
+                showError('Значение chance должно быть от 0 до 1!');
+                return;
+            }
 
             try {
-                // Преобразуем текст в массив строк
-                const itemNames = itemNamesText.split('\n').map(name => name.trim());
+                const itemNames = itemNamesText.split('\n').map(name => name.trim()).filter(name => name !== '');
 
-                // Проверка на пустое значение
-                if (itemNames.some(name => name === '')) {
-                    throw new Error('Некоторые названия предметов пусты.');
+                if (itemNames.length === 0) {
+                    showError('Список предметов пуст!');
+                    return;
                 }
 
-                // Генерируем JSON
                 const jsonResult = itemNames.map(name => ({
                     itemName: name,
                     chance: chance,
                     quantity: -2
                 }));
 
-                // Выводим результат
-                document.getElementById('result').textContent = JSON.stringify(jsonResult, null, 4);
+                resultPre.textContent = JSON.stringify(jsonResult, null, 4);
             } catch (error) {
-                document.getElementById('error').textContent = 'Ошибка: ' + error.message;
+                showError('Ошибка: ' + error.message);
             }
         }
-    </script>
 
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = '❌ ' + message;
+            errorDiv.style.display = 'block';
+        }
+
+        function clearAll() {
+            document.getElementById('itemNames').value = '';
+            document.getElementById('chance').value = '0.53';
+            document.getElementById('result').textContent = '// Здесь появится сгенерированный JSON...';
+            document.getElementById('error').style.display = 'none';
+        }
+    </script>
 </body>
 </html>

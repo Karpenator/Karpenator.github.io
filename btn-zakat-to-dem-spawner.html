@@ -6,48 +6,139 @@
     <title>Mutant Zakat Spawner to Demands Spawner</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1C1C1C;
-            color: white;
+            color: #E0E0E0;
             padding: 20px;
+            margin: 0;
         }
-        button {
-            background-color: #222;
+
+        h1 {
             color: #76FF03;
-            border: none;
-            padding: 10px 20px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            text-align: center;
+            color: #888;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .example-box {
+            background-color: #252525;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .example-box h3 {
+            color: #76FF03;
+            margin-top: 0;
+            font-size: 15px;
+        }
+
+        .example-box code {
+            color: #aaa;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            display: block;
+            line-height: 1.6;
+        }
+
+        button {
+            background-color: #2D2D2D;
+            color: #76FF03;
+            border: 1px solid #444;
+            padding: 12px 25px;
             cursor: pointer;
+            font-size: 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
             margin-right: 10px;
         }
+
+        button:hover {
+            background-color: #3D3D3D;
+            border-color: #76FF03;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
+        }
+
         textarea {
             width: 100%;
-            height: 50vh;
+            height: 40vh;
             margin-top: 10px;
-            padding: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
+            padding: 12px;
+            background-color: #2D2D2D;
+            color: #E0E0E0;
+            border: 1px solid #444;
+            border-radius: 6px;
             resize: none;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
         }
+
         input[type="number"] {
-            width: 60px;
-            padding: 5px;
+            width: 80px;
+            padding: 10px;
             margin-right: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
+            background-color: #2D2D2D;
+            color: #E0E0E0;
+            border: 1px solid #444;
+            border-radius: 6px;
+        }
+
+        label {
+            color: #76FF03;
+            font-weight: 500;
+        }
+
+        h2 {
+            color: #76FF03;
+            font-size: 18px;
+            margin-top: 25px;
+        }
+
+        h3 {
+            color: #76FF03;
+            font-size: 16px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>🧬 Zakat Mutant Spawner to Demands</h1>
+        <p class="description">
+            Конвертирует конфиг Zakat Mutant Spawner в Demands Spawner с настройкой радиуса.
+        </p>
 
-<h2>Mutant JSON Converter</h2>
+        <div class="example-box">
+            <h3>📖 Как использовать:</h3>
+            <code>
+                1. Вставьте JSON Zakat с ClassNames и Positions<br>
+                2. Укажите процент радиуса (100% = оригинальный радиус)<br>
+                3. Нажмите "Convert"<br>
+                4. Скопируйте результат в конфиг Demands<br><br>
+                Входной формат: {"ClassNames": "...", "Positions": [x,y,z], "Count": N, "Radius": N}
+            </code>
+        </div>
 
-<label for="percentage">Enter Radius Percentage:</label>
-<input type="number" id="percentage" value="100" min="0" max="100">%
+        <label for="percentage">Radius Percentage:</label>
+        <input type="number" id="percentage" value="100" min="0" max="100"> %
+        <span style="color: #888; font-size: 13px;">(100% = original radius)</span>
 
-<br><br>
-<textarea id="inputJson" placeholder='Paste your JSON here... Example:
+        <br><br>
+        <label for="inputJson">Input JSON:</label>
+        <textarea id="inputJson" placeholder='Paste your JSON here... Example:
 
 {
     "ClassNames": "KARP_Mutant_Burer",
@@ -71,72 +162,80 @@
     "RespawnTime": 2000,
     "Radius": 100
 }'></textarea>
-<button onclick="convertJson()">Convert</button>
+        <button onclick="convertJson()">🔄 Convert</button>
 
-<h3>Formatted Output</h3>
-<textarea id="output" readonly></textarea>
+        <h3>Formatted Output</h3>
+        <textarea id="output" readonly placeholder="Result will appear here..."></textarea>
+    </div>
 
-<script>
-function convertJson() {
-    try {
-        const inputJson = JSON.parse(`[${document.getElementById('inputJson').value}]`);
-        const percentage = parseFloat(document.getElementById('percentage').value) / 100;
+    <script>
+        function convertJson() {
+            try {
+                let inputText = document.getElementById('inputJson').value.trim();
+                
+                // Handle multiple objects separated by commas
+                if (!inputText.startsWith('[')) {
+                    inputText = '[' + inputText + ']';
+                }
+                
+                const inputJson = JSON.parse(inputText);
+                const percentage = parseFloat(document.getElementById('percentage').value) / 100;
 
-        let totalMinCount = 0;
-        let totalMaxCount = 0;
+                let totalMinCount = 0;
+                let totalMaxCount = 0;
 
-        const combined = {
-            "_comments": "Точка 1",
-            "minSelectedPos": inputJson.length,
-            "maxSelectedPos": inputJson.length,
-            "positions": [],
-            "byTrigger": 1,
-            "triggerRadius": 100,
-            "triggerHeight": 600,
-            "triggerNegativeHeight": -1,
-            "triggerReloadTime": 900,
-            "triggeringTimes": "-1",
-            "multiplierByPlayers": 0,
-            "spawningCountMin": 0,
-            "spawningCountMax": 0,
-            "animals": []
-        };
+                const combined = {
+                    "_comments": "Точка 1",
+                    "minSelectedPos": inputJson.length,
+                    "maxSelectedPos": inputJson.length,
+                    "positions": [],
+                    "byTrigger": 1,
+                    "triggerRadius": 100,
+                    "triggerHeight": 600,
+                    "triggerNegativeHeight": -1,
+                    "triggerReloadTime": 900,
+                    "triggeringTimes": "-1",
+                    "multiplierByPlayers": 0,
+                    "spawningCountMin": 0,
+                    "spawningCountMax": 0,
+                    "animals": []
+                };
 
-        inputJson.forEach(mutant => {
-            mutant.Positions[1] = -1;
+                inputJson.forEach(mutant => {
+                    mutant.Positions[1] = -1;
 
-            const positionString = `${mutant.Positions.join(" ")}|1|${Math.round(mutant.Radius * percentage)}`;
-            combined.positions.push(positionString);
+                    const positionString = `${mutant.Positions.join(" ")}|1|${Math.round(mutant.Radius * percentage)}`;
+                    combined.positions.push(positionString);
 
-            const minCount = Math.floor((mutant.Count / 2) + 1);
-            const maxCount = mutant.Count;
+                    const minCount = Math.floor((mutant.Count / 2) + 1);
+                    const maxCount = mutant.Count;
 
-            combined.animals.push({
-                "names": [mutant.ClassNames],
-                "health01": 1,
-                "minCount": minCount,
-                "maxCount": maxCount,
-                "chance": 1,
-                "spawningCountMin": 1,
-                "spawningCountMax": 1,
-                "attachments": []
-            });
+                    combined.animals.push({
+                        "names": [mutant.ClassNames],
+                        "health01": 1,
+                        "minCount": minCount,
+                        "maxCount": maxCount,
+                        "chance": 1,
+                        "spawningCountMin": 1,
+                        "spawningCountMax": 1,
+                        "attachments": []
+                    });
 
-            totalMinCount += minCount;
-            totalMaxCount += maxCount;
-        });
+                    totalMinCount += minCount;
+                    totalMaxCount += maxCount;
+                });
 
-        combined.spawningCountMin = totalMinCount;
-        combined.spawningCountMax = totalMaxCount;
+                combined.spawningCountMin = totalMinCount;
+                combined.spawningCountMax = totalMaxCount;
 
-        const outputText = JSON.stringify(combined, null, 4);
-        document.getElementById('output').value = outputText;
+                const outputText = JSON.stringify(combined, null, 4);
+                document.getElementById('output').value = outputText;
 
-    } catch (error) {
-        document.getElementById('output').value = 'Invalid JSON input.';
-    }
-}
-</script>
+            } catch (error) {
+                document.getElementById('output').value = 'Invalid JSON input: ' + error.message;
+            }
+        }
+        </script>
 
-</body>
+    </body>
 </html>

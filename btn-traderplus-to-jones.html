@@ -6,36 +6,119 @@
 <title>TraderPlus to Jones Converter</title>
 <style>
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background-color: #1C1C1C;
-        color: white;
+        color: #E0E0E0;
         padding: 20px;
+        margin: 0;
     }
+
+    h1 {
+        color: #76FF03;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .description {
+        text-align: center;
+        color: #888;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .example-box {
+        background-color: #252525;
+        border: 1px solid #444;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .example-box h3 {
+        color: #76FF03;
+        margin-top: 0;
+        font-size: 15px;
+    }
+
+    .example-box code {
+        color: #aaa;
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 13px;
+        display: block;
+        line-height: 1.6;
+    }
+
     textarea {
         width: 100%;
         height: 35vh;
         margin-top: 10px;
-        padding: 10px;
-        background-color: #333;
-        color: white;
-        border: none;
+        padding: 12px;
+        background-color: #2D2D2D;
+        color: #E0E0E0;
+        border: 1px solid #444;
+        border-radius: 6px;
         resize: none;
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 14px;
     }
+
     button {
-        background-color: #222;
-        color: white;
-        border: none;
-        padding: 10px 20px;
+        background-color: #2D2D2D;
+        color: #76FF03;
+        border: 1px solid #444;
+        padding: 12px 25px;
         cursor: pointer;
-        margin-top: 10px;
+        font-size: 15px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        margin-top: 15px;
+    }
+
+    button:hover {
+        background-color: #3D3D3D;
+        border-color: #76FF03;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
     }
 </style>
 </head>
 <body>
-    <h1>TraderPlus to Jones Converter</h1>
-    <textarea id="inputText" placeholder="Введите TraderPlus конфиг сюда..."></textarea>
-    <button onclick="convert()">Convert</button>
-    <textarea id="outputText" placeholder="Результат конверта"></textarea>
+    <div class="container">
+        <h1>📤 TraderPlus to Jones Converter</h1>
+        <p class="description">
+            Конвертирует конфиг TraderPlus в формат Dr. Jones Trader.
+        </p>
+
+        <div class="example-box">
+            <h3>📖 Как использовать:</h3>
+            <code>
+                1. Вставьте JSON конфиг TraderPlus<br>
+                2. Нажмите "Convert"<br>
+                3. Скопируйте полученный txt Jones<br><br>
+                Входной формат: {"TraderCategories": [{CategoryName, Products: [...]}]}<br>
+                Выходной формат:<br>
+                &lt;Category&gt; Name<br>
+                ItemName, *, buyPrice, sellPrice
+            </code>
+        </div>
+
+        <textarea id="inputText" placeholder="Введите TraderPlus конфиг сюда... Example:
+{
+  &quot;TraderCategories&quot;: [
+    {
+      &quot;CategoryName&quot;: &quot;My Trader&quot;,
+      &quot;Products&quot;: [&quot;ItemName1,1,-1,1,1000,500&quot;]
+    }
+  ]
+}"></textarea>
+        <button onclick="convert()">🔄 Convert</button>
+        <textarea id="outputText" placeholder="Результат конверта"></textarea>
+    </div>
 
     <script>
         function convert() {

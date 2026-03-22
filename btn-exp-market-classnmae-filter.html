@@ -6,149 +6,281 @@
     <title>Exp Market classnames filter</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1C1C1C;
-            color: white;
+            color: #E0E0E0;
             padding: 20px;
+            margin: 0;
         }
-        button {
-            background-color: #222;
+
+        h1 {
             color: #76FF03;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin-right: 10px;
+            text-align: center;
+            margin-bottom: 10px;
         }
+
+        .description {
+            text-align: center;
+            color: #888;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .example-box {
+            background-color: #252525;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .example-box h3 {
+            color: #76FF03;
+            margin-top: 0;
+            font-size: 15px;
+        }
+
+        .example-box code {
+            color: #aaa;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            display: block;
+            line-height: 1.6;
+        }
+
         textarea {
             width: 100%;
-            height: 25vh;
+            padding: 12px;
             margin-top: 10px;
-            padding: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
-            resize: none;
+            background-color: #2D2D2D;
+            color: #E0E0E0;
+            border: 1px solid #444;
+            border-radius: 6px;
+            resize: vertical;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
         }
+
+        #classNames {
+            height: 120px;
+        }
+
+        #jsonInput {
+            height: 250px;
+        }
+
+        button {
+            background-color: #2D2D2D;
+            color: #76FF03;
+            border: 1px solid #444;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #3D3D3D;
+            border-color: #76FF03;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
+        }
+
         .output {
             white-space: pre-wrap;
-            background-color: #333;
-            padding: 10px;
-            color: white;
+            background-color: #252525;
+            padding: 15px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #E0E0E0;
             margin-top: 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            min-height: 100px;
+        }
+
+        h2, h3 {
+            color: #76FF03;
+            font-size: 18px;
+            margin-top: 25px;
+        }
+
+        label {
+            color: #76FF03;
+            font-weight: 500;
+            display: block;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>🔍 EXP Market Classnames Filter</h1>
+        <p class="description">
+            Фильтрует JSON EXP Market по списку classnames и добавляет стандартные параметры.
+        </p>
 
-<h2>Exp Market classnames filte</h2>
-<p>
-    Этот инструмент берёт список названий классов и JSON-конфигурацию, фильтрует элементы JSON по совпадению с названиями классов, 
-    а также добавляет стандартные параметры к каждому элементу, если они отсутствуют.
-</p>
+        <div class="example-box">
+            <h3>📖 Как использовать:</h3>
+            <code>
+                1. Введите список classnames для фильтрации<br>
+                2. Вставьте JSON EXP Market<br>
+                3. Нажмите "Изменить JSON"<br>
+                4. Скопируйте отфильтрованный результат<br><br>
+                Пример classnames:<br>
+                Shrimp<br>
+                WalleyePollock<br><br>
+                Результат: JSON только с указанными ClassName + стандартные параметры
+            </code>
+        </div>
 
-<h3>Введите данные</h3>
-<textarea id="classNames">
+        <label for="classNames">Class Names to Filter:</label>
+        <textarea id="classNames" placeholder="Enter class names to filter, each on a new line...
+Example:
 Shrimp
-WalleyePollock
-</textarea>
-<textarea id="jsonInput">[
-        {
-            "ClassName": "Carp",
-            "MaxPriceThreshold": 20,
-            "MinPriceThreshold": 20,
-            "SellPricePercent": -1,
-            "MaxStockThreshold": 1,
-            "MinStockThreshold": 1,
-            "SpawnAttachments": [],
-            "Variants": []
-        },
-        {
-            "ClassName": "Mackerel",
-            "MaxPriceThreshold": 20,
-            "MinPriceThreshold": 20,
-            "SellPricePercent": -1,
-            "MaxStockThreshold": 1,
-            "MinStockThreshold": 1,
-            "SpawnAttachments": [],
-            "Variants": []
-        },
-        {
-            "ClassName": "WalleyePollock",
-            "MaxPriceThreshold": 40,
-            "MinPriceThreshold": 40,
-            "SellPricePercent": -1,
-            "MaxStockThreshold": 10000,
-            "MinStockThreshold": 1,
-            "SpawnAttachments": [],
-            "Variants": []
-        },
-        {
-            "ClassName": "SteelheadTrout",
-            "MaxPriceThreshold": 30,
-            "MinPriceThreshold": 30,
-            "SellPricePercent": -1,
-            "MaxStockThreshold": 1,
-            "MinStockThreshold": 1,
-            "SpawnAttachments": [],
-            "Variants": []
-        },
-        {
-            "ClassName": "Shrimp",
-            "MaxPriceThreshold": 30,
-            "MinPriceThreshold": 30,
-            "SellPricePercent": -1,
-            "MaxStockThreshold": 1,
-            "MinStockThreshold": 1,
-            "SpawnAttachments": [],
-            "Variants": []
-        }
+WalleyePollock">Shrimp
+WalleyePollock</textarea>
+
+        <label for="jsonInput">EXP Market JSON:</label>
+        <textarea id="jsonInput" placeholder='Paste EXP Market JSON here... Example:
+[
+    {
+        "ClassName": "Carp",
+        "MaxPriceThreshold": 20,
+        "MinPriceThreshold": 20
+    },
+    {
+        "ClassName": "Shrimp",
+        "MaxPriceThreshold": 30,
+        "MinPriceThreshold": 30
+    }
+]'>[
+    {
+        "ClassName": "Carp",
+        "MaxPriceThreshold": 20,
+        "MinPriceThreshold": 20,
+        "SellPricePercent": -1,
+        "MaxStockThreshold": 1,
+        "MinStockThreshold": 1,
+        "SpawnAttachments": [],
+        "Variants": []
+    },
+    {
+        "ClassName": "Mackerel",
+        "MaxPriceThreshold": 20,
+        "MinPriceThreshold": 20,
+        "SellPricePercent": -1,
+        "MaxStockThreshold": 1,
+        "MinStockThreshold": 1,
+        "SpawnAttachments": [],
+        "Variants": []
+    },
+    {
+        "ClassName": "WalleyePollock",
+        "MaxPriceThreshold": 40,
+        "MinPriceThreshold": 40,
+        "SellPricePercent": -1,
+        "MaxStockThreshold": 10000,
+        "MinStockThreshold": 1,
+        "SpawnAttachments": [],
+        "Variants": []
+    },
+    {
+        "ClassName": "SteelheadTrout",
+        "MaxPriceThreshold": 30,
+        "MinPriceThreshold": 30,
+        "SellPricePercent": -1,
+        "MaxStockThreshold": 1,
+        "MinStockThreshold": 1,
+        "SpawnAttachments": [],
+        "Variants": []
+    },
+    {
+        "ClassName": "Shrimp",
+        "MaxPriceThreshold": 30,
+        "MinPriceThreshold": 30,
+        "SellPricePercent": -1,
+        "MaxStockThreshold": 1,
+        "MinStockThreshold": 1,
+        "SpawnAttachments": [],
+        "Variants": []
+    }
 ]</textarea>
 
-<button onclick="modifyJson()">Изменить JSON</button>
+        <button onclick="modifyJson()">🔄 Изменить JSON</button>
+        <button onclick="clearAll()">🗑️ Очистить</button>
 
-<h3>Результат</h3>
-<div id="output" class="output"></div>
+        <h3>Результат</h3>
+        <div id="output" class="output">// Result will appear here...</div>
+    </div>
 
-<script>
-    function modifyJson() {
-        const classNames = new Set(document.getElementById('classNames').value.trim().split('\n').map(name => name.trim()));
-        const jsonText = document.getElementById('jsonInput').value;
-        
-        let data;
-        try {
-            data = JSON.parse(jsonText);
-        } catch (error) {
-            document.getElementById('output').textContent = 'Неверный формат JSON.';
-            return;
+    <script>
+        function modifyJson() {
+            const classNames = new Set(document.getElementById('classNames').value.trim().split('\n').map(name => name.trim()).filter(n => n));
+            const jsonText = document.getElementById('jsonInput').value;
+            const outputDiv = document.getElementById('output');
+
+            if (classNames.size === 0) {
+                outputDiv.textContent = 'Error: Please enter class names to filter';
+                return;
+            }
+
+            if (!jsonText.trim()) {
+                outputDiv.textContent = 'Error: Please enter EXP Market JSON';
+                return;
+            }
+
+            let data;
+            try {
+                data = JSON.parse(jsonText);
+            } catch (error) {
+                outputDiv.textContent = 'Invalid JSON format: ' + error.message;
+                return;
+            }
+
+            const defaultValues = {
+                "MaxPriceThreshold": 500,
+                "MinPriceThreshold": 500,
+                "SellPricePercent": -1,
+                "MaxStockThreshold": 1,
+                "MinStockThreshold": 1,
+                "QuantityPercent": -1,
+                "SpawnAttachments": [],
+                "Variants": []
+            };
+
+            const modifiedData = data.filter(item => classNames.has(item.ClassName))
+                .map(item => {
+                    for (const [key, value] of Object.entries(defaultValues)) {
+                        if (!item.hasOwnProperty(key)) {
+                            item[key] = value;
+                        }
+                    }
+                    return item;
+                });
+
+            if (modifiedData.length === 0) {
+                outputDiv.textContent = 'No matching class names found in JSON.';
+                return;
+            }
+
+            outputDiv.textContent = JSON.stringify(modifiedData, null, 2);
         }
 
-        // Значения по умолчанию для добавления
-        const defaultValues = {
-            "MaxPriceThreshold": 500,
-            "MinPriceThreshold": 500,
-            "SellPricePercent": -1,
-            "MaxStockThreshold": 1,
-            "MinStockThreshold": 1,
-            "QuantityPercent": -1,
-            "SpawnAttachments": [],
-            "Variants": []
-        };
-
-        // Фильтрация и модификация JSON
-        const modifiedData = data.filter(item => classNames.has(item.ClassName))
-            .map(item => {
-                // Добавление свойств по умолчанию
-                for (const [key, value] of Object.entries(defaultValues)) {
-                    if (!item.hasOwnProperty(key)) {
-                        item[key] = value;
-                    }
-                }
-                return item;
-            });
-
-        document.getElementById('output').textContent = JSON.stringify(modifiedData, null, 2);
-    }
-</script>
-
+        function clearAll() {
+            document.getElementById('classNames').value = '';
+            document.getElementById('jsonInput').value = '';
+            document.getElementById('output').textContent = '// Result will appear here...';
+        }
+    </script>
 </body>
 </html>

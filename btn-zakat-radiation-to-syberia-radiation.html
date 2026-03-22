@@ -6,37 +6,112 @@
     <title>Zakat Radiation to Syberia radiation converter</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1C1C1C;
-            color: white;
+            color: #E0E0E0;
             padding: 20px;
+            margin: 0;
         }
-        button {
-            background-color: #222;
+
+        h1 {
             color: #76FF03;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin-top: 10px;
+            text-align: center;
+            margin-bottom: 10px;
         }
+
+        .description {
+            text-align: center;
+            color: #888;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .example-box {
+            background-color: #252525;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .example-box h3 {
+            color: #76FF03;
+            margin-top: 0;
+            font-size: 15px;
+        }
+
+        .example-box code {
+            color: #aaa;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            display: block;
+            line-height: 1.6;
+        }
+
         textarea {
             width: 100%;
-            height: 50vh;
+            height: 40vh;
             margin-top: 10px;
-            padding: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
+            padding: 12px;
+            background-color: #2D2D2D;
+            color: #E0E0E0;
+            border: 1px solid #444;
+            border-radius: 6px;
             resize: none;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
         }
-        h1, h2 {
+
+        button {
+            background-color: #2D2D2D;
             color: #76FF03;
+            border: 1px solid #444;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #3D3D3D;
+            border-color: #76FF03;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
+        }
+
+        h2 {
+            color: #76FF03;
+            font-size: 18px;
+            margin-top: 25px;
         }
     </style>
 </head>
 <body>
-    <h1>Zakat Radiation to Syberia radiation converter</h1>
-    <textarea id="inputData" rows="20" cols="100">
+    <div class="container">
+        <h1>☢️ Zakat Radiation to Syberia Converter</h1>
+        <p class="description">
+            Конвертирует зоны радиации Zakat в формат Syberia Radiation.
+        </p>
+
+        <div class="example-box">
+            <h3>📖 Как использовать:</h3>
+            <code>
+                1. Вставьте JSON Zakat с RadPosArrays<br>
+                2. Нажмите "Convert"<br>
+                3. Скопируйте результат в конфиг Syberia<br><br>
+                Входной формат: {"AllRadiatonsTestNeed": [{RadPosArrays: [{Positions, Radius, Power}]}]}<br>
+                Выходной формат: Syberia с m_defaultZone и m_customZones
+            </code>
+        </div>
+
+        <textarea id="inputData" rows="20" cols="100">
 {
     "AllRadiatonsTestNeed": [
         {
@@ -66,77 +141,84 @@
         }
     ]
 }
-    </textarea>
-    <br>
-    <button onclick="convertData()">Convert</button>
-    <h2>Converted Data</h2>
-    <textarea id="outputData" rows="20" cols="100"></textarea>
+        </textarea>
+        <br>
+        <button onclick="convertData()">🔄 Convert</button>
+        <h2>Converted Data</h2>
+        <textarea id="outputData" rows="20" cols="100" placeholder="Result will appear here..."></textarea>
+    </div>
 
     <script>
         function convertData() {
-            const inputData = JSON.parse(document.getElementById('inputData').value);
+            try {
+                const inputData = JSON.parse(document.getElementById('inputData').value);
 
-            const result = {
-                "m_defaultZone": {
-                    "m_id": 0,
-                    "m_displayName": "Default Zone",
-                    "m_position": [0.0, 0.0, 0.0],
-                    "m_radius": 0.0,
-                    "m_height": 0.0,
-                    "m_enterMessage": "",
-                    "m_leaveMessage": "",
-                    "m_leaveTime": 0.0,
-                    "m_godMode": 0,
-                    "m_inverseDammage": 0,
-                    "m_blockBuildingMode": 0,
-                    "m_blockInteractionWithPlayers": 0,
-                    "m_radiation": 0.0,
-                    "m_psi": 0.0,
-                    "m_gas": 0.0,
-                    "m_spawnChance": 1.0
-                },
-                "m_customZones": []
-            };
-
-            inputData["AllRadiatonsTestNeed"][0]["RadPosArrays"].forEach((radPos, index) => {
-                let radiation = 0.0;
-                switch (radPos.Power) {
-                    case 30:
-                        radiation = 0.03;
-                        break;
-                    case 50:
-                        radiation = 0.05;
-                        break;
-                    case 100:
-                        radiation = 0.1;
-                        break;
-                    case 300:
-                        radiation = 0.3;
-                        break;
-                }
-
-                const zone = {
-                    "m_id": index + 1,
-                    "m_displayName": `Zone ${index + 1}`,
-                    "m_position": radPos.Positions.map(pos => parseFloat(pos.toFixed(6))),
-                    "m_radius": parseFloat(radPos.Radius.toFixed(1)),
-                    "m_height": -1.0,
-                    "m_enterMessage": index === 1 ? "Какой-то непонятный привкус металла на губах" : "",
-                    "m_leaveMessage": "",
-                    "m_leaveTime": 0.0,
-                    "m_godMode": 0,
-                    "m_inverseDammage": 0,
-                    "m_blockBuildingMode": 0,
-                    "m_blockInteractionWithPlayers": 0,
-                    "m_radiation": radiation,
-                    "m_psi": 0.0,
-                    "m_gas": 0.0,
-                    "m_spawnChance": 1.0
+                const result = {
+                    "m_defaultZone": {
+                        "m_id": 0,
+                        "m_displayName": "Default Zone",
+                        "m_position": [0.0, 0.0, 0.0],
+                        "m_radius": 0.0,
+                        "m_height": 0.0,
+                        "m_enterMessage": "",
+                        "m_leaveMessage": "",
+                        "m_leaveTime": 0.0,
+                        "m_godMode": 0,
+                        "m_inverseDammage": 0,
+                        "m_blockBuildingMode": 0,
+                        "m_blockInteractionWithPlayers": 0,
+                        "m_radiation": 0.0,
+                        "m_psi": 0.0,
+                        "m_gas": 0.0,
+                        "m_spawnChance": 1.0
+                    },
+                    "m_customZones": []
                 };
-                result.m_customZones.push(zone);
-            });
 
-            document.getElementById('outputData').value = JSON.stringify(result, null, 4);
+                inputData["AllRadiatonsTestNeed"][0]["RadPosArrays"].forEach((radPos, index) => {
+                    let radiation = 0.0;
+                    switch (radPos.Power) {
+                        case 30:
+                            radiation = 0.03;
+                            break;
+                        case 50:
+                            radiation = 0.05;
+                            break;
+                        case 100:
+                            radiation = 0.1;
+                            break;
+                        case 300:
+                            radiation = 0.3;
+                            break;
+                        default:
+                            radiation = radPos.Power / 1000;
+                    }
+
+                    const zone = {
+                        "m_id": index + 1,
+                        "m_displayName": `Zone ${index + 1}`,
+                        "m_position": radPos.Positions.map(pos => parseFloat(pos.toFixed(6))),
+                        "m_radius": parseFloat(radPos.Radius.toFixed(1)),
+                        "m_height": -1.0,
+                        "m_enterMessage": index === 1 ? "Какой-то непонятный привкус металла на губах" : "",
+                        "m_leaveMessage": "",
+                        "m_leaveTime": 0.0,
+                        "m_godMode": 0,
+                        "m_inverseDammage": 0,
+                        "m_blockBuildingMode": 0,
+                        "m_blockInteractionWithPlayers": 0,
+                        "m_radiation": radiation,
+                        "m_psi": 0.0,
+                        "m_gas": 0.0,
+                        "m_spawnChance": 1.0
+                    };
+                    result.m_customZones.push(zone);
+                });
+
+                document.getElementById('outputData').value = JSON.stringify(result, null, 4);
+            } catch (error) {
+                document.getElementById('outputData').value = 'Invalid JSON: ' + error.message;
+            }
         }
     </script>
 </body>

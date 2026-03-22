@@ -6,90 +6,224 @@
     <title>Types to classnames converter</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1C1C1C;
-            color: white;
+            color: #E0E0E0;
             padding: 20px;
+            margin: 0;
         }
-        button {
-            background-color: #222;
+
+        h1 {
             color: #76FF03;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin-right: 10px;
+            text-align: center;
+            margin-bottom: 10px;
         }
+
+        .description {
+            text-align: center;
+            color: #888;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .example-box {
+            background-color: #252525;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .example-box h3 {
+            color: #76FF03;
+            margin-top: 0;
+            font-size: 15px;
+        }
+
+        .example-box code {
+            color: #aaa;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            display: block;
+            line-height: 1.6;
+        }
+
         textarea {
             width: 100%;
-            height: 50vh;
+            height: 300px;
             margin-top: 10px;
-            padding: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
-            resize: none;
+            padding: 12px;
+            background-color: #2D2D2D;
+            color: #E0E0E0;
+            border: 1px solid #444;
+            border-radius: 6px;
+            resize: vertical;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
         }
-        input[type="number"] {
-            width: 60px;
-            padding: 5px;
+
+        button {
+            background-color: #2D2D2D;
+            color: #76FF03;
+            border: 1px solid #444;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
             margin-right: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
+            margin-top: 15px;
         }
+
+        button:hover {
+            background-color: #3D3D3D;
+            border-color: #76FF03;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
+        }
+
         .output {
             white-space: pre-wrap;
-            background-color: #333;
-            padding: 10px;
-            border: none;
-            color: white;
+            background-color: #252525;
+            padding: 15px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #E0E0E0;
             margin-top: 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            min-height: 100px;
+        }
+
+        h2, h3 {
+            color: #76FF03;
+            font-size: 18px;
+            margin-top: 25px;
+        }
+
+        label {
+            color: #76FF03;
+            font-weight: 500;
+            display: block;
+            margin-top: 15px;
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>📄 Types.xml to Classnames</h1>
+        <p class="description">
+            Извлекает все classnames из файла types.xml.
+        </p>
 
-<h2>Types to classnames converter</h2>
+        <div class="example-box">
+            <h3>📖 Как использовать:</h3>
+            <code>
+                1. Вставьте содержимое файла types.xml<br>
+                2. Нажмите "Extract ClassNames from XML"<br>
+                3. Скопируйте полученный список classnames<br><br>
+                Пример входа:<br>
+                &lt;?xml version="1.0"?&gt;<br>
+                &lt;types&gt;<br>
+                &lt;type name="Ammo_9x19" /&gt;<br>
+                &lt;type name="MedKit" /&gt;<br>
+                &lt;/types&gt;<br><br>
+                Пример выхода:<br>
+                Ammo_9x19<br>
+                MedKit
+            </code>
+        </div>
 
-<br><br>
-<textarea id="inputJson" placeholder="Paste your XML here..."></textarea>
-<button onclick="convertXml()">Extract ClassNames from XML</button>
+        <label for="inputJson">types.xml content:</label>
+        <textarea id="inputJson" placeholder='Paste your types.xml here... Example:
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<types>
+    <type name="Ammo_9x19" />
+    <type name="Ammo_45ACP" />
+    <type name="MedKit" />
+    <type name="BandageDressing" />
+</types>'></textarea>
 
-<h3>Formatted Output</h3>
-<div id="output" class="output"></div>
+        <div class="buttons-row">
+            <button onclick="convertXml()">📥 Extract ClassNames from XML</button>
+            <button onclick="clearAll()">🗑️ Очистить</button>
+            <button onclick="copyResult()">📋 Copy Result</button>
+        </div>
 
-<script>
-    function convertJson() {
-        // Existing JSON conversion function remains the same
-    }
+        <h3>Formatted Output</h3>
+        <div id="output" class="output">// Result will appear here...</div>
+    </div>
 
-    function convertXml() {
-        try {
-            const parser = new DOMParser();
-            const inputXml = document.getElementById('inputJson').value;
-            const xmlDoc = parser.parseFromString(inputXml, "text/xml");
-            
-            const typeElements = xmlDoc.getElementsByTagName("type");
-            const classNames = [];
-
-            for (let i = 0; i < typeElements.length; i++) {
-                const typeElement = typeElements[i];
-                const nameAttr = typeElement.getAttribute("name");
-                if (nameAttr) {
-                    classNames.push(nameAttr);
+    <script>
+        function convertXml() {
+            try {
+                const parser = new DOMParser();
+                const inputXml = document.getElementById('inputJson').value;
+                
+                if (!inputXml.trim()) {
+                    document.getElementById('output').textContent = 'Error: Please enter types.xml content';
+                    return;
                 }
-            }
+                
+                const xmlDoc = parser.parseFromString(inputXml, "text/xml");
 
-            if (classNames.length > 0) {
-                document.getElementById('output').textContent = classNames.join('\n');
-            } else {
-                document.getElementById('output').textContent = 'No valid "name" attributes found in <type> tags.';
+                const parserError = xmlDoc.querySelector("parsererror");
+                if (parserError) {
+                    document.getElementById('output').textContent = 'Invalid XML input. Please check your XML syntax.';
+                    return;
+                }
+
+                const typeElements = xmlDoc.getElementsByTagName("type");
+                const classNames = [];
+
+                for (let i = 0; i < typeElements.length; i++) {
+                    const typeElement = typeElements[i];
+                    const nameAttr = typeElement.getAttribute("name");
+                    if (nameAttr) {
+                        classNames.push(nameAttr);
+                    }
+                }
+
+                if (classNames.length > 0) {
+                    document.getElementById('output').textContent = classNames.join('\n');
+                } else {
+                    document.getElementById('output').textContent = 'No valid "name" attributes found in <type> tags.';
+                }
+            } catch (error) {
+                document.getElementById('output').textContent = 'Error: ' + error.message;
             }
-        } catch (error) {
-            document.getElementById('output').textContent = 'Invalid XML input.';
         }
-    }
-</script>
 
+        function clearAll() {
+            document.getElementById('inputJson').value = '';
+            document.getElementById('output').textContent = '// Result will appear here...';
+        }
+
+        function copyResult() {
+            const output = document.getElementById('output').textContent;
+            if (output && output !== '// Result will appear here...') {
+                navigator.clipboard.writeText(output).then(() => {
+                    alert('Result copied to clipboard!');
+                }).catch(() => {
+                    alert('Failed to copy result');
+                });
+            } else {
+                alert('No result to copy. Please extract classnames first.');
+            }
+        }
+    </script>
 </body>
 </html>

@@ -6,51 +6,141 @@
     <title>Vehicle Class Name to DayZ events Formatter</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1C1C1C;
-            color: white;
+            color: #E0E0E0;
             padding: 20px;
+            margin: 0;
         }
-        button {
-            background-color: #222;
+
+        h1 {
             color: #76FF03;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin-right: 10px;
+            text-align: center;
+            margin-bottom: 10px;
         }
+
+        .description {
+            text-align: center;
+            color: #888;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .example-box {
+            background-color: #252525;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .example-box h3 {
+            color: #76FF03;
+            margin-top: 0;
+            font-size: 15px;
+        }
+
+        .example-box code {
+            color: #aaa;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            display: block;
+            line-height: 1.6;
+        }
+
         textarea {
             width: 100%;
-            height: 50vh;
+            height: 250px;
             margin-top: 10px;
-            padding: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
-            resize: none;
+            padding: 12px;
+            background-color: #2D2D2D;
+            color: #E0E0E0;
+            border: 1px solid #444;
+            border-radius: 6px;
+            resize: vertical;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
         }
+
+        button {
+            background-color: #2D2D2D;
+            color: #76FF03;
+            border: 1px solid #444;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #3D3D3D;
+            border-color: #76FF03;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
+        }
+
         .output {
             white-space: pre-wrap;
-            background-color: #333;
-            padding: 10px;
-            color: white;
+            background-color: #252525;
+            padding: 15px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #E0E0E0;
             margin-top: 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            min-height: 100px;
+        }
+
+        h2, h3 {
+            color: #76FF03;
+            font-size: 18px;
+            margin-top: 25px;
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>🚗 Vehicle Classnames to Events XML</h1>
+        <p class="description">
+            Создаёт XML для event spawn с attachments из списка classnames автомобиля и его частей.
+        </p>
 
-<h2>Vehicle Class Name to DayZ events Formatter</h2>
-<textarea id="classNames"></textarea>
-<button onclick="convertToDayZXml()">Convert to DayZ events</button>
+        <div class="example-box">
+            <h3>📖 Как использовать:</h3>
+            <code>
+                1. Введите список classnames автомобиля и его частей<br>
+                2. Нажмите "Convert to DayZ events"<br>
+                3. Скопируйте результат в events.xml<br><br>
+                Пример входа:<br>
+                IJ_2140_SL<br>
+                IJ_2140_SL_wheel<br>
+                IJ_2140_SL_doors_driver<br>
+                IJ_2140_SL_doors_hood<br><br>
+                Пример выхода:<br>
+                &lt;type name="IJ_2140_SL"&gt;<br>
+                &lt;attachments chance="1.00"&gt;&lt;item name="CarRadiator" chance="0.10" /&gt;&lt;/attachments&gt;<br>
+                &lt;attachments chance="1.00"&gt;&lt;item name="IJ_2140_SL_wheel" chance="0.40" /&gt;&lt;/attachments&gt;
+            </code>
+        </div>
 
-<h3>Formatted Output</h3>
-<div id="output" class="output"></div>
-
-<script>
-    // Set default example content for the textarea
-    document.addEventListener('DOMContentLoaded', () => {
-        const exampleData = `IJ_2140_SL
+        <textarea id="classNames" placeholder="Paste vehicle classnames here (main vehicle + parts)... Example:
+IJ_2140_SL
 IJ_2140_SL_wheel
 IJ_2140_SL_wheel
 IJ_2140_SL_wheel
@@ -61,46 +151,85 @@ IJ_2140_SL_doors_cargo1
 IJ_2140_SL_doors_cargo2
 IJ_2140_SL_doors_hood
 IJ_2140_SL_doors_trunk
-IJ_2140_SL_wheel`;
-        document.getElementById('classNames').value = exampleData;
-    });
+IJ_2140_SL_wheel"></textarea>
 
-    function convertToDayZXml() {
-        const classNames = document.getElementById('classNames').value.trim().split('\n');
-        const vehicleType = classNames[0].trim(); // The first class name is used as the main type
-        const parts = classNames.slice(1).map(part => part.trim()); // Remaining class names are treated as parts
+        <div class="buttons-row">
+            <button onclick="convertToDayZXml()">🔄 Convert to DayZ events</button>
+            <button onclick="clearAll()">🗑️ Очистить</button>
+            <button onclick="copyResult()">📋 Copy Result</button>
+        </div>
 
-        let output = `\n<type name="${vehicleType}">\n`;
+        <h3>Formatted Output</h3>
+        <div id="output" class="output">// Result will appear here...</div>
+    </div>
 
-        // Always include these specific attachments with predefined chances
-        const mandatoryAttachments = [
-            { name: "CarRadiator", chance: "0.10" },
-            { name: "CarBattery", chance: "0.10" },
-            { name: "SparkPlug", chance: "0.10" },
-            { name: "HeadlightH7", chance: "0.40" },
-            { name: "HeadlightH7", chance: "0.40" }
-        ];
-        
-        // Adding each mandatory item to the XML output
-        mandatoryAttachments.forEach(item => {
-            output += `\t<attachments chance="1.00">\n\t\t<item name="${item.name}" chance="${item.chance}" />\n\t</attachments>\n`;
-        });
-
-        // Add each part from the input list with specific chances
-        parts.forEach(part => {
-            let chance = "0.30"; // Default chance for most parts
-            if (part.toLowerCase().includes("wheel")) {
-                chance = "0.40"; // Higher chance for wheels
+    <script>
+        function convertToDayZXml() {
+            const classNames = document.getElementById('classNames').value.trim().split('\n');
+            
+            if (classNames.length === 0 || (classNames.length === 1 && !classNames[0].trim())) {
+                document.getElementById('output').textContent = 'Please enter vehicle classnames.';
+                return;
             }
+            
+            const vehicleType = classNames[0].trim();
+            const parts = classNames.slice(1).map(part => part.trim()).filter(p => p);
 
-            output += `\t<attachments chance="1.00">\n\t\t<item name="${part}" chance="${chance}" />\n\t</attachments>\n`;
-        });
+            let output = `\n<type name="${vehicleType}">\n`;
 
-        output += `</type>\n`;
+            const mandatoryAttachments = [
+                { name: "CarRadiator", chance: "0.10" },
+                { name: "CarBattery", chance: "0.10" },
+                { name: "SparkPlug", chance: "0.10" },
+                { name: "HeadlightH7", chance: "0.40" },
+                { name: "HeadlightH7", chance: "0.40" }
+            ];
 
-        document.getElementById('output').textContent = output;
-    }
-</script>
+            mandatoryAttachments.forEach(item => {
+                output += `\t<attachments chance="1.00">\n\t\t<item name="${item.name}" chance="${item.chance}" />\n\t</attachments>\n`;
+            });
 
+            // Group parts by name and count them
+            const partCounts = {};
+            parts.forEach(part => {
+                partCounts[part] = (partCounts[part] || 0) + 1;
+            });
+
+            // Add each unique part with specific chances
+            Object.keys(partCounts).forEach(part => {
+                let chance = "0.30";
+                if (part.toLowerCase().includes("wheel")) {
+                    chance = "0.40";
+                }
+                
+                // Add the part for each occurrence
+                for (let i = 0; i < partCounts[part]; i++) {
+                    output += `\t<attachments chance="1.00">\n\t\t<item name="${part}" chance="${chance}" />\n\t</attachments>\n`;
+                }
+            });
+
+            output += `</type>\n`;
+
+            document.getElementById('output').textContent = output;
+        }
+
+        function clearAll() {
+            document.getElementById('classNames').value = '';
+            document.getElementById('output').textContent = '// Result will appear here...';
+        }
+
+        function copyResult() {
+            const output = document.getElementById('output').textContent;
+            if (output && output !== '// Result will appear here...' && output.startsWith('\n<type')) {
+                navigator.clipboard.writeText(output).then(() => {
+                    alert('Result copied to clipboard!');
+                }).catch(() => {
+                    alert('Failed to copy result');
+                });
+            } else {
+                alert('No result to copy. Please convert classnames first.');
+            }
+        }
+    </script>
 </body>
 </html>

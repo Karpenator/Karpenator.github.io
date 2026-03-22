@@ -6,44 +6,163 @@
     <title>Фильтрация товаров по цене</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1C1C1C;
+            color: #E0E0E0;
             padding: 20px;
+            margin: 0;
         }
+
         h1 {
             text-align: center;
+            color: #76FF03;
+            margin-bottom: 10px;
         }
+
+        .description {
+            text-align: center;
+            color: #888;
+            margin-bottom: 25px;
+            font-size: 14px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #76FF03;
+            font-weight: 500;
+        }
+
         textarea, input {
             width: 100%;
-            margin-bottom: 10px;
-            padding: 10px;
+            margin-bottom: 15px;
+            padding: 12px;
+            background-color: #2D2D2D;
+            color: #E0E0E0;
+            border: 1px solid #444;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
         }
+
+        textarea {
+            resize: vertical;
+            min-height: 200px;
+        }
+
+        input[type="number"] {
+            max-width: 200px;
+        }
+
         button {
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
+            padding: 12px 25px;
+            background-color: #2D2D2D;
+            color: #76FF03;
+            border: 1px solid #444;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            margin-right: 10px;
         }
+
         button:hover {
-            background-color: #218838;
+            background-color: #3D3D3D;
+            border-color: #76FF03;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(118, 255, 3, 0.2);
         }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        h2 {
+            color: #76FF03;
+            margin-top: 25px;
+            font-size: 18px;
+        }
+
         pre {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
+            background-color: #252525;
+            color: #E0E0E0;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #444;
             white-space: pre-wrap;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .error {
+            color: #FF5733;
+            background-color: rgba(255, 87, 51, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #FF5733;
+            margin-top: 10px;
+        }
+
+        .example-box {
+            background-color: #252525;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .example-box h3 {
+            color: #76FF03;
+            margin-top: 0;
+            font-size: 15px;
+        }
+
+        .example-box code {
+            color: #aaa;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            display: block;
+            line-height: 1.6;
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>📥 Extract Classnames from EXP</h1>
+        <p class="description">
+            Извлекает список classnames из JSON конфига Expansion Trader и фильтрует по максимальной цене.
+            Полезно для создания списков товаров для других трейдеров.
+        </p>
 
-    <h1>Фильтрация товаров по цене</h1>
-    
-    <label for="jsonInput">Введите JSON:</label>
-    <textarea id="jsonInput" rows="10">
-[ 
+        <div class="example-box">
+            <h3>📖 Как использовать:</h3>
+            <code>
+                1. Вставьте JSON файл конфига Expansion Trader<br>
+                2. Укажите максимальную цену для фильтрации<br>
+                3. Нажмите "Фильтровать"<br>
+                4. Скопируйте полученный список classnames
+            </code>
+        </div>
+
+        <label for="jsonInput">JSON Expansion Trader:</label>
+        <textarea id="jsonInput" rows="15">[
     {
         "ClassName": "EFT_Accum",
         "MaxPriceThreshold": 100,
@@ -74,40 +193,100 @@
         "SpawnAttachments": [],
         "Variants": []
     }
-]
-    </textarea>
-    
-    <label for="maxPrice">Введите максимальную цену для фильтрации:</label>
-    <input type="number" id="maxPrice" placeholder="100" value="100">
+]</textarea>
 
-    <button onclick="filterItems()">Фильтровать</button>
+        <div class="buttons-row">
+            <label for="maxPrice" style="margin-bottom: 0;">Максимальная цена:</label>
+            <input type="number" id="maxPrice" placeholder="100" value="100" style="max-width: 150px; margin-bottom: 0;">
+            <button onclick="filterItems()">🔍 Фильтровать</button>
+            <button onclick="clearAll()">🗑️ Очистить</button>
+            <button onclick="loadFile()">📂 Загрузить файл</button>
+        </div>
 
-    <h2>Результат:</h2>
-    <pre id="result"></pre>
+        <h2>📄 Результат:</h2>
+        <pre id="result">// Здесь появится список classnames...</pre>
+
+        <div id="error" class="error" style="display: none;"></div>
+    </div>
 
     <script>
         function filterItems() {
-            // Получаем JSON и максимальную цену
             const jsonInput = document.getElementById('jsonInput').value;
             const maxPrice = parseFloat(document.getElementById('maxPrice').value);
+            const errorDiv = document.getElementById('error');
+            const resultPre = document.getElementById('result');
+
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+
+            if (!jsonInput.trim()) {
+                showError('Введите JSON данные!');
+                return;
+            }
+
+            if (isNaN(maxPrice) || maxPrice < 0) {
+                showError('Максимальная цена должна быть положительным числом!');
+                return;
+            }
 
             try {
-                // Парсим JSON
                 const items = JSON.parse(jsonInput);
 
-                // Фильтруем по MaxPriceThreshold
-                const filteredItems = items.filter(item => item.MaxPriceThreshold <= maxPrice);
+                if (!Array.isArray(items)) {
+                    showError('JSON должен содержать массив элементов!');
+                    return;
+                }
 
-                // Оставляем только ClassName и форматируем результат
+                const filteredItems = items.filter(item => {
+                    if (!item.ClassName || item.MaxPriceThreshold === undefined) {
+                        return false;
+                    }
+                    return item.MaxPriceThreshold <= maxPrice;
+                });
+
+                if (filteredItems.length === 0) {
+                    resultPre.textContent = '// Нет элементов с ценой <= ' + maxPrice;
+                    return;
+                }
+
                 const result = filteredItems.map(item => item.ClassName).join('\n');
-
-                // Выводим результат
-                document.getElementById('result').textContent = result;
+                resultPre.textContent = result;
             } catch (error) {
-                document.getElementById('result').textContent = 'Ошибка при парсинге JSON!';
+                showError('Ошибка при парсинге JSON: ' + error.message);
             }
         }
-    </script>
 
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = '❌ ' + message;
+            errorDiv.style.display = 'block';
+        }
+
+        function clearAll() {
+            document.getElementById('jsonInput').value = '';
+            document.getElementById('maxPrice').value = '100';
+            document.getElementById('result').textContent = '// Здесь появится список classnames...';
+            document.getElementById('error').style.display = 'none';
+        }
+
+        function loadFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('jsonInput').value = e.target.result;
+                    };
+                    reader.readAsText(file);
+                }
+            });
+            
+            input.click();
+        }
+    </script>
 </body>
 </html>
